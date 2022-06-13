@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<title>
+    hwqDqwh
+</title>
+<!--[if lt IE 9]><script src="//cdn.bootcss.com/html5shiv/r29/html5.js"></script><![endif]-->
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<meta name="author" content="hwqDqwh">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<script async src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+<link rel="stylesheet" href="https://hwqdqwh.github.io/styles/main.css" />
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/css/style.min.css" />
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/tocbot.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/script.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/icon.min.js"></script>
+        
+            <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/Card/prism.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/css/Card/prism.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
+            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
+            
+                        <!--CDN样式-->
+                        <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/hit-kounter-lc-0.3.0.js"></script>
+                        <script src="https://cdn1.lncld.net/static/js/av-min-1.5.0.js"></script>
+                        
+                            <script>
+                                (function() {
+                                    var bp = document.createElement('script');
+                                    var curProtocol = window.location.protocol.split(':')[0];
+                                    if (curProtocol === 'https') {
+                                        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                                    } else {
+                                        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                                    }
+                                    var s = document.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(bp, s);
+                                })();
+                            </script>
+                            
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="https://hwqdqwh.github.io">
+                    hwqDqwh
+                </a>
+            </div>
+            <div id="tp-weather-widget"></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">
+                        首页
+                    </a>
+                    
+                    <a class="menu-item" href="/archives">
+                        博客
+                    </a>
+                    
+                    <a class="menu-item" href="/tags">
+                        标签
+                    </a>
+                    
+                    <a class="menu-item" href="/post/about">
+                        关于
+                    </a>
+                    
+                    <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                        GitBook
+                    </a>
+                    
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+            </div>
+            <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+            </form>
+        </div>
+    </nav>
+
+    
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="https://hwqdqwh.github.io">
+                            hwqDqwh
+                        </a>
+                        <!--en-->
+                        <a id="mobile-toggle-theme-en" class="a en">&nbsp;Dark</a>
+                        <!--zh-->
+                        <a id="mobile-toggle-theme-zh" class="a zh">&nbsp;&#x6697;&#x9ED1;</a>
+                    </div>
+                    <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                        <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+                    </form>
+                    <!--en-->
+                    <div class="menu-toggle" id="menu-toggle-en" onclick="mobileBtn()">&#9776; Menu</div>
+                    <!--zh-->
+                    <div class="menu-toggle" id="menu-toggle-zh" onclick="mobileBtn()">&#9776; &#x83DC;&#x5355;</div>
+
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/">
+                            首页
+                        </a>
+                        
+                        <a class="menu-item" href="/archives">
+                            博客
+                        </a>
+                        
+                        <a class="menu-item" href="/tags">
+                            标签
+                        </a>
+                        
+                        <a class="menu-item" href="/post/about">
+                            关于
+                        </a>
+                        
+                        <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                            GitBook
+                        </a>
+                        
+                </div>
+            </div>
+        </nav>
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementById("menu-toggle-en");
+        var toggleMenu_zh = document.getElementById("menu-toggle-zh");
+
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.display != "none") {
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        } else if (toggleMenu_zh.display != "none") {
+            if (toggleMenu_zh.classList.contains("active")) {
+                toggleMenu_zh.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu_zh.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+
+    }
+</script>
+
+
+
+    <script>
+        (function(a, h, g, f, e, d, c, b) {
+            b = function() {
+                d = h.createElement(g);
+                c = h.getElementsByTagName(g)[0];
+                d.src = e;
+                d.charset = "utf-8";
+                d.async = 1;
+                c.parentNode.insertBefore(d, c)
+            };
+            a["SeniverseWeatherWidgetObject"] = f;
+            a[f] || (a[f] = function() {
+                (a[f].q = a[f].q || []).push(arguments)
+            });
+            a[f].l = +new Date();
+            if (a.attachEvent) {
+                a.attachEvent("onload", b)
+            } else {
+                a.addEventListener("load", b, false)
+            }
+        }(window, document, "script", "SeniverseWeatherWidget", "//cdn.sencdn.com/widget2/static/js/bundle.js?t=" + parseInt((new Date().getTime() / 100000000).toString(), 10)));
+        window.SeniverseWeatherWidget('show', {
+            flavor: "slim",
+            location: "WWEFQFPJZ7T8",
+            geolocation: true,
+            language: "auto",
+            unit: "c",
+            theme: "auto",
+            token: "61bcc333-3305-4728-9465-6785274bb0a3",
+            hover: "enabled",
+            container: "tp-weather-widget"
+        })
+    </script>
+    
+            <div class="main">
+                <div class="container">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                pstree/strace/traceroute 和 lsof
+                            </h1>
+                            
+                                <!--en-->
+                                <div class="post-meta en">
+                                    Author:
+                                    <a itemprop="author" rel="author" href="/">
+                                        hwqDqwh
+                                    </a>
+                                    <span class="post-time">
+                                Date: <a href="#">2021-12-27</a>
+                            </span>
+                                    <span class="post-readtime">Reading Time:<a
+                                    href="#">19.0
+                                    mins</a></span>
+                                    <span class="post-words">words:<a href="#">3756</a></span>
+                                    
+                                        <span class="post-category">
+                                Category:
+                                
+                                <a href="https://hwqdqwh.github.io/tag/JditS9-g9/">linux</a>
+                                
+                            </span>
+                                        
+                                            Views:
+                                            <span data-hk-page="current"> - </span>
+                                            
+                                </div>
+                                
+                        </header>
+                        
+                        <div class="post-content">
+                            <h3 id="开篇">开篇</h3>
+<p>记录几个常用的 linux 命令<br>
+pstree: 类似 ps 命令的进程查看工具,可以将进程以树形结构可视化输出.部分内核或挂载信息会被以 ? 代替<br>
+strace: 集诊断、调试、统计命令/进程信息于一体的工具,注意它不是专业的调试工具，如 gdb<br>
+traceroute: 跟踪当前到目的主机数据报传输链路的命令<br>
+lsof: 基于一切皆文件的系统文件描述符查看命令</p>
+<h3 id="pstree">pstree</h3>
+<h4 id="安装">安装</h4>
+<pre><code># mac
+brew install pstree
+
+#Fedora/Red Hat/CentOS
+yum -y install psmisc
+
+#Ubuntu/Debian
+apt-get install psmisc
+</code></pre>
+<h4 id="文档">文档</h4>
+<pre><code>Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]
+              [ -A | -G | -U ] [ PID | USER ]
+       pstree -V
+Display a tree of processes.
+
+-a, --arguments     show command line arguments
+                        显示进程的完整指令及参数
+-A, --ascii               use ASCII line drawing characters
+-c, --compact         don't compact identical subtrees
+-h, --highlight-all   highlight current process and its ancestors
+                        突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因
+-H PID,
+--highlight-pid=PID highlight this process and its ancestors
+-g, --show-pgids    show process group ids; implies -c
+-G, --vt100           use VT100 line drawing characters
+-l, --long              don't truncate long lines
+                          超长指令不再用 ... 代替
+-n, --numeric-sort  sort output by PID
+                            按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效
+-N type,
+--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)
+-p, --show-pids       show PIDs; implies -c
+                           显示 PID
+-s, --show-parents    show parents of the selected process
+                           显示父级进程
+-S, --ns-changes      show namespace transitions
+-u, --uid-changes     show uid transitions
+-U, --unicode         use UTF-8 (Unicode) line drawing characters
+-V, --version         display version information
+-Z,
+--security-context   show SELinux security contexts
+PID    start at this PID; default is 1 (init)
+USER   show only trees rooted at processes of this user
+</code></pre>
+<h4 id="常用命令">常用命令</h4>
+<pre><code>#查看全部进程的树形
+pstree -anp
+#根据进程号查看所在树的信息
+pstree -anps pid
+</code></pre>
+<h3 id="strace">strace</h3>
+<h4 id="安装-2">安装</h4>
+<pre><code>yum -y install strace
+</code></pre>
+<h4 id="文档-2">文档</h4>
+<pre><code>usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...
+              [-a column] [-o file] [-s strsize] [-P path]...
+              -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]
+   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]
+              -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]
+
+Output format:
+  -a column      alignment COLUMN for printing syscall results (default 40)
+                     将系统调用结果根据字段对齐,默认 为40.
+  -i             print instruction pointer at time of syscall
+  -k             obtain stack trace between each syscall
+  -o file        send trace output to FILE instead of stderr                            
+  -q             suppress messages about attaching, detaching, etc. 
+  -r             print relative timestamp
+                印出相对时间关于,,每一个系统调用.
+  -s strsize     limit length of print strings to STRSIZE chars (default 32)
+                指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)
+  -t             print absolute timestamp
+                在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间
+  -tt            print absolute timestamp with usecs
+                在输出中的每一行前加上时间信息,微秒级.
+      -T             print time spent in each syscall
+                    每次调用最后显示消耗时间
+  -x             print non-ascii strings in hex
+                以十六进制打印非 ascii 字符串
+  -xx            print all strings in hex
+                所有字符串以十六进制形式输出.
+  -X format      set the format for printing of named constants and flags
+  -y             print paths associated with file descriptor arguments
+  -yy            print protocol specific information associated with socket file descriptors
+
+Statistics:
+  -c            count time, calls, and errors for each syscall and report summary 
+                统计每一系统调用的所执行的时间,次数和出错的次数等.
+  -C             like -c but also print regular output
+  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs
+  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)
+                针对性排序
+  -w             summarise syscall latency (default is system time)
+
+Filtering:
+  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...
+     options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm
+  -P path        trace accesses to path                                                     
+
+Tracing:
+  -b execve      detach on execve syscall
+  -D             run tracer process as a detached grandchild, not as parent
+  -f             follow forks
+                跟踪由fork调用所产生的子进程.
+  -ff            follow forks with output into separate files
+                如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.
+  -I interruptible
+     1:          no signals are blocked
+     2:          fatal signals are blocked while decoding syscall (default)
+     3:          fatal signals are always blocked (default if '-o FILE PROG')
+     4:          fatal signals and SIGTSTP (^Z) are always blocked
+                 (useful to make 'strace -o FILE PROG' not stop on ^Z)
+
+Startup:
+  -E var         remove var from the environment for command
+  -E var=val     put var=val in the environment for command
+  -p pid         trace process with process id PID, may be repeated
+                跟踪指定的进程pid.
+  -u username    run command as username handling setuid and/or setgid
+                以username的UID和GID执行被跟踪的命令
+
+Miscellaneous:
+  -d             enable debug output to stderr
+                输出strace关于标准错误的调试信息.,这个输出现在还不会看
+  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  
+  -h             print help message
+  -V             print version                              
+</code></pre>
+<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier=][!]value1[,value2]...<br>
+qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace=open,表示只跟踪open调用.而-etrace!=open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\<br>
+-e trace=set 只跟踪指定的系统 调用.例如:-e trace=open,close,rean,write表示只跟踪这四个系统调用.默认的为set=all.<br>
+-e trace=file 只跟踪有关文件操作的系统调用.<br>
+-e trace=process 只跟踪有关进程控制的系统调用.<br>
+-e trace=network 跟踪与网络有关的所有系统调用.<br>
+-e strace=signal 跟踪所有与系统信号有关的 系统调用<br>
+-e trace=ipc 跟踪所有与进程通讯有关的系统调用<br>
+-e abbrev=set 设定strace输出的系统调用的结果集.-v 等与 abbrev=none.默认为abbrev=all.<br>
+-e raw=set 将指定的系统调用的参数以十六进制显示.<br>
+-e signal=set 指定跟踪的系统信号.默认为all.如 signal=!SIGIO(或者signal=!io),表示不跟踪SIGIO信号.<br>
+-e read=set 输出从指定文件中读出 的数据.例如: -e read=3,5<br>
+-e write=set 输出写入到指定文件中的数据.</p>
+<h4 id="常用命令-2">常用命令</h4>
+<pre><code># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记
+2021年 12月 08日 星期三 18:23:50 CST
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 61.33    0.000655         164         4           open
+ 10.49    0.000112          11        10           mmap
+  6.09    0.000065          16         4           mprotect
+  4.96    0.000053          13         4           brk
+  3.93    0.000042          14         3           munmap
+  3.09    0.000033          11         3           read
+  3.00    0.000032           5         6           close
+  3.00    0.000032           5         6           fstat
+  1.69    0.000018          18         1         1 access
+  1.22    0.000013          13         1           execve
+  0.66    0.000007           7         1           arch_prctl
+  0.56    0.000006           6         1           write
+  0.00    0.000000           0         1           lseek
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.001068                    45         1 total
+
+
+# strace -cp 18700 统计进程各个系统调用的时间消耗
+strace: Process 18700 attached
+^Cstrace: Process 18700 detached
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 34.48    0.002522          10       256           poll
+ 34.24    0.002505          12       206           sendto
+ 27.66    0.002023           8       257           recvfrom
+  3.47    0.000254          64         4           write
+  0.15    0.000011          11         1           restart_syscall
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.007315                   724           total
+
+
+# strace -Tp 16266 统计每个系统调用的耗时
+# 每行的最后使用&lt;&gt;展示调用的耗时,单位
+......
+read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;
+lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;
+read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;
+read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;
+write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;
+write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;
+write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;
+write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;
+write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;
+write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;
+write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;
+write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;
+pselect6(1, [0], NULL, NULL, {3, 0}, {[WINCH], 8}
+......
+
+
+# strace -e trace=network ping 127.0.0.1
+# -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用
+socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+connect(3, {sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)}, 16) = 0
+getsockname(3, {sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)}, [16]) = 0
+ping: icmp open socket: 不允许的操作
++++ exited with 2 +++
+
+
+# strace -tt -s 10 -o test.txt 5912
+# 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中
+# -o test.txt 等价于 2&gt;text.txt
+
+
+</code></pre>
+<h3 id="traceroute">traceroute</h3>
+<h4 id="安装-3">安装</h4>
+<pre><code>yum -y install traceroute
+</code></pre>
+<h4 id="文档-3">文档</h4>
+<p>traceroute 命令用于追踪数据包在网络传输过程中的路径<br>
+traceroute 输出每行表示一个网关,每行包含三个时间<br>
+有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了<br>
+traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
+<pre><code>Usage:
+  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]
+Options:
+  -4                          Use IPv4
+  -6                          Use IPv6
+  -d  --debug                 Enable socket level debugging
+  -F  --dont-fragment         Do not fragment packets
+  -f first_ttl  --first=first_ttl
+                              Start from the first_ttl hop (instead from 1)
+  -g gate,...  --gateway=gate,...
+                              Route packets through the specified gateway
+                              (maximum 8 for IPv4 and 127 for IPv6)
+  -I  --icmp                  Use ICMP ECHO for tracerouting
+  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)
+  -i device  --interface=device
+                              Specify a network interface to operate with
+  -m max_ttl  --max-hops=max_ttl
+                              Set the max number of hops (max TTL to be
+                              reached). Default is 30
+  -N squeries  --sim-queries=squeries
+                              Set the number of probes to be tried
+                              simultaneously (default is 16)
+  -n                          Do not resolve IP addresses to their domain names
+                                直接使用IP地址而非主机名称
+  -p port  --port=port        Set the destination port to use. It is either
+                              initial udp port value for &quot;default&quot; method
+                              (incremented by each probe, default is 33434), or
+                              initial seq for &quot;icmp&quot; (incremented as well,
+                              default from 1), or some constant destination
+                              port for other methods (with default of 80 for
+                              &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)
+  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6
+                              traffic class) value for outgoing packets
+  -l flow_label  --flowlabel=flow_label
+                              Use specified flow_label for IPv6 packets
+  -w waittime  --wait=waittime
+                              Set the number of seconds to wait for response to
+                              a probe (default is 5.0). Non-integer (float
+                              point) values allowed too
+  -q nqueries  --queries=nqueries
+                              Set the number of probes per each hop. Default is
+                              3
+  -r                          Bypass the normal routing and send directly to a
+                              host on an attached network
+                              忽略普通的Routing Table，直接将数据包送到远端主机上
+  -s src_addr  --source=src_addr
+                              Use source src_addr for outgoing packets
+  -z sendwait  --sendwait=sendwait
+                              Minimal time interval between probes (default 0).
+                              If the value is more than 10, then it specifies a
+                              number in milliseconds, else it is a number of
+                              seconds (float point values allowed too)
+  -e  --extensions            Show ICMP extensions (if present), including MPLS
+  -A  --as-path-lookups       Perform AS path lookups in routing registries and
+                              print results directly after the corresponding
+                              addresses
+  -M name  --module=name      Use specified module (either builtin or external)
+                              for traceroute operations. Most methods have
+                              their shortcuts (`-I' means `-M icmp' etc.)
+  -O OPTS,...  --options=OPTS,...
+                              Use module-specific option OPTS for the
+                              traceroute module. Several OPTS allowed,
+                              separated by comma. If OPTS is &quot;help&quot;, print info
+                              about available options
+  --sport=num                 Use source port num for outgoing packets. Implies
+                              `-N 1'
+  --fwmark=num                Set firewall mark for outgoing packets
+  -U  --udp                   Use UDP to particular port for tracerouting
+                              (instead of increasing the port per each probe),
+                              default port is 53
+  -UL                         Use UDPLITE for tracerouting (default dest port
+                              is 53)
+  -D  --dccp                  Use DCCP Request for tracerouting (default port
+                              is 33434)
+  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting
+  --mtu                       Discover MTU along the path being traced. Implies
+                              `-F -N 1'
+  --back                      Guess the number of hops in the backward path and
+                              print if it differs
+  -V  --version               Print version info and exit
+  --help                      Read this help and exit
+
+Arguments:
++     host          The host to traceroute to
+      packetlen     The full packet length (default is the length of an IP
+                    header plus 40). Can be ignored or increased to a minimal
+                    allowed value
+</code></pre>
+<h4 id="常用命令-3">常用命令</h4>
+<pre><code># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示
+traceroute -n www.baidu.com
+
+# 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误
+traceroute -r www.baidu.com
+
+# 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的
+traceroute -4 www.baidu.com
+traceroute -6 www.baidu.com
+</code></pre>
+<h3 id="lsof">lsof</h3>
+<h4 id="安装-4">安装</h4>
+<pre><code>yum -y install lsof
+</code></pre>
+<h4 id="文档-4">文档</h4>
+<p>lsof 命令用于查看系统进程打开的文件<br>
+在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
+<pre><code>lsof 4.87
+ latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/
+ latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ
+ latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man
+ usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]
+ [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]
+[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]
+Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.
+  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks
+  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files
+  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*
+  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers
+  -n no host names         -N select NFS files        -o list file offset
+  -O no overhead *RISKY*   -P no port names           -R list paRent PID
+  -s list file size        -t terse listing           -T disable TCP/TPI info
+  -U select Unix socket    -v list version info       -V verbose search
+  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]
+  -- end option scan
+  +f|-f  +filesystem or -file names     +|-f[gG] flaGs
+  -F [f] select fields; -F? for help
+  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)
+                                        +m [m] use|create mount supplement
+  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)
+  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)
+  -T qs TCP/TPI Q,St (s) info
+  -g [s] exclude(^)|select and print process group IDs
+  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]
+  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.
+       An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and
+      &lt;fmt&gt; is an strftime(3) format for the marker line.
+  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).
+  -u s   exclude(^)|select login|UID set s
+  -x [fl] cross over +d|+D File systems or symbolic Links
+  names  select named files or files on named file systems
+Anyone can list all files; /dev warnings disabled; kernel ID check disabled.
+</code></pre>
+<h4 id="常用命令-4">常用命令</h4>
+<pre><code># 查看某进程打开的文件
+lsof -p pid
+
+# 查看正在使用某端口进程
+lsof -i:80
+
+# 列出打开文件的进程
+lsof $filename
+</code></pre>
+<h4 id="注意">注意</h4>
+<p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
+<h3 id="参考">参考</h3>
+<p><a href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
+
+                        </div>
+                        
+                            <div class="post-toc">
+                                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%BC%80%E7%AF%87">开篇</a></li>
+<li><a href="#pstree">pstree</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E6%96%87%E6%A1%A3">文档</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</a></li>
+</ul>
+</li>
+<li><a href="#strace">strace</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-2">安装</a></li>
+<li><a href="#%E6%96%87%E6%A1%A3-2">文档</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-2">常用命令</a></li>
+</ul>
+</li>
+<li><a href="#traceroute">traceroute</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-3">安装</a></li>
+<li><a href="#%E6%96%87%E6%A1%A3-3">文档</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-3">常用命令</a></li>
+</ul>
+</li>
+<li><a href="#lsof">lsof</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-4">安装</a></li>
+<li><a href="#%E6%96%87%E6%A1%A3-4">文档</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-4">常用命令</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                            </div>
+                            
+                                
+                                    
+                                        <!--en-->
+                                        <section class="post-copyright en">
+                                            <p class="copyright-item">
+                                                <span>Author:</span>
+                                                <span>hwqDqwh</span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>Permalink:</span>
+                                                <span><a href="https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/">https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/</a></span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>License:</span>
+                                                <span>MIT License</span>
+                                            </p>
+                                        </section>
+                                        
+                                                
+                                                    
+                                                        <!-- Share-->
+                                                        <span style="margin-right:15px">
+                                                    <i class="post-share"></i>
+                                                    <span>Share:</span>
+                                                        <a title="QR Code" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/"><i class="fa fa-qrcode"></i></a>
+                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/&sharesource=qzone&title=pstree/strace/traceroute 和 lsof&pics=https://hwqdqwh.github.io/images/avatar.png?v=1655132210170&summary="><i class="fa fa-qq"></i></a>
+                                                        <a title="Weibo" target="_blank" href="https://service.weibo.com/share/share.php?url=https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/&sharesource=weibo&title=pstree/strace/traceroute 和 lsof + " - " + &pic="https://hwqdqwh.github.io/images/avatar.png?v=1655132210170 "><i class="fa fa-weibo "></i></a>
+                                                        
+                                                                </span>
+                                                                <!--en-->
+                                                                <section class="post-tags en ">
+                                                                    <div>
+                                                                        <span>Tag(s):</span>
+                                                                        <span class="tag ">
+                        
+                        
+                        <a href="https://hwqdqwh.github.io/tag/JditS9-g9/">#
+                                                linux
+                                                    </a>
+                                                    
+                                                        
+                                                            </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="javascript:window.history.back();">back</a>
+                                                                        <span>&dot;</span>
+                                                                        <a href="#">home</a>
+                                                                    </div>
+                                                                </section>
+                                                                
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                        <a class="prev" rel="prev" href="https://hwqdqwh.github.io/post/apscheduler-li-jie/">
+                                                                                            APScheduler 理解
+                                                                                        </a>
+                                                                                        
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://hwqdqwh.github.io/post/anaconda/">
+                                                                                                    Anaconda 使用
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
+                </div>
+                
+                    
+                        <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container" style="width: 100%;max-width: 780px;margin: auto;"></div>
+
+<script>
+    var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+        distractionFreeMode: false // Facebook-like distraction free mode
+    })
+
+    gitalk.render('gitalk-container')
+</script>
+                            
+                                        
+                                            
+            </div>
+    </div>
+    </div>
+    </div>
+    
+        <footer id="footer" class="footer">
+            <div class="copyright">
+                
+                        
+                            
+                                        <svg viewBox="0 0 1024 1024" style="margin-left: 5px;margin-right: 5px;" version="1.0" width="8" height="8" class="my-face">
+            <path
+                d="M863.597631 513.574282l-271.33965-140.213484L729.783667 81.926656c3.583731-7.87141 7.167462-15.742819 7.167462-25.214109C736.887134 25.226908 708.345275 0.012799 672.635953 0.012799a63.611229 63.611229 0 0 0-39.293053 12.607055c-1.791866 1.59988-3.519736 3.19976-5.311602 3.19976L147.87531 418.925381a55.547834 55.547834 0 0 0-19.646527 47.356448c1.791866 17.278704 14.27093 33.021523 32.125591 42.492813l271.33965 141.749369L292.504463 945.221908c-12.479064 25.214109-1.791866 53.563983 23.166262 69.306802 10.751194 6.335525 23.230258 9.47129 35.709322 9.47129 16.062795 0 32.125591-4.735645 44.604655-15.742819l480.091993-403.297753a55.547834 55.547834 0 0 0 19.646526-47.228458 61.243407 61.243407 0 0 0-32.12559-44.156688z"
+                fill="#93b5cf"></path>
+        </svg>
+                                        hwqDqwh &copy;Copyright
+                                            <script>
+                                                var date = new Date();
+                                                document.write("" + date.getFullYear());
+                                            </script>
+                                            | Powered by
+                                            <a href="https://github.com/hwqDqwh" target="_blank">
+                                                hwqDqwh
+                                            </a>
+            </div>
+            <div id="update" style="display:none;">
+                on
+            </div>
+            
+                <div id="version" style="display:none;">
+                    1.7.6
+                </div>
+                
+                    <script>
+                        var port = '';
+                        
+                        document.write('<div id="home_path" style="display:none;">' + document.location.protocol + '//' + window.document.location.hostname + port + '</div>')
+                    </script>
+        </footer>
+        
+            <script src='https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js'></script>
+            
+                <script>
+                    
+                    
+                    loadlive2d();
+                    
+                    
+                    getStar();
+                    hljs.initHighlighting();
+                    console.clear();
+                    
+                    CheckVersion();
+                    
+                    var newDate = new Date();
+                    newDate.setTime(1655132210170);
+                    console.log(" Blog Update Time: " + newDate.toLocaleDateString());
+                    console.log("\n %c \u26a1Theme:Chic Author's Blog:https://blog.itjoker.cn  Write By ITJoker  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;");
+                </script>
+        </div>
+</body>
+<script>
+    scroll();
+</script>
+
+</html>

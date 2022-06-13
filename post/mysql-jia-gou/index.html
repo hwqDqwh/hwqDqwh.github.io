@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<title>
+    hwqDqwh
+</title>
+<!--[if lt IE 9]><script src="//cdn.bootcss.com/html5shiv/r29/html5.js"></script><![endif]-->
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<meta name="author" content="hwqDqwh">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<script async src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+<link rel="stylesheet" href="https://hwqdqwh.github.io/styles/main.css" />
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/css/style.min.css" />
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/tocbot.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/script.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/icon.min.js"></script>
+        
+            <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/Card/prism.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/css/Card/prism.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
+            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
+            
+                        <!--CDN样式-->
+                        <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/hit-kounter-lc-0.3.0.js"></script>
+                        <script src="https://cdn1.lncld.net/static/js/av-min-1.5.0.js"></script>
+                        
+                            <script>
+                                (function() {
+                                    var bp = document.createElement('script');
+                                    var curProtocol = window.location.protocol.split(':')[0];
+                                    if (curProtocol === 'https') {
+                                        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                                    } else {
+                                        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                                    }
+                                    var s = document.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(bp, s);
+                                })();
+                            </script>
+                            
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="https://hwqdqwh.github.io">
+                    hwqDqwh
+                </a>
+            </div>
+            <div id="tp-weather-widget"></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">
+                        首页
+                    </a>
+                    
+                    <a class="menu-item" href="/archives">
+                        博客
+                    </a>
+                    
+                    <a class="menu-item" href="/tags">
+                        标签
+                    </a>
+                    
+                    <a class="menu-item" href="/post/about">
+                        关于
+                    </a>
+                    
+                    <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                        GitBook
+                    </a>
+                    
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+            </div>
+            <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+            </form>
+        </div>
+    </nav>
+
+    
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="https://hwqdqwh.github.io">
+                            hwqDqwh
+                        </a>
+                        <!--en-->
+                        <a id="mobile-toggle-theme-en" class="a en">&nbsp;Dark</a>
+                        <!--zh-->
+                        <a id="mobile-toggle-theme-zh" class="a zh">&nbsp;&#x6697;&#x9ED1;</a>
+                    </div>
+                    <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                        <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+                    </form>
+                    <!--en-->
+                    <div class="menu-toggle" id="menu-toggle-en" onclick="mobileBtn()">&#9776; Menu</div>
+                    <!--zh-->
+                    <div class="menu-toggle" id="menu-toggle-zh" onclick="mobileBtn()">&#9776; &#x83DC;&#x5355;</div>
+
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/">
+                            首页
+                        </a>
+                        
+                        <a class="menu-item" href="/archives">
+                            博客
+                        </a>
+                        
+                        <a class="menu-item" href="/tags">
+                            标签
+                        </a>
+                        
+                        <a class="menu-item" href="/post/about">
+                            关于
+                        </a>
+                        
+                        <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                            GitBook
+                        </a>
+                        
+                </div>
+            </div>
+        </nav>
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementById("menu-toggle-en");
+        var toggleMenu_zh = document.getElementById("menu-toggle-zh");
+
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.display != "none") {
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        } else if (toggleMenu_zh.display != "none") {
+            if (toggleMenu_zh.classList.contains("active")) {
+                toggleMenu_zh.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu_zh.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+
+    }
+</script>
+
+
+
+    <script>
+        (function(a, h, g, f, e, d, c, b) {
+            b = function() {
+                d = h.createElement(g);
+                c = h.getElementsByTagName(g)[0];
+                d.src = e;
+                d.charset = "utf-8";
+                d.async = 1;
+                c.parentNode.insertBefore(d, c)
+            };
+            a["SeniverseWeatherWidgetObject"] = f;
+            a[f] || (a[f] = function() {
+                (a[f].q = a[f].q || []).push(arguments)
+            });
+            a[f].l = +new Date();
+            if (a.attachEvent) {
+                a.attachEvent("onload", b)
+            } else {
+                a.addEventListener("load", b, false)
+            }
+        }(window, document, "script", "SeniverseWeatherWidget", "//cdn.sencdn.com/widget2/static/js/bundle.js?t=" + parseInt((new Date().getTime() / 100000000).toString(), 10)));
+        window.SeniverseWeatherWidget('show', {
+            flavor: "slim",
+            location: "WWEFQFPJZ7T8",
+            geolocation: true,
+            language: "auto",
+            unit: "c",
+            theme: "auto",
+            token: "61bcc333-3305-4728-9465-6785274bb0a3",
+            hover: "enabled",
+            container: "tp-weather-widget"
+        })
+    </script>
+    
+            <div class="main">
+                <div class="container">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                MySQL 架构
+                            </h1>
+                            
+                                <!--en-->
+                                <div class="post-meta en">
+                                    Author:
+                                    <a itemprop="author" rel="author" href="/">
+                                        hwqDqwh
+                                    </a>
+                                    <span class="post-time">
+                                Date: <a href="#">2022-03-15</a>
+                            </span>
+                                    <span class="post-readtime">Reading Time:<a
+                                    href="#">4.2
+                                    mins</a></span>
+                                    <span class="post-words">words:<a href="#">1217</a></span>
+                                    
+                                        <span class="post-category">
+                                Category:
+                                
+                                <a href="https://hwqdqwh.github.io/tag/MySQL/">MySQL</a>
+                                
+                            </span>
+                                        
+                                            Views:
+                                            <span data-hk-page="current"> - </span>
+                                            
+                                </div>
+                                
+                        </header>
+                        
+                        <div class="post-content">
+                            <h2 id="整体架构">整体架构</h2>
+<figure data-type="image" tabindex="1"><img src="https://hwqdqwh.github.io/post-images/1647334224885.png" alt="MySQL 架构" loading="lazy"></figure>
+<p>大体来说，MySQL 可以分为 Server 层和存储引擎层两部分。<br>
+Server 层包括连接器、查询缓存、分析器、优化器、执行器等，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。<br>
+存储引擎层负责数据的存储和提取。<br>
+InnoDB 从 MySQL 5.5.5 版本开始成为默认存储引擎。</p>
+<h2 id="连接器">连接器</h2>
+<p>连接器负责跟客户端建立连接、获取权限、维持和管理连接。<br>
+要执行 MySQL 操作首先需要建立 MySQL 连接，例如使用工具或命令行 mysql -h -u -P 等。连接发起后首先会完成经典的 TCP 握手，然后连接器开始认证身份，用的就是输入的用户名和密码。<br>
+认证身份顺序是：</p>
+<ol>
+<li>账密检查</li>
+<li>权限检查，主要检查用户(来源IP)是否有链接某库的权限等</li>
+</ol>
+<p>注意：连接建立后整个链接中执行的操作权限均依赖【权限检查】时读取到的用户权限，意味着建立连接后如果修改了权限需要重新建立 MySQL 链接。</p>
+<h3 id="链接自动断开">链接自动断开</h3>
+<p>链接建立后如果长时间无操作，连接器会自动断开，这个时间由配置 wait_timeout 控制，默认 8 小时。</p>
+<h3 id="长链接和短链接">长链接和短链接</h3>
+<p>MySQL 中区分长链接和短链接，顾名思义，长链接指建立连接后一直维持链接不断开，多次操作均使用相同链接。短链接则指每次只执行少数几个操作即断开，下次需要再重新建立连接。</p>
+<p>优缺点：<br>
+长链接的优点是减少建立连接的资源消耗（扩展，建立连接过程中产生了哪些资源消耗呢？），缺点是内存资源消耗严重，因为 MySQL 的内存管理是基于链接的，申请的内存资源只有断开时才会释放。<br>
+链接优缺点则相反。</p>
+<p>关于长链接的内存资源使用，后面再整理，目前的知识结构认为内存消耗大致有：执行操作将数据页查出放到内存、保存事务的数据视图、维持链接的信息（存疑）</p>
+<p>处理:</p>
+<ol>
+<li>定时断开长链接</li>
+<li>MySQL &gt;= 5.7 时，可以通过执行 mysql_reset_connetion 初始化链接资源，此操作不需要断开链接但是会将链接恢复到创建完成的状态。</li>
+</ol>
+<h2 id="查询缓存">查询缓存</h2>
+<p>弊大于利的模块，一般不需要开启。<br>
+查询缓存将过往的查询语句和结果以 key-value 的形式存储在内存中，当新查询过来时检查是否存在匹配记录，如果命中则在权限校验后直接返回结果。</p>
+<p>但是查询缓存有以下致命限制：</p>
+<ol>
+<li>查询缓存的匹配判断是【查询语句完全一致】</li>
+<li>只要对某表执行 insert/update 操作，该表的所有查询缓存将清空<br>
+由此导致的结果是查询缓存命中率非常低，往往在频繁查询的静态库时使用。</li>
+</ol>
+<p>注意：查询缓存功能在 mysql &gt;= 8.0 被移除。</p>
+<h3 id="使用查询缓存">使用查询缓存</h3>
+<p>MySQL 也提供“按需使用”的方式。可以将参数 query_cache_type 设置成 DEMAND，由此对于默认的 SQL 语句都不使用查询缓存。而对于确定要使用查询缓存的语句，可以用 SQL_CACHE 显式指定，如下：</p>
+<pre><code>select SQL_CACHE * from T where ID=10；
+</code></pre>
+<h2 id="分析器">分析器</h2>
+<p>分析器主要做两件事，词法分析(解析器)和语法分析(预处理器)。<br>
+词法分析：解释输入操作中的每个词的含义，生成解析树，比如识别 select 关键字，字段名等；<br>
+语法分析：根据词法分析得到的语义解析树，判断操作是否满足 MySQL 语法，比如 SQL 是否书写错误、字段是否存在等。</p>
+<p>分析器也会做一次权限验证，叫 precheck。主要针对【能否做某个操作】做校验，比如是否有 create table 权限。</p>
+<h2 id="优化器">优化器</h2>
+<p>优化器负责选择索引和确定 join 查询的表连接顺序。</p>
+<h2 id="执行器">执行器</h2>
+<p>执行器也会做权限检验，主要针对表级操作，譬如是否有操作某表的权限。<br>
+同时执行器会根据表的引擎定义调取对应引擎的接口，搜索引擎的接口诸如“取某个表的第一行”、“取下一行”等，</p>
+<h3 id="慢日志的-rows_examined">慢日志的 rows_examined</h3>
+<p>在 MySQL 慢日志中有个指标 rows_examined，含义就是执行器调用了搜索引擎取数据行的次数</p>
+<h2 id="引用">引用</h2>
+<p>MySQL 基础架构图出自极客林晓斌老师《Mysql 实战 45 讲》，侵删。</p>
+
+                        </div>
+                        
+                            <div class="post-toc">
+                                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84">整体架构</a></li>
+<li><a href="#%E8%BF%9E%E6%8E%A5%E5%99%A8">连接器</a>
+<ul>
+<li><a href="#%E9%93%BE%E6%8E%A5%E8%87%AA%E5%8A%A8%E6%96%AD%E5%BC%80">链接自动断开</a></li>
+<li><a href="#%E9%95%BF%E9%93%BE%E6%8E%A5%E5%92%8C%E7%9F%AD%E9%93%BE%E6%8E%A5">长链接和短链接</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">查询缓存</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">使用查询缓存</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%86%E6%9E%90%E5%99%A8">分析器</a></li>
+<li><a href="#%E4%BC%98%E5%8C%96%E5%99%A8">优化器</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E5%99%A8">执行器</a>
+<ul>
+<li><a href="#%E6%85%A2%E6%97%A5%E5%BF%97%E7%9A%84-rows_examined">慢日志的 rows_examined</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%95%E7%94%A8">引用</a></li>
+</ul>
+</li>
+</ul>
+
+                            </div>
+                            
+                                
+                                    
+                                        <!--en-->
+                                        <section class="post-copyright en">
+                                            <p class="copyright-item">
+                                                <span>Author:</span>
+                                                <span>hwqDqwh</span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>Permalink:</span>
+                                                <span><a href="https://hwqdqwh.github.io/post/mysql-jia-gou/">https://hwqdqwh.github.io/post/mysql-jia-gou/</a></span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>License:</span>
+                                                <span>MIT License</span>
+                                            </p>
+                                        </section>
+                                        
+                                                
+                                                    
+                                                        <!-- Share-->
+                                                        <span style="margin-right:15px">
+                                                    <i class="post-share"></i>
+                                                    <span>Share:</span>
+                                                        <a title="QR Code" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hwqdqwh.github.io/post/mysql-jia-gou/"><i class="fa fa-qrcode"></i></a>
+                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://hwqdqwh.github.io/post/mysql-jia-gou/&sharesource=qzone&title=MySQL 架构&pics=https://hwqdqwh.github.io/images/avatar.png?v=1655132210170&summary="><i class="fa fa-qq"></i></a>
+                                                        <a title="Weibo" target="_blank" href="https://service.weibo.com/share/share.php?url=https://hwqdqwh.github.io/post/mysql-jia-gou/&sharesource=weibo&title=MySQL 架构 + " - " + &pic="https://hwqdqwh.github.io/images/avatar.png?v=1655132210170 "><i class="fa fa-weibo "></i></a>
+                                                        
+                                                                </span>
+                                                                <!--en-->
+                                                                <section class="post-tags en ">
+                                                                    <div>
+                                                                        <span>Tag(s):</span>
+                                                                        <span class="tag ">
+                        
+                        
+                        <a href="https://hwqdqwh.github.io/tag/MySQL/">#
+                                                MySQL
+                                                    </a>
+                                                    
+                                                        
+                                                            </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="javascript:window.history.back();">back</a>
+                                                                        <span>&dot;</span>
+                                                                        <a href="#">home</a>
+                                                                    </div>
+                                                                </section>
+                                                                
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                        <a class="prev" rel="prev" href="https://hwqdqwh.github.io/post/mysql-shi-wu-zheng-li/">
+                                                                                            MySQL 事务整理
+                                                                                        </a>
+                                                                                        
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://hwqdqwh.github.io/post/mysql-ri-zhi-zheng-li/">
+                                                                                                    MySQL 日志整理
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
+                </div>
+                
+                    
+                        <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container" style="width: 100%;max-width: 780px;margin: auto;"></div>
+
+<script>
+    var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+        distractionFreeMode: false // Facebook-like distraction free mode
+    })
+
+    gitalk.render('gitalk-container')
+</script>
+                            
+                                        
+                                            
+            </div>
+    </div>
+    </div>
+    </div>
+    
+        <footer id="footer" class="footer">
+            <div class="copyright">
+                
+                        
+                            
+                                        <svg viewBox="0 0 1024 1024" style="margin-left: 5px;margin-right: 5px;" version="1.0" width="8" height="8" class="my-face">
+            <path
+                d="M863.597631 513.574282l-271.33965-140.213484L729.783667 81.926656c3.583731-7.87141 7.167462-15.742819 7.167462-25.214109C736.887134 25.226908 708.345275 0.012799 672.635953 0.012799a63.611229 63.611229 0 0 0-39.293053 12.607055c-1.791866 1.59988-3.519736 3.19976-5.311602 3.19976L147.87531 418.925381a55.547834 55.547834 0 0 0-19.646527 47.356448c1.791866 17.278704 14.27093 33.021523 32.125591 42.492813l271.33965 141.749369L292.504463 945.221908c-12.479064 25.214109-1.791866 53.563983 23.166262 69.306802 10.751194 6.335525 23.230258 9.47129 35.709322 9.47129 16.062795 0 32.125591-4.735645 44.604655-15.742819l480.091993-403.297753a55.547834 55.547834 0 0 0 19.646526-47.228458 61.243407 61.243407 0 0 0-32.12559-44.156688z"
+                fill="#93b5cf"></path>
+        </svg>
+                                        hwqDqwh &copy;Copyright
+                                            <script>
+                                                var date = new Date();
+                                                document.write("" + date.getFullYear());
+                                            </script>
+                                            | Powered by
+                                            <a href="https://github.com/hwqDqwh" target="_blank">
+                                                hwqDqwh
+                                            </a>
+            </div>
+            <div id="update" style="display:none;">
+                on
+            </div>
+            
+                <div id="version" style="display:none;">
+                    1.7.6
+                </div>
+                
+                    <script>
+                        var port = '';
+                        
+                        document.write('<div id="home_path" style="display:none;">' + document.location.protocol + '//' + window.document.location.hostname + port + '</div>')
+                    </script>
+        </footer>
+        
+            <script src='https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js'></script>
+            
+                <script>
+                    
+                    
+                    loadlive2d();
+                    
+                    
+                    getStar();
+                    hljs.initHighlighting();
+                    console.clear();
+                    
+                    CheckVersion();
+                    
+                    var newDate = new Date();
+                    newDate.setTime(1655132210170);
+                    console.log(" Blog Update Time: " + newDate.toLocaleDateString());
+                    console.log("\n %c \u26a1Theme:Chic Author's Blog:https://blog.itjoker.cn  Write By ITJoker  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;");
+                </script>
+        </div>
+</body>
+<script>
+    scroll();
+</script>
+
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+<title>
+    hwqDqwh
+</title>
+<!--[if lt IE 9]><script src="//cdn.bootcss.com/html5shiv/r29/html5.js"></script><![endif]-->
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<meta name="author" content="hwqDqwh">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<script async src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+<link rel="stylesheet" href="https://hwqdqwh.github.io/styles/main.css" />
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/css/style.min.css" />
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/tocbot.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/script.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/itjoker233/Gridea-theme-Chic/assets/media/script/icon.min.js"></script>
+        
+            <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/Card/prism.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/css/Card/prism.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
+            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
+            
+                        <!--CDN样式-->
+                        <script src="https://cdn.jsdelivr.net/gh/ITJoker233/ITJoker233.github.io@latest/CDN/js/hit-kounter-lc-0.3.0.js"></script>
+                        <script src="https://cdn1.lncld.net/static/js/av-min-1.5.0.js"></script>
+                        
+                            <script>
+                                (function() {
+                                    var bp = document.createElement('script');
+                                    var curProtocol = window.location.protocol.split(':')[0];
+                                    if (curProtocol === 'https') {
+                                        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                                    } else {
+                                        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                                    }
+                                    var s = document.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(bp, s);
+                                })();
+                            </script>
+                            
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="https://hwqdqwh.github.io">
+                    hwqDqwh
+                </a>
+            </div>
+            <div id="tp-weather-widget"></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/">
+                        首页
+                    </a>
+                    
+                    <a class="menu-item" href="/archives">
+                        博客
+                    </a>
+                    
+                    <a class="menu-item" href="/tags">
+                        标签
+                    </a>
+                    
+                    <a class="menu-item" href="/post/about">
+                        关于
+                    </a>
+                    
+                    <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                        GitBook
+                    </a>
+                    
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+            </div>
+            <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+            </form>
+        </div>
+    </nav>
+
+    
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="https://hwqdqwh.github.io">
+                            hwqDqwh
+                        </a>
+                        <!--en-->
+                        <a id="mobile-toggle-theme-en" class="a en">&nbsp;Dark</a>
+                        <!--zh-->
+                        <a id="mobile-toggle-theme-zh" class="a zh">&nbsp;&#x6697;&#x9ED1;</a>
+                    </div>
+                    <form id="gridea-search-form" data-update="1655132210170" action="/search/index.html">
+                        <input class="search-input" autocomplete="off" spellcheck="false" name="q" autofocus="true" placeholder="Search...">
+                    </form>
+                    <!--en-->
+                    <div class="menu-toggle" id="menu-toggle-en" onclick="mobileBtn()">&#9776; Menu</div>
+                    <!--zh-->
+                    <div class="menu-toggle" id="menu-toggle-zh" onclick="mobileBtn()">&#9776; &#x83DC;&#x5355;</div>
+
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/">
+                            首页
+                        </a>
+                        
+                        <a class="menu-item" href="/archives">
+                            博客
+                        </a>
+                        
+                        <a class="menu-item" href="/tags">
+                            标签
+                        </a>
+                        
+                        <a class="menu-item" href="/post/about">
+                            关于
+                        </a>
+                        
+                        <a class="menu-item" href="https://hwqdqwh.github.io/gitbook/">
+                            GitBook
+                        </a>
+                        
+                </div>
+            </div>
+        </nav>
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementById("menu-toggle-en");
+        var toggleMenu_zh = document.getElementById("menu-toggle-zh");
+
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.display != "none") {
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        } else if (toggleMenu_zh.display != "none") {
+            if (toggleMenu_zh.classList.contains("active")) {
+                toggleMenu_zh.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu_zh.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+
+    }
+</script>
+
+
+
+    <script>
+        (function(a, h, g, f, e, d, c, b) {
+            b = function() {
+                d = h.createElement(g);
+                c = h.getElementsByTagName(g)[0];
+                d.src = e;
+                d.charset = "utf-8";
+                d.async = 1;
+                c.parentNode.insertBefore(d, c)
+            };
+            a["SeniverseWeatherWidgetObject"] = f;
+            a[f] || (a[f] = function() {
+                (a[f].q = a[f].q || []).push(arguments)
+            });
+            a[f].l = +new Date();
+            if (a.attachEvent) {
+                a.attachEvent("onload", b)
+            } else {
+                a.addEventListener("load", b, false)
+            }
+        }(window, document, "script", "SeniverseWeatherWidget", "//cdn.sencdn.com/widget2/static/js/bundle.js?t=" + parseInt((new Date().getTime() / 100000000).toString(), 10)));
+        window.SeniverseWeatherWidget('show', {
+            flavor: "slim",
+            location: "WWEFQFPJZ7T8",
+            geolocation: true,
+            language: "auto",
+            unit: "c",
+            theme: "auto",
+            token: "61bcc333-3305-4728-9465-6785274bb0a3",
+            hover: "enabled",
+            container: "tp-weather-widget"
+        })
+    </script>
+    
+            <div class="main">
+                <div class="container">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                APScheduler 理解
+                            </h1>
+                            
+                                <!--en-->
+                                <div class="post-meta en">
+                                    Author:
+                                    <a itemprop="author" rel="author" href="/">
+                                        hwqDqwh
+                                    </a>
+                                    <span class="post-time">
+                                Date: <a href="#">2022-01-03</a>
+                            </span>
+                                    <span class="post-readtime">Reading Time:<a
+                                    href="#">5.6
+                                    mins</a></span>
+                                    <span class="post-words">words:<a href="#">1477</a></span>
+                                    
+                                        <span class="post-category">
+                                Category:
+                                
+                                <a href="https://hwqdqwh.github.io/tag/12i1yWx8Ee/">python</a>
+                                
+                            </span>
+                                        
+                                            Views:
+                                            <span data-hk-page="current"> - </span>
+                                            
+                                </div>
+                                
+                        </header>
+                        
+                        <div class="post-content">
+                            <p>前段时间逛 github 看到一个项目使用 APScheduler 被简单明快的调度代码吸引，遂了解一番并记录一下自己的理解。</p>
+<p><ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a>
+<ul>
+<li><a href="#%E7%94%A8%E6%B3%95%E7%AE%80%E4%BB%8B">用法简介</a></li>
+<li><a href="#%E8%A7%A6%E5%8F%91%E5%99%A8">触发器</a></li>
+<li><a href="#%E8%B0%83%E5%BA%A6%E5%99%A8">调度器</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1%E5%AD%98%E5%82%A8">任务存储</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E5%99%A8">执行器</a></li>
+</ul>
+</li>
+<li><a href="#apscheduler-%E5%92%8C-crontab">APScheduler 和 crontab</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-apscheduler-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98">安装 APScheduler 遇到的一个问题</a>
+<ul>
+<li><a href="#%E6%80%9D%E8%80%83">思考</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%95%E7%94%A8">引用</a></li>
+</ul>
+</p>
+<h1 id="介绍">介绍</h1>
+<p>APScheduler 全称 Advanced Python Scheduler，是一个开源 python 库。利用 APScheduler 可以在程序中管理任务并控制任务按指定间隔形式执行。另外 APScheduler 可以作为跨平台任务调度的替代品，借助程序代码实现跨平台使用、迁移的目的。<br>
+需要注意的是，官方 github 有提示 APScheduler 本身不是一个守护进程，也不附带任何命令行工具。所以想要定时执行需要自主考虑好【守护】的问题，笔者自己初学就很疑惑【怎么做到定时启动执行】的问题，其实这个【定时启动】不是 APScheduler 本身考虑的问题了。</p>
+<p>APScheduler 作为一个任务调度器其实感觉跟自己给公司项目写的有挺多共通之处（(￣▽￣)／），当然自己的项目无论从代码到设计都任重道远。。</p>
+<h2 id="用法简介">用法简介</h2>
+<p>网上关于 APScheduler 的使用有官方文档，博客教程也很多就懒得赘述了。如果不想看官方英文文档，个人推荐一个腾讯云的文章（见文末），这里只做简短的归纳。</p>
+<h2 id="触发器">触发器</h2>
+<p>APScheduler 有三种触发器模式，分别如下：</p>
+<ul>
+<li>date: 适用于某个时间节点执行的仅一次任务</li>
+<li>interval: 以固定时间间隔执行某任务</li>
+<li>cron: 类似 Windows 和 linux 自带的 crontab 模式</li>
+</ul>
+<h2 id="调度器">调度器</h2>
+<p>APScheduler 拥有好几种调度器，分别应用在不同场景：</p>
+<ul>
+<li>BlockingScheduler: block 是锁的意思，顾名思义就是阻塞式的任务执行。官方文档描述是 use when the scheduler is the only thing running in your process. 当进程调度是你的进程中唯一需要执行的任务时使用</li>
+<li>BackgroundScheduler: 将任务放在后台，跟命令行加 &amp; 类似的效果，程序继续往下执行</li>
+<li>剩余的几种都是针对我们需要特定库的情况下使用，分别是：
+<ul>
+<li>AsyncIOScheduler 在我们需要使用 asyncio 库时使用；</li>
+<li>GeventScheduler 对应 gevent（基于协程的网络库，额没用过）；</li>
+<li>TornanoScheduler 对应 Tornano（一种 Python web 框架）；</li>
+<li>TwistedScheduler 对应 twisted（一种事件驱动的网络编程框架，支持众多协议）；</li>
+<li>QtScheduler 对应 Qt（这个 Qt 应该是对应 PyQt，一个基于 C++ Qt 的图形界面库）</li>
+</ul>
+</li>
+</ul>
+<h2 id="任务存储">任务存储</h2>
+<p>都是很熟悉的 SQL 和 noSQL 等了，APScheduler 支持 memory、redis、mongodb、SQLAlchemy 这几种按需取用即可</p>
+<h2 id="执行器">执行器</h2>
+<p>默认线程池，也可以使用进程池</p>
+<h1 id="apscheduler-和-crontab">APScheduler 和 crontab</h1>
+<p>APScheduler 和操作系统自带的原生 crontab 之间，乍一看不是一回事吗，其实不然：</p>
+<ul>
+<li>最核心的，APScheduler 依赖程度调起的任务管理，crontab 是由系统的守护进程 crond 提供的服务</li>
+<li>APScheduler 支持线程级别的调度，crontab 是进程级别</li>
+<li>APScheduler 作为语言库在应用层面提供了更多支持，如：
+<ul>
+<li>APScheduler 支持更多调度模式，兼容 crontab 外提供固定时间执行（date）和间隔时间后执行（interval）两种模式</li>
+<li>支持各种任务调度的管理操作，包括异常重启后自动执行本应得到执行的任务</li>
+<li>通过 AsyncIOScheduler 等支持了异步 IO 等深入的使用场景</li>
+<li>而这些 crontab 作为系统级服务没有支持，需要自主开发<br>
+总的来说 APSCheduler 是一个应用层面的语言库，crontab 是系统提供的服务，两者有些共通点但是立意其实是不同的。</li>
+</ul>
+</li>
+</ul>
+<h1 id="安装-apscheduler-遇到的一个问题">安装 APScheduler 遇到的一个问题</h1>
+<p>安装 apscheduler 时候报错</p>
+<pre><code>WARNING: pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.	
+</code></pre>
+<p>自己的环境是 Python 3.7.9 + OpenSSL 1.1.1c FIPS  28 May 2019，安装命令如下：</p>
+<pre><code>pip3 install apscheduler
+</code></pre>
+<p>谷歌各种说法都有，包括 conda 环境的问题，刚刚好自己就在用就跑去检查环境了，查了一圈好像没啥问题，然后我在想是不是自己的 Python 版本跟 OpenSSL 搭配的问题，没找到直观的版本可用映射表，不过从 <a href="https://www.python.org/dev/peps/pep-0644/#openssl-1-1-0">Python 官网</a> 看到：</p>
+<pre><code>Currently Python versions 3.6 to 3.9 are compatible with OpenSSL 1.0.2, 1.1.0, and 1.1.1. For the most part Python also works with LibreSSL &gt;= 2.7.1 with some missing features and broken tests.
+</code></pre>
+<p>乍一看自己使用 Python 3.7.9 + openssl 1.1.1 应该是完全 OK 的，不过转念一想，是不是应该翻一下 PEP 呢？<br>
+啊这不就在 <a href="https://docs.python.org/release/3.7.9/whatsnew/changelog.html#changelog">3.7.9 Changelog</a> 找到一个合理解释嘛。Python 3.7.9 的迭代日志中提到 3.7.8 的时候就将 openssl 支持叠加到 1.1.1f，对应的 issue 是 issue40146（Update OpenSSL to 1.1.1f in Azure Pipelines.）和 issue40162（Update Travis CI configuration to OpenSSL 1.1.1f.）<br>
+结合自己是 1.1.1c，解决方案很简单--只要升级 openssl 就好</p>
+<pre><code>yum upgrade openssl
+</code></pre>
+<p>最后升级 OpenSSL 到  OpenSSL 1.1.1k  FIPS 25 Mar 2021 再安装 APScheduler 就可以了。<br>
+其实这个问题并不难解决，不兼容的情况下通常都会尝试下升级最新版本，不过知其然才应该是我们追求的，这次排查告诫自己要多看 PEP</p>
+<h2 id="思考">思考</h2>
+<p>上述问题中最后发现是 openssl 版本的问题，在 python 迭代日志中看到开发者们修改了 Asure 和 Travis 的 yml 文件的版本关联，那么开发者们为什么要做此修改，这两个库版本又是怎么在 python 中发挥作用的呢？<br>
+可能需要深入阅读了解 python 源码了，希望自己能尽快作出回答</p>
+<h1 id="引用">引用</h1>
+<p><a href="https://github.com/agronholm/apscheduler">APScheduler Github 项目</a><br>
+<a href="https://cloud.tencent.com/developer/article/1662162">腾讯云 APScheduler 使用教程</a><br>
+<a href="https://www.qt.io/">Qt 官方网站</a><br>
+<a href="https://www.python.org/dev/peps/pep-0644/#openssl-1-1-0">Python 官网</a><br>
+<a href="https://docs.python.org/release/3.7.9/whatsnew/changelog.html#changelog">3.7.9 Changelog</a></p>
+
+                        </div>
+                        
+                            <div class="post-toc">
+                                <ul class="markdownIt-TOC">
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a>
+<ul>
+<li><a href="#%E7%94%A8%E6%B3%95%E7%AE%80%E4%BB%8B">用法简介</a></li>
+<li><a href="#%E8%A7%A6%E5%8F%91%E5%99%A8">触发器</a></li>
+<li><a href="#%E8%B0%83%E5%BA%A6%E5%99%A8">调度器</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1%E5%AD%98%E5%82%A8">任务存储</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E5%99%A8">执行器</a></li>
+</ul>
+</li>
+<li><a href="#apscheduler-%E5%92%8C-crontab">APScheduler 和 crontab</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-apscheduler-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98">安装 APScheduler 遇到的一个问题</a>
+<ul>
+<li><a href="#%E6%80%9D%E8%80%83">思考</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%95%E7%94%A8">引用</a></li>
+</ul>
+
+                            </div>
+                            
+                                
+                                    
+                                        <!--en-->
+                                        <section class="post-copyright en">
+                                            <p class="copyright-item">
+                                                <span>Author:</span>
+                                                <span>hwqDqwh</span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>Permalink:</span>
+                                                <span><a href="https://hwqdqwh.github.io/post/apscheduler-li-jie/">https://hwqdqwh.github.io/post/apscheduler-li-jie/</a></span>
+                                            </p>
+
+                                            <p class="copyright-item">
+                                                <span>License:</span>
+                                                <span>MIT License</span>
+                                            </p>
+                                        </section>
+                                        
+                                                
+                                                    
+                                                        <!-- Share-->
+                                                        <span style="margin-right:15px">
+                                                    <i class="post-share"></i>
+                                                    <span>Share:</span>
+                                                        <a title="QR Code" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hwqdqwh.github.io/post/apscheduler-li-jie/"><i class="fa fa-qrcode"></i></a>
+                                                        <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://hwqdqwh.github.io/post/apscheduler-li-jie/&sharesource=qzone&title=APScheduler 理解&pics=https://hwqdqwh.github.io/images/avatar.png?v=1655132210170&summary="><i class="fa fa-qq"></i></a>
+                                                        <a title="Weibo" target="_blank" href="https://service.weibo.com/share/share.php?url=https://hwqdqwh.github.io/post/apscheduler-li-jie/&sharesource=weibo&title=APScheduler 理解 + " - " + &pic="https://hwqdqwh.github.io/images/avatar.png?v=1655132210170 "><i class="fa fa-weibo "></i></a>
+                                                        
+                                                                </span>
+                                                                <!--en-->
+                                                                <section class="post-tags en ">
+                                                                    <div>
+                                                                        <span>Tag(s):</span>
+                                                                        <span class="tag ">
+                        
+                        
+                        <a href="https://hwqdqwh.github.io/tag/12i1yWx8Ee/">#
+                                                python
+                                                    </a>
+                                                    
+                                                        
+                                                            </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="javascript:window.history.back();">back</a>
+                                                                        <span>&dot;</span>
+                                                                        <a href="#">home</a>
+                                                                    </div>
+                                                                </section>
+                                                                
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                        <a class="prev" rel="prev" href="https://hwqdqwh.github.io/post/mysql-suo-yin-xue-xi-zheng-li/">
+                                                                                            MySQL 索引学习整理
+                                                                                        </a>
+                                                                                        
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://hwqdqwh.github.io/post/pstreestracetraceroute-he-lsof/">
+                                                                                                    pstree/strace/traceroute 和 lsof
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
+                </div>
+                
+                    
+                        <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container" style="width: 100%;max-width: 780px;margin: auto;"></div>
+
+<script>
+    var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49), // Ensure uniqueness and length less than 50
+        distractionFreeMode: false // Facebook-like distraction free mode
+    })
+
+    gitalk.render('gitalk-container')
+</script>
+                            
+                                        
+                                            
+            </div>
+    </div>
+    </div>
+    </div>
+    
+        <footer id="footer" class="footer">
+            <div class="copyright">
+                
+                        
+                            
+                                        <svg viewBox="0 0 1024 1024" style="margin-left: 5px;margin-right: 5px;" version="1.0" width="8" height="8" class="my-face">
+            <path
+                d="M863.597631 513.574282l-271.33965-140.213484L729.783667 81.926656c3.583731-7.87141 7.167462-15.742819 7.167462-25.214109C736.887134 25.226908 708.345275 0.012799 672.635953 0.012799a63.611229 63.611229 0 0 0-39.293053 12.607055c-1.791866 1.59988-3.519736 3.19976-5.311602 3.19976L147.87531 418.925381a55.547834 55.547834 0 0 0-19.646527 47.356448c1.791866 17.278704 14.27093 33.021523 32.125591 42.492813l271.33965 141.749369L292.504463 945.221908c-12.479064 25.214109-1.791866 53.563983 23.166262 69.306802 10.751194 6.335525 23.230258 9.47129 35.709322 9.47129 16.062795 0 32.125591-4.735645 44.604655-15.742819l480.091993-403.297753a55.547834 55.547834 0 0 0 19.646526-47.228458 61.243407 61.243407 0 0 0-32.12559-44.156688z"
+                fill="#93b5cf"></path>
+        </svg>
+                                        hwqDqwh &copy;Copyright
+                                            <script>
+                                                var date = new Date();
+                                                document.write("" + date.getFullYear());
+                                            </script>
+                                            | Powered by
+                                            <a href="https://github.com/hwqDqwh" target="_blank">
+                                                hwqDqwh
+                                            </a>
+            </div>
+            <div id="update" style="display:none;">
+                on
+            </div>
+            
+                <div id="version" style="display:none;">
+                    1.7.6
+                </div>
+                
+                    <script>
+                        var port = '';
+                        
+                        document.write('<div id="home_path" style="display:none;">' + document.location.protocol + '//' + window.document.location.hostname + port + '</div>')
+                    </script>
+        </footer>
+        
+            <script src='https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js'></script>
+            
+                <script>
+                    
+                    
+                    loadlive2d();
+                    
+                    
+                    getStar();
+                    hljs.initHighlighting();
+                    console.clear();
+                    
+                    CheckVersion();
+                    
+                    var newDate = new Date();
+                    newDate.setTime(1655132210170);
+                    console.log(" Blog Update Time: " + newDate.toLocaleDateString());
+                    console.log("\n %c \u26a1Theme:Chic Author's Blog:https://blog.itjoker.cn  Write By ITJoker  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;");
+                </script>
+        </div>
+</body>
+<script>
+    scroll();
+</script>
+
+</html>
