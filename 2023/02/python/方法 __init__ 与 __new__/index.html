@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Python __init__ 和 __new____init__ 是初始化方法，没有返回值 __new__ 才是真正的构造方法，返回当前类实例化对象 执行顺序12345678910111213141516class testOrder:    def __init__(self):        print(&amp;#x27;this is init&amp;#x27;)    def __new__(cls">
+    <meta name="description" content="__init__ 是初始化方法，没有返回值 __new__ 才是真正的构造方法，返回当前类实例化对象 执行顺序12345678910111213141516class testOrder:    def __init__(self):        print(&amp;#x27;this is init&amp;#x27;)    def __new__(cls, *args, **kwargs):">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python __init__ 和 __new__">
 <meta property="og:url" content="https://hwqdqwh.github.io/2023/02/python/%E6%96%B9%E6%B3%95%20__init__%20%E4%B8%8E%20__new__/index.html">
 <meta property="og:site_name" content="hwqDqwh">
-<meta property="og:description" content="Python __init__ 和 __new____init__ 是初始化方法，没有返回值 __new__ 才是真正的构造方法，返回当前类实例化对象 执行顺序12345678910111213141516class testOrder:    def __init__(self):        print(&amp;#x27;this is init&amp;#x27;)    def __new__(cls">
+<meta property="og:description" content="__init__ 是初始化方法，没有返回值 __new__ 才是真正的构造方法，返回当前类实例化对象 执行顺序12345678910111213141516class testOrder:    def __init__(self):        print(&amp;#x27;this is init&amp;#x27;)    def __new__(cls, *args, **kwargs):">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-02-01T07:47:25.000Z">
-<meta property="article:modified_time" content="2023-02-01T08:56:59.602Z">
+<meta property="article:modified_time" content="2023-02-02T06:48:16.566Z">
 <meta property="article:author" content="hwqDqwh">
 <meta name="twitter:card" content="summary">
 
@@ -109,7 +109,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-init-%E5%92%8C-new"><span class="nav-number">1.</span> <span class="nav-text">Python __init__ 和 __new__</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A"><span class="nav-number">1.2.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">引用</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">执行顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A"><span class="nav-number">2.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">引用</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -122,7 +122,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -183,9 +183,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2023-02-01 15:47:25 / Modified: 16:56:59" itemprop="dateCreated datePublished" datetime="2023-02-01T15:47:25+08:00">2023-02-01</time>
+      <time title="Created: 2023-02-01 15:47:25" itemprop="dateCreated datePublished" datetime="2023-02-01T15:47:25+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-02 14:48:16" itemprop="dateModified" datetime="2023-02-02T14:48:16+08:00">2023-02-02</time>
     </span>
 
   
@@ -198,18 +204,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Python-init-和-new"><a href="#Python-init-和-new" class="headerlink" title="Python __init__ 和 __new__"></a>Python __init__ 和 __new__</h1><p>__init__ 是初始化方法，没有返回值</p>
+        <p>__init__ 是初始化方法，没有返回值</p>
 <p>__new__ 才是真正的构造方法，返回当前类实例化对象</p>
-<h2 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
+<h1 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
 
 <p>输出</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜ python python3 study/init_new.py</span><br><span class="line">this is new</span><br><span class="line">this is init</span><br><span class="line">called by u</span><br><span class="line">➜ python</span><br></pre></td></tr></table></figure>
 
 <p>输出表明了 __init__，__new__ 和 常规函数的调用顺序是 new &gt; init &gt; others</p>
-<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
 <p>需要注意的是：解释器是依据 __new__ 返回的对象调用 __init__ 的，所以如果 __new__ 中返回了其它类的实例对象，将调用其它类的 __init__ 而不是当前类的 __init__ 。</p>
 <p>例如将上述代码的 return super().__new__(cls) 修改为 return object() 后，仅会得到 this is new 的输出</p>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
 <p><a target="_blank" rel="noopener" href="https://peps.python.org/pep-3114/">PEP 3114 new 重命名为 __new__</a></p>
 
     </div>
@@ -229,7 +235,7 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/02/mysql/%E9%94%81/" rel="next" title="MySQL锁">
+                <a href="/2023/02/mysql/MySQL%E9%94%81/" rel="next" title="MySQL锁">
                   MySQL锁 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
