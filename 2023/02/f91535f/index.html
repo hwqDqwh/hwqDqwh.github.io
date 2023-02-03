@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ACID 四大特性的实现原理  事务拥有四大特性，原子性、一致性、隔离性、持久性。解释如下： 原子性：事务的所有操作，要么都执行，要么都不执行 一致性：事务执行前后，数据库完整性没有被破坏，意思是指事务的操作不会破坏任何 MySQL 规则，如唯一索引约束等 隔离性：多个事务并行执行时，最终呈现的效果是串行的。意思是对于事务执行过程中，感知到的数据变化应该只有自己操作引起的，不存在其它事务引发的数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL事务">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/f91535f/index.html">
+<meta property="og:site_name" content="hwqDqwh">
+<meta property="og:description" content="ACID 四大特性的实现原理  事务拥有四大特性，原子性、一致性、隔离性、持久性。解释如下： 原子性：事务的所有操作，要么都执行，要么都不执行 一致性：事务执行前后，数据库完整性没有被破坏，意思是指事务的操作不会破坏任何 MySQL 规则，如唯一索引约束等 隔离性：多个事务并行执行时，最终呈现的效果是串行的。意思是对于事务执行过程中，感知到的数据变化应该只有自己操作引起的，不存在其它事务引发的数据">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-02T06:59:57.000Z">
+<meta property="article:modified_time" content="2023-02-03T04:00:53.468Z">
+<meta property="article:author" content="hwqDqwh">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/f91535f/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/f91535f/","path":"2023/02/f91535f/","title":"MySQL事务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MySQL事务 | hwqDqwh</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0b4b5f0b10caf6b6c8082a757af8dbe2"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script><!--需要JQuery的支持-->
+  <script type="text/javascript" src ="/js/clicker.js" ></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">hwqDqwh</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">生而有翼，为何爬行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ACID"><span class="nav-number">1.</span> <span class="nav-text">ACID</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%9B%9B%E5%A4%A7%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">MySQL 如何保证四大特性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">可重复读的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">2.1.1.</span> <span class="nav-text">使用可重复读的场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%95%BF%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%BC%8A%E7%AB%AF"><span class="nav-number">3.</span> <span class="nav-text">长事务的弊端</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F%E6%8E%A8%E8%8D%90"><span class="nav-number">3.1.</span> <span class="nav-text">事务启动方式推荐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E5%AF%B9%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">面对事务的优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVCC"><span class="nav-number">4.</span> <span class="nav-text">MVCC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E8%A7%86%E5%9B%BE"><span class="nav-number">4.1.</span> <span class="nav-text">一致性视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E8%AF%BB"><span class="nav-number">4.2.</span> <span class="nav-text">当前读</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">hwqDqwh</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hwqDqwh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hwqDqwh" rel="noopener me" target="_blank">GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/f91535f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hwqDqwh">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MySQL事务 | hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySQL事务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-02 14:59:57" itemprop="dateCreated datePublished" datetime="2023-02-02T14:59:57+08:00">2023-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 12:00:53" itemprop="dateModified" datetime="2023-02-03T12:00:53+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><blockquote>
+<p>四大特性的实现原理</p>
+</blockquote>
+<p>事务拥有四大特性，原子性、一致性、隔离性、持久性。解释如下：</p>
+<p>原子性：事务的所有操作，要么都执行，要么都不执行</p>
+<p>一致性：事务执行前后，数据库完整性没有被破坏，意思是指事务的操作不会破坏任何 MySQL 规则，如唯一索引约束等</p>
+<p>隔离性：多个事务并行执行时，最终呈现的效果是串行的。意思是对于事务执行过程中，感知到的数据变化应该只有自己操作引起的，不存在其它事务引发的数据变化。</p>
+<p>持久性：一旦事务提交，对数据库的修改将是永久的，不会因为系统故障等丢失</p>
+<h2 id="MySQL-如何保证四大特性"><a href="#MySQL-如何保证四大特性" class="headerlink" title="MySQL 如何保证四大特性"></a>MySQL 如何保证四大特性</h2><p>原子性：undo log</p>
+<p>一致性：程序故障 + AID（？）</p>
+<p>隔离性：undo log + 事务 ID + mvcc</p>
+<p>持久性：redo log</p>
+<h1 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h1><blockquote>
+<p>各个级别的定义、可能存在的问题</p>
+</blockquote>
+<p>多个事务并行执行就会产生各种奇怪的问题，事务隔离级别是为了解决这些问题，实现事务的隔离性产生的。</p>
+<p>并行事务存在的问题有：</p>
+<p>脏读：读取到了其它事务未提交的数据，事务 A 在事务 B 读取数据时刚好修改了数据，B 读取后 A 反而回滚了事务，就使得事务 B 读取到了本不应该存在的数据！</p>
+<p>不可重复读：一个事务前后读取某数据，得到的结果不一致</p>
+<p>幻读：事务前后读取的数据量不一致，幻读专指 insert 的情况</p>
+<p>事务隔离级别有：</p>
+<p>读未提交：事务未提交时，它的修改就可以被其它事务读取到，存在脏读问题</p>
+<p>读提交：只有事务提交后，它的修改才会被其它事务读取到</p>
+<p>可重复读：事务前后读取相同数据行，得到的信息前后一致。</p>
+<p>串行化：对同一行记录而言，事务总是串行进行</p>
+<p>Oracle、SQLserver、PostgreSQL 数据库的默认隔离级别都是读提交，MySQL 的默认隔离级别是可重复读。</p>
+<p>查看事务隔离级别：</p>
+<p># mysql &gt;&#x3D; 5.7.20 是 transaction_isolation，之前和 mariadb 是 tx_isolation</p>
+<p>mysql&gt; show variables like ‘transaction_isolation’;</p>
+<p>数据库为了实现以上数据库隔离级别，通过在事务执行前创建一个一致性视图，控制事务读取的逻辑结果。</p>
+<p>读未提交时，不创建数据视图。</p>
+<p>读提交时，数据视图在每个事务 SQL 执行时创建。</p>
+<p>可重复读时，视图在事务启动时创建，整个事务操作都是用这个视图</p>
+<p>串行化也没有数据视图，直接通过加锁的形式避免同时操作同一行</p>
+<h2 id="可重复读的实现"><a href="#可重复读的实现" class="headerlink" title="可重复读的实现"></a>可重复读的实现</h2><p>一致性视图和行锁从两个不同的方面保证了事务的原子性和隔离性。</p>
+<p>可重复读的核心就是一致性读（consistent read）。首先，一致性视图使得事务读操作变为快照读，每次读取该行数据都是事务启动时的数据版本，而当事务内部更新了某个字段的数据，因为也会记录当前事务版本号（和 undo log）到行数据版本，所以修改后读取也符合预期。而行锁通过写写互斥的操作保证了一个事务内的写操作不会被其他事务中断。</p>
+<p>而事务更新数据的时候，只能用当前读。如果当前的记录的行锁被其他事务占用的话，就需要进入锁等待。</p>
+<h3 id="使用可重复读的场景"><a href="#使用可重复读的场景" class="headerlink" title="使用可重复读的场景"></a>使用可重复读的场景</h3><blockquote>
+<p>当前查询操作不希望受到实时更新影响的时候</p>
+</blockquote>
+<p>假设你在管理一个个人银行账户表。一个表存了账户余额，一个表存了账单明细。到了月底你要做数据校对，也就是判断上个月的余额和当前余额的差额，是否与本月的账单明细一致。你一定希望在校对过程中，即使有用户发生了一笔新的交易，也不影响你的校对结果。</p>
+<p>这时候使用“可重复读”隔离级别就很方便。事务启动时的视图可以认为是静态的，不受其他事务更新的影响。</p>
+<h1 id="长事务的弊端"><a href="#长事务的弊端" class="headerlink" title="长事务的弊端"></a>长事务的弊端</h1><blockquote>
+<p>长事务会导致系统中大量一致性视图、undo log 和锁资源无法释放</p>
+</blockquote>
+<p>长事务是指启动和提交中间操作很多，间隔久的事务。长事务会导致系统存在大量 read-view 和 undo log，占据大量内存空间，除此以外长事务还会占用锁资源，严重威胁并发性甚至可能拖垮数据库。</p>
+<h2 id="事务启动方式推荐"><a href="#事务启动方式推荐" class="headerlink" title="事务启动方式推荐"></a>事务启动方式推荐</h2><p>建议使用 commit work and chain 启动事务，指 autocommit &#x3D; 1 情况下使用 begin 显示启动事务，然后执行 commit work and chan 代替单纯的 commit 提交事务，此操作可以在提交事务的同时自动启动下一个事务，减少了一次 begin 事务的交互。</p>
+<h2 id="面对事务的优化"><a href="#面对事务的优化" class="headerlink" title="面对事务的优化"></a>面对事务的优化</h2><p>优化的角度可以有很多：</p>
+<ol>
+<li>从监控的角度可以</li>
+<li><ol>
+<li>通过 information_schema.innodb_trx 监控事务的持续时间</li>
+<li>通过 pt 工具监控事务的持续时间</li>
+</ol>
+</li>
+<li>从配置角度可以</li>
+<li><ol>
+<li>增加 undo log 空间，将 innodb_undo_tablespace 设置为 2 或更大的值</li>
+<li>通过配置 max_execution_time 控制事务最大执行时间</li>
+</ol>
+</li>
+<li>另外还可以想办法减少长事务的执行时间</li>
+<li><ol>
+<li>从优化语句的角度入手，比如优化索引</li>
+<li>也可以将不必要的大批量查询导致的长事务改为分批的小查询</li>
+</ol>
+</li>
+</ol>
+<h1 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h1><blockquote>
+<p>mvcc 全称多版本并发控制。每个事务启动时（RR）生成一个一致性视图，通过一致性视图声明：承认在事务启动前的数据版本（和事务自己的修改），不承认事务启动后数据发生的改变。</p>
+</blockquote>
+<h2 id="一致性视图"><a href="#一致性视图" class="headerlink" title="一致性视图"></a>一致性视图</h2><p>MVCC 在实现上， InnoDB 为每个事务构造了一个数组，用来保存这个事务启动瞬间，当前正在“活跃”的所有事务 ID。“活跃”指的就是，启动了但还没提交。数组里面事务 ID 的最小值记为低水位，当前系统里面已经创建过的事务 ID 的最大值加 1 记为高水位。这个视图数组和高低水位，就组成了当前事务的一致性视图（read-view）。</p>
+<p>这样，对于当前事务的启动瞬间来说，每个数据版本的 row trx_id，有以下几种可能：</p>
+<ol>
+<li>小于等于低水位事务 ID，表示这个版本是已提交的事务或者是当前事务自己生成的，这个数据是可见的；</li>
+<li>大于高水位事务 ID，表示这个版本是由将来启动的事务生成的，是肯定不可见的；</li>
+<li>在高低水位事务 ID 之间，那就包括两种情况：</li>
+<li><ol>
+<li>若 row trx_id 在事务 ID 数组中，表示这个版本是由还没提交的事务生成的，不可见；</li>
+<li>若 row trx_id 不在事务 ID 数组中，表示这个版本是已经提交了的事务生成的，可见。</li>
+</ol>
+</li>
+</ol>
+<h2 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h2><p>因为数据库更新当然是在最新版本基础上更新，但是仅用一致性视图的话就会导致可能在之前的某个版本基础上更新！</p>
+<p>为此，大佬提出了新的规则：更新数据都是先读后写，而且这个读是当前读！</p>
+<p>此外，select 语句通过加锁也可以做到当前读：</p>
+<p>mysql&gt; select k from t where id&#x3D;1 lock in share mode;</p>
+<p>mysql&gt; select k from t where id&#x3D;1 for update;</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/964962dd/" rel="prev" title="MySQL日志系统">
+                  <i class="fa fa-chevron-left"></i> MySQL日志系统
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/43a71ae4/" rel="next" title="MySQL索引">
+                  MySQL索引 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hwqDqwh</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"5c5bd4fb9b83b44b0e47078d68503ef0"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+</body>
+</html>

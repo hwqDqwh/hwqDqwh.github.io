@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻  百度统计 登录到百度统计 在账户设置的【网站列表】添加自己的博客网站    网站添加完以后在网站列表的操作列，点击【获取代码】  如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可    保存 gridea 设置并同步，等待几分钟保证设置生效。  接着可以回到网站">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gridea 对接百度&amp;谷歌统计">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/e8fb5eb8/index.html">
+<meta property="og:site_name" content="hwqDqwh">
+<meta property="og:description" content="谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻  百度统计 登录到百度统计 在账户设置的【网站列表】添加自己的博客网站    网站添加完以后在网站列表的操作列，点击【获取代码】  如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可    保存 gridea 设置并同步，等待几分钟保证设置生效。  接着可以回到网站">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130171829973.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130172143421.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130172227849.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130172315380.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130173738614.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130174043492.png">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230130174736444.png">
+<meta property="article:published_time" content="2023-02-02T06:55:44.000Z">
+<meta property="article:modified_time" content="2023-02-03T04:00:53.464Z">
+<meta property="article:author" content="hwqDqwh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hwqdqwh.github.io/images/image-20230130171829973.png">
+
+
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/e8fb5eb8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/e8fb5eb8/","path":"2023/02/e8fb5eb8/","title":"gridea 对接百度&谷歌统计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>gridea 对接百度&谷歌统计 | hwqDqwh</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0b4b5f0b10caf6b6c8082a757af8dbe2"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script><!--需要JQuery的支持-->
+  <script type="text/javascript" src ="/js/clicker.js" ></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">hwqDqwh</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">生而有翼，为何爬行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">百度统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%B7%E6%AD%8C%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">谷歌统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">hwqDqwh</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hwqDqwh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hwqDqwh" rel="noopener me" target="_blank">GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/e8fb5eb8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hwqDqwh">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="gridea 对接百度&谷歌统计 | hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          gridea 对接百度&谷歌统计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-02 14:55:44" itemprop="dateCreated datePublished" datetime="2023-02-02T14:55:44+08:00">2023-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 12:00:53" itemprop="dateModified" datetime="2023-02-03T12:00:53+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
+</blockquote>
+<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
+<li>登录到百度统计</li>
+<li>在账户设置的【网站列表】添加自己的博客网站</li>
+</ol>
+<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
+<ol start="3">
+<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
+</li>
+<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
+<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
+<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
+</li>
+<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
+</li>
+<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
+<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
+</li>
+<li><p>搞定。</p>
+</li>
+</ol>
+<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
+<ol>
+<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
+</li>
+<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
+<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
+</li>
+<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
+<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
+</li>
+<li><p>【关于您的商家】随便填</p>
+</li>
+<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
+<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
+</li>
+<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
+</li>
+<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
+</li>
+<li><p>搞定</p>
+</li>
+</ol>
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a target="_blank" rel="noopener" href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
+<p><a target="_blank" rel="noopener" href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
+<p><a target="_blank" rel="noopener" href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/9a311670/" rel="prev" title="go 的 var 和 :=">
+                  <i class="fa fa-chevron-left"></i> go 的 var 和 :=
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/84201577/" rel="next" title="Linux 常用命令安装">
+                  Linux 常用命令安装 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hwqDqwh</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"4ff8c2f083a0be966059fd7796ea72c6"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+</body>
+</html>
