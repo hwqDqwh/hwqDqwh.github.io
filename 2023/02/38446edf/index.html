@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="首先看下 map 方法的使用代码 1234if __name__ &#x3D;&#x3D; &amp;#x27;__main__&amp;#x27;:    map_iter &#x3D; map(lambda x: x * x, [1, 2, 3])    print([i for i in map_iter])    print([i for i in map_iter])  输出 12[1, 4, 9][]  可以看到输出两次 map_">
+    <meta name="description" content="浅析 Python yield 和生成器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由 map 深入理解 yield 和生成器">
 <meta property="og:url" content="https://hwqdqwh.github.io/2023/02/38446edf/index.html">
 <meta property="og:site_name" content="hwqDqwh">
-<meta property="og:description" content="首先看下 map 方法的使用代码 1234if __name__ &#x3D;&#x3D; &amp;#x27;__main__&amp;#x27;:    map_iter &#x3D; map(lambda x: x * x, [1, 2, 3])    print([i for i in map_iter])    print([i for i in map_iter])  输出 12[1, 4, 9][]  可以看到输出两次 map_">
+<meta property="og:description" content="浅析 Python yield 和生成器">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-02-02T06:37:27.000Z">
-<meta property="article:modified_time" content="2023-02-03T04:00:53.472Z">
+<meta property="article:modified_time" content="2023-02-03T06:25:55.180Z">
 <meta property="article:author" content="hwqDqwh">
 <meta name="twitter:card" content="summary">
 
@@ -171,7 +171,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="由 map 深入理解 yield 和生成器 | hwqDqwh">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="浅析 Python yield 和生成器">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -193,12 +193,13 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 12:00:53" itemprop="dateModified" datetime="2023-02-03T12:00:53+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:25:55" itemprop="dateModified" datetime="2023-02-03T14:25:55+08:00">2023-02-03</time>
     </span>
 
   
 </div>
 
+            <div class="post-description">浅析 Python yield 和生成器</div>
         </div>
       </header>
 
