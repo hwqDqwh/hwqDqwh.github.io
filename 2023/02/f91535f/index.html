@@ -6,28 +6,28 @@
 <meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bu2ma-tiger-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bu2ma-tiger-16x16.ico">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Microsoft+YaHei:300,300italic,400,400italic,700,700italic%7CMonaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="浅析 MySQL 事务">
+    <meta name="description" content="浅析 MySQL 事务特性、隔离级别和多版本并发控制">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL事务">
 <meta property="og:url" content="https://hwqdqwh.github.io/2023/02/f91535f/index.html">
 <meta property="og:site_name" content="hwqDqwh">
-<meta property="og:description" content="浅析 MySQL 事务">
+<meta property="og:description" content="浅析 MySQL 事务特性、隔离级别和多版本并发控制">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-02-02T06:59:57.000Z">
-<meta property="article:modified_time" content="2023-02-06T03:28:36.525Z">
+<meta property="article:modified_time" content="2023-02-07T09:41:23.822Z">
 <meta property="article:author" content="hwqDqwh">
 <meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary">
@@ -134,7 +134,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -191,7 +191,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="MySQL事务 | hwqDqwh">
-      <meta itemprop="description" content="浅析 MySQL 事务">
+      <meta itemprop="description" content="浅析 MySQL 事务特性、隔离级别和多版本并发控制">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -213,7 +213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-06 11:28:36" itemprop="dateModified" datetime="2023-02-06T11:28:36+08:00">2023-02-06</time>
+      <time title="Modified: 2023-02-07 17:41:23" itemprop="dateModified" datetime="2023-02-07T17:41:23+08:00">2023-02-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -228,7 +228,7 @@
   
 </div>
 
-            <div class="post-description">浅析 MySQL 事务</div>
+            <div class="post-description">浅析 MySQL 事务特性、隔离级别和多版本并发控制</div>
         </div>
       </header>
 
@@ -236,40 +236,57 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><blockquote>
-<p>四大特性的实现原理</p>
-</blockquote>
-<p>事务拥有四大特性，原子性、一致性、隔离性、持久性。解释如下：</p>
-<p>原子性：事务的所有操作，要么都执行，要么都不执行</p>
-<p>一致性：事务执行前后，数据库完整性没有被破坏，意思是指事务的操作不会破坏任何 MySQL 规则，如唯一索引约束等</p>
-<p>隔离性：多个事务并行执行时，最终呈现的效果是串行的。意思是对于事务执行过程中，感知到的数据变化应该只有自己操作引起的，不存在其它事务引发的数据变化。</p>
-<p>持久性：一旦事务提交，对数据库的修改将是永久的，不会因为系统故障等丢失</p>
+        <h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><p>事务拥有四大特性，原子性、一致性、隔离性、持久性。</p>
+<ul>
+<li><p>原子性：事务的所有操作，要么都执行，要么都不执行</p>
+</li>
+<li><p>一致性：事务执行前后，数据完整性没有被破坏。意思是指事务的操作不会破坏任何 MySQL 规则，如唯一索引约束等。</p>
+</li>
+<li><p>隔离性：多个事务并行执行时，最终呈现的效果是串行的。意思是事务执行过程中，只能感知到自己操作引起的数据变化，不会查询到自己之后的其它事务更改的数据。</p>
+</li>
+<li><p>持久性：一旦事务提交，对数据库的修改将是永久的，不会因为系统故障等丢失</p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
 <h2 id="MySQL-如何保证四大特性"><a href="#MySQL-如何保证四大特性" class="headerlink" title="MySQL 如何保证四大特性"></a>MySQL 如何保证四大特性</h2><p>原子性：undo log</p>
-<p>一致性：程序故障 + AID（？）</p>
-<p>隔离性：undo log + 事务 ID + mvcc</p>
+<p>一致性：程序故障 + redo log + undo log</p>
+<p>隔离性：undo log + 事务（ID+隔离级别） + mvcc + 锁</p>
 <p>持久性：redo log</p>
 <h1 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h1><blockquote>
 <p>各个级别的定义、可能存在的问题</p>
 </blockquote>
-<p>多个事务并行执行就会产生各种奇怪的问题，事务隔离级别是为了解决这些问题，实现事务的隔离性产生的。</p>
-<p>并行事务存在的问题有：</p>
-<p>脏读：读取到了其它事务未提交的数据，事务 A 在事务 B 读取数据时刚好修改了数据，B 读取后 A 反而回滚了事务，就使得事务 B 读取到了本不应该存在的数据！</p>
-<p>不可重复读：一个事务前后读取某数据，得到的结果不一致</p>
-<p>幻读：事务前后读取的数据量不一致，幻读专指 insert 的情况</p>
+<p>在并发的情境下，多个事务并行执行总会产生各种奇怪的问题，事务隔离级别就是为了解构这些情景被提出的。</p>
+<p>不同的隔离级别体现的事务隔离性不同，宽松的隔离级别并发度高但容易产生奇怪的数据，严格的隔离级别并发度低但是能保证数据符合预期。</p>
 <p>事务隔离级别有：</p>
-<p>读未提交：事务未提交时，它的修改就可以被其它事务读取到，存在脏读问题</p>
-<p>读提交：只有事务提交后，它的修改才会被其它事务读取到</p>
-<p>可重复读：事务前后读取相同数据行，得到的信息前后一致。</p>
-<p>串行化：对同一行记录而言，事务总是串行进行</p>
+<ul>
+<li>读未提交：事务未提交时，它的修改就可以被其它事务读取到，存在脏读问题</li>
+<li>读提交：只有事务提交后，它的修改才会被其它事务读取到</li>
+<li>可重复读（REPAETABLE READ）：事务前后读取相同数据行，得到的信息前后一致。</li>
+<li>串行化：对同一行记录而言，事务总是串行进行</li>
+</ul>
+<p>不同的事务隔离级别存在不同的问题，如：</p>
+<ul>
+<li><p>读未提交 - 脏读：读取到了其它事务未提交的数据，事务 A 在事务 B 读取数据时刚好修改了数据，B 读取后 A 反而回滚了事务，就使得事务 B 读取到了本不应该存在的数据！</p>
+</li>
+<li><p>读提交 - 不可重复读：一个事务前后读取某数据，得到的结果不一致</p>
+</li>
+<li><p>All - 幻读：事务前后读取的数据量不一致，幻读专指 insert 的情况</p>
+</li>
+</ul>
 <p>Oracle、SQLserver、PostgreSQL 数据库的默认隔离级别都是读提交，MySQL 的默认隔离级别是可重复读。</p>
 <p>查看事务隔离级别：</p>
-<p># mysql &gt;&#x3D; 5.7.20 是 transaction_isolation，之前和 mariadb 是 tx_isolation</p>
-<p>mysql&gt; show variables like ‘transaction_isolation’;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># MySQL &gt;= 5.7.20 是 transaction_isolation，之前和 mariadb 是 tx_isolation</span><br><span class="line">show variables like &#x27;transaction_isolation&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
 <p>数据库为了实现以上数据库隔离级别，通过在事务执行前创建一个一致性视图，控制事务读取的逻辑结果。</p>
-<p>读未提交时，不创建数据视图。</p>
-<p>读提交时，数据视图在每个事务 SQL 执行时创建。</p>
-<p>可重复读时，视图在事务启动时创建，整个事务操作都是用这个视图</p>
-<p>串行化也没有数据视图，直接通过加锁的形式避免同时操作同一行</p>
+<p>读未提交时，不创建数据视图；</p>
+<p>读提交时，事务的每个 SQL 执行时都创建一个自己用的数据视图；</p>
+<p>可重复读时，视图在事务启动时创建，整个事务操作都用这个视图；</p>
+<p>串行化也没有数据视图，直接通过加锁的形式避免同时操作同一行。</p>
 <h2 id="可重复读的实现"><a href="#可重复读的实现" class="headerlink" title="可重复读的实现"></a>可重复读的实现</h2><p>一致性视图和行锁从两个不同的方面保证了事务的原子性和隔离性。</p>
 <p>可重复读的核心就是一致性读（consistent read）。首先，一致性视图使得事务读操作变为快照读，每次读取该行数据都是事务启动时的数据版本，而当事务内部更新了某个字段的数据，因为也会记录当前事务版本号（和 undo log）到行数据版本，所以修改后读取也符合预期。而行锁通过写写互斥的操作保证了一个事务内的写操作不会被其他事务中断。</p>
 <p>而事务更新数据的时候，只能用当前读。如果当前的记录的行锁被其他事务占用的话，就需要进入锁等待。</p>
@@ -284,26 +301,26 @@
 <p>长事务是指启动和提交中间操作很多，间隔久的事务。长事务会导致系统存在大量 read-view 和 undo log，占据大量内存空间，除此以外长事务还会占用锁资源，严重威胁并发性甚至可能拖垮数据库。</p>
 <h2 id="事务启动方式推荐"><a href="#事务启动方式推荐" class="headerlink" title="事务启动方式推荐"></a>事务启动方式推荐</h2><p>建议使用 commit work and chain 启动事务，指 autocommit &#x3D; 1 情况下使用 begin 显示启动事务，然后执行 commit work and chan 代替单纯的 commit 提交事务，此操作可以在提交事务的同时自动启动下一个事务，减少了一次 begin 事务的交互。</p>
 <h2 id="面对事务的优化"><a href="#面对事务的优化" class="headerlink" title="面对事务的优化"></a>面对事务的优化</h2><p>优化的角度可以有很多：</p>
+<ul>
+<li><p>从监控的角度可以</p>
 <ol>
-<li>从监控的角度可以</li>
-<li><ol>
 <li>通过 information_schema.innodb_trx 监控事务的持续时间</li>
 <li>通过 pt 工具监控事务的持续时间</li>
 </ol>
 </li>
-<li>从配置角度可以</li>
-<li><ol>
+<li><p>从配置角度可以</p>
+<ol>
 <li>增加 undo log 空间，将 innodb_undo_tablespace 设置为 2 或更大的值</li>
 <li>通过配置 max_execution_time 控制事务最大执行时间</li>
 </ol>
 </li>
-<li>另外还可以想办法减少长事务的执行时间</li>
-<li><ol>
+<li><p>另外还可以想办法减少长事务的执行时间</p>
+<ol>
 <li>从优化语句的角度入手，比如优化索引</li>
 <li>也可以将不必要的大批量查询导致的长事务改为分批的小查询</li>
 </ol>
 </li>
-</ol>
+</ul>
 <h1 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h1><blockquote>
 <p>mvcc 全称多版本并发控制。每个事务启动时（RR）生成一个一致性视图，通过一致性视图声明：承认在事务启动前的数据版本（和事务自己的修改），不承认事务启动后数据发生的改变。</p>
 </blockquote>
@@ -312,8 +329,7 @@
 <ol>
 <li>小于等于低水位事务 ID，表示这个版本是已提交的事务或者是当前事务自己生成的，这个数据是可见的；</li>
 <li>大于高水位事务 ID，表示这个版本是由将来启动的事务生成的，是肯定不可见的；</li>
-<li>在高低水位事务 ID 之间，那就包括两种情况：</li>
-<li><ol>
+<li>在高低水位事务 ID 之间，那就包括两种情况：<ol>
 <li>若 row trx_id 在事务 ID 数组中，表示这个版本是由还没提交的事务生成的，不可见；</li>
 <li>若 row trx_id 不在事务 ID 数组中，表示这个版本是已经提交了的事务生成的，可见。</li>
 </ol>
@@ -322,8 +338,10 @@
 <h2 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h2><p>因为数据库更新当然是在最新版本基础上更新，但是仅用一致性视图的话就会导致可能在之前的某个版本基础上更新！</p>
 <p>为此，大佬提出了新的规则：更新数据都是先读后写，而且这个读是当前读！</p>
 <p>此外，select 语句通过加锁也可以做到当前读：</p>
-<p>mysql&gt; select k from t where id&#x3D;1 lock in share mode;</p>
-<p>mysql&gt; select k from t where id&#x3D;1 for update;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select k from t where id=1 lock in share mode;</span><br><span class="line">select k from t where id=1 for update;</span><br></pre></td></tr></table></figure>
+
+
+
 
     </div>
 
