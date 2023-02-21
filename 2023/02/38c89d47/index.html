@@ -27,7 +27,7 @@
 <meta property="og:description" content="TypeError: cb.apply is not a function某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。 原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错： 12345678910➜  gitbook_local gitbook build&#x2F;Users&#x2F;hewenqian&#x2F;.n">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-02-21T10:19:43.000Z">
-<meta property="article:modified_time" content="2023-02-21T10:30:22.611Z">
+<meta property="article:modified_time" content="2023-02-21T10:31:40.136Z">
 <meta property="article:author" content="hwqDqwh">
 <meta property="article:tag" content="博客">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2023-02-21 18:19:43 / Modified: 18:30:22" itemprop="dateCreated datePublished" datetime="2023-02-21T18:19:43+08:00">2023-02-21</time>
+      <time title="Created: 2023-02-21 18:19:43 / Modified: 18:31:40" itemprop="dateCreated datePublished" datetime="2023-02-21T18:19:43+08:00">2023-02-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -272,6 +272,10 @@
 <p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
 
+
+
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
 
     </div>
 

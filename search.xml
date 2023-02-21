@@ -1,6 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>gridea 对接百度&amp;谷歌统计</title>
+    <url>/2023/02/e8fb5eb8/</url>
+    <content><![CDATA[<blockquote>
+<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
+</blockquote>
+<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
+<li>登录到百度统计</li>
+<li>在账户设置的【网站列表】添加自己的博客网站</li>
+</ol>
+<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
+<ol start="3">
+<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
+</li>
+<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
+<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
+<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
+</li>
+<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
+</li>
+<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
+<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
+</li>
+<li><p>搞定。</p>
+</li>
+</ol>
+<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
+<ol>
+<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
+</li>
+<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
+<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
+</li>
+<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
+<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
+</li>
+<li><p>【关于您的商家】随便填</p>
+</li>
+<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
+<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
+</li>
+<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
+</li>
+<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
+</li>
+<li><p>搞定</p>
+</li>
+</ol>
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
+<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
+<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
+<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>filebeat 和 logstash 的关系</title>
+    <url>/2023/02/53c6448/</url>
+    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
+<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
+<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
+<p>目前学习的程度看应该是很准确的比喻。</p>
+<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logstash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
+<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
+<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>elasticsearch</tag>
+        <tag>filebeat</tag>
+        <tag>kibana</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于 github.io 博客的 gitbook 搭建</title>
+    <url>/2023/02/ad836518/</url>
+    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
+<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
+<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
+<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
+<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
+
+<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
+
+<p>然后提交 gitbook 项目 到 github 仓库</p>
+<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
+<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
+<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
+<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
+<p>最终效果：</p>
+<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
+<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
+<p>优点：</p>
+<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
+<p>缺点：</p>
+<ul>
+<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
+</li>
+<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
+</li>
+<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
+</li>
+<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
+</li>
+</ul>
+<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
+<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>es 基础概念</title>
     <url>/2023/02/3fe4a59a/</url>
     <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>es 主旨是随时可用和按需扩容</p>
@@ -76,53 +207,6 @@
       </categories>
       <tags>
         <tag>elasticsearch</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>gitbook 执行出错处理</title>
-    <url>/2023/02/38c89d47/</url>
-    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
-<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
-
-
-
-<p>当前环境</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
-<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
-<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>filebeat 和 logstash 的关系</title>
-    <url>/2023/02/53c6448/</url>
-    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
-<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
-<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
-<p>目前学习的程度看应该是很准确的比喻。</p>
-<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logstash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
-<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
-<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>elasticsearch</tag>
-        <tag>filebeat</tag>
-        <tag>kibana</tag>
       </tags>
   </entry>
   <entry>
@@ -296,156 +380,6 @@
       </tags>
   </entry>
   <entry>
-    <title>gridea 对接百度&amp;谷歌统计</title>
-    <url>/2023/02/e8fb5eb8/</url>
-    <content><![CDATA[<blockquote>
-<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
-</blockquote>
-<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
-<li>登录到百度统计</li>
-<li>在账户设置的【网站列表】添加自己的博客网站</li>
-</ol>
-<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
-<ol start="3">
-<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
-</li>
-<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
-<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
-<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
-</li>
-<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
-</li>
-<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
-<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
-</li>
-<li><p>搞定。</p>
-</li>
-</ol>
-<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
-<ol>
-<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
-</li>
-<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
-<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
-</li>
-<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
-<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
-</li>
-<li><p>【关于您的商家】随便填</p>
-</li>
-<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
-<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
-</li>
-<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
-</li>
-<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
-</li>
-<li><p>搞定</p>
-</li>
-</ol>
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
-<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
-<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
-<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于 github.io 博客的 gitbook 搭建</title>
-    <url>/2023/02/ad836518/</url>
-    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
-<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
-<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
-<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
-<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
-
-<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
-
-<p>然后提交 gitbook 项目 到 github 仓库</p>
-<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
-<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
-<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
-<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
-<p>最终效果：</p>
-<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
-<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
-<p>优点：</p>
-<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
-<p>缺点：</p>
-<ul>
-<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
-</li>
-<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
-</li>
-<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
-</li>
-<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
-</li>
-</ul>
-<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
-<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>go 的 var 和 :=</title>
-    <url>/2023/02/9a311670/</url>
-    <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
-<h2 id="var"><a href="#var" class="headerlink" title="var"></a>var</h2><blockquote>
-<p>纯正且符合印象的变量声明关键字</p>
-</blockquote>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> variable [<span class="keyword">type</span>] [= expression]</span><br></pre></td></tr></table></figure>
-
-
-
-<p>type: 变量类型，如未声明则会进行类型推断</p>
-<p>expression: 变量初始值</p>
-<h3 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h3><ol>
-<li>使用 var 时 type 和 expression 可选但不能同时省略，否则将得到致命错误，如 var apple</li>
-<li>var 声明不指定 expression 时，go 会根据 type 自动给出默认值— go 中变量声明后必定会有初始值，只不过是隐式指定还是显式指定，如下：</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"># /Users/hewenqian/apps/<span class="keyword">go</span>/go_study/test/var_test.<span class="keyword">go</span></span><br><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;testing&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestVar</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> f <span class="type">float64</span></span><br><span class="line">    <span class="keyword">var</span> b <span class="type">bool</span></span><br><span class="line">    # 空对象</span><br><span class="line">    <span class="keyword">var</span> o <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;i is %d,\n&quot;</span>, i)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;s is %s,\n&quot;</span>, s)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;f is %f,\n&quot;</span>, f)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;b is %t,\n&quot;</span>, b)</span><br><span class="line">    <span class="comment">// 这里 %v 和 %+v 有啥区别</span></span><br><span class="line">    fmt.Printf(<span class="string">&quot;o is %v,\n&quot;</span>, o)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  go_study git:(main) go test -v ./test/var_test.go</span><br><span class="line">=== RUN   TestVar</span><br><span class="line">i is 0,</span><br><span class="line">s is ,</span><br><span class="line">f is 0.000000,</span><br><span class="line">b is false,</span><br><span class="line">o is &lt;nil&gt;,</span><br><span class="line">--- PASS: TestVar (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      command-line-arguments    0.252s</span><br><span class="line">➜  go_study git:(main)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>综上，虽然定义语句没有显式指定变量值，但人家是有值的。</p>
-<p>思考：有哪些语言的哪些类型可以是声明时未指定默认值（底层的话应该是值未分配具体内存空间？）的呢？</p>
-<h2 id="x3D"><a href="#x3D" class="headerlink" title=":&#x3D;"></a>:&#x3D;</h2><p>:&#x3D; 主要用于函数内声明局部变量。</p>
-<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>variable :&#x3D; 表达式或值</p>
-<p>变量的类型有 go 针对 [表达式或值自动] 推断</p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>golang</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>组织一个可维护可扩展的 go 项目目录</title>
     <url>/2023/02/df63fc18/</url>
     <content><![CDATA[<blockquote>
@@ -545,6 +479,45 @@
       </tags>
   </entry>
   <entry>
+    <title>go 的 var 和 :=</title>
+    <url>/2023/02/9a311670/</url>
+    <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
+<h2 id="var"><a href="#var" class="headerlink" title="var"></a>var</h2><blockquote>
+<p>纯正且符合印象的变量声明关键字</p>
+</blockquote>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> variable [<span class="keyword">type</span>] [= expression]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>type: 变量类型，如未声明则会进行类型推断</p>
+<p>expression: 变量初始值</p>
+<h3 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h3><ol>
+<li>使用 var 时 type 和 expression 可选但不能同时省略，否则将得到致命错误，如 var apple</li>
+<li>var 声明不指定 expression 时，go 会根据 type 自动给出默认值— go 中变量声明后必定会有初始值，只不过是隐式指定还是显式指定，如下：</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"># /Users/hewenqian/apps/<span class="keyword">go</span>/go_study/test/var_test.<span class="keyword">go</span></span><br><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;testing&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestVar</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> f <span class="type">float64</span></span><br><span class="line">    <span class="keyword">var</span> b <span class="type">bool</span></span><br><span class="line">    # 空对象</span><br><span class="line">    <span class="keyword">var</span> o <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;i is %d,\n&quot;</span>, i)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;s is %s,\n&quot;</span>, s)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;f is %f,\n&quot;</span>, f)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;b is %t,\n&quot;</span>, b)</span><br><span class="line">    <span class="comment">// 这里 %v 和 %+v 有啥区别</span></span><br><span class="line">    fmt.Printf(<span class="string">&quot;o is %v,\n&quot;</span>, o)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  go_study git:(main) go test -v ./test/var_test.go</span><br><span class="line">=== RUN   TestVar</span><br><span class="line">i is 0,</span><br><span class="line">s is ,</span><br><span class="line">f is 0.000000,</span><br><span class="line">b is false,</span><br><span class="line">o is &lt;nil&gt;,</span><br><span class="line">--- PASS: TestVar (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      command-line-arguments    0.252s</span><br><span class="line">➜  go_study git:(main)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>综上，虽然定义语句没有显式指定变量值，但人家是有值的。</p>
+<p>思考：有哪些语言的哪些类型可以是声明时未指定默认值（底层的话应该是值未分配具体内存空间？）的呢？</p>
+<h2 id="x3D"><a href="#x3D" class="headerlink" title=":&#x3D;"></a>:&#x3D;</h2><p>:&#x3D; 主要用于函数内声明局部变量。</p>
+<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>variable :&#x3D; 表达式或值</p>
+<p>变量的类型有 go 针对 [表达式或值自动] 推断</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux 常用命令安装</title>
     <url>/2023/02/84201577/</url>
     <content><![CDATA[<p>-bash: rz: 未找到命令</p>
@@ -559,6 +532,37 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>gitbook 执行出错处理</title>
+    <url>/2023/02/38c89d47/</url>
+    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
+<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当前环境</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
+<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
+<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：</p>
+<p><a href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -680,6 +684,66 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL日志系统</title>
+    <url>/2023/02/964962dd/</url>
+    <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
+<p>redo log buffer 和 redo log file、循环写、innodb_flush_log_at_trx_commit、crash-safe</p>
+</blockquote>
+<p>redo log 是 innodb 特有的，为了优化 MySQL 每次更新操作都要直接操作磁盘带来的 IO 压力诞生。redo log 是物理日志，记录的是【在某个数据页上做了什么操作】。流程就是每次更新先写 redo log，等必要时候(系统空闲或 redo log 写满)再将 redo log 信息写入磁盘，这项技术就是常说的 WAL 技术，全称 Write-Ahead Logging。</p>
+<p>redo log 分为两部分：</p>
+<ul>
+<li>内存中的日志缓冲 redo log buffer</li>
+<li>磁盘中的重做日志文件 redo log file</li>
+</ul>
+<h2 id="redo-log-file"><a href="#redo-log-file" class="headerlink" title="redo log file"></a>redo log file</h2><p>一般情况说的 redo log 就是指 redo log file。需要注意的是：redo log file 即使写在磁盘上也比不使用 redo log 效率更高。原因是 redo log file 操作本质是 CPU 顺序磁盘 IO，比更新操作的随机 IO 快得多。redo log file 的配置是：</p>
+<p>innodb_log_file_size 控制每个 redo log file 文件大小；</p>
+<p>innodb_log_file_in_group 控制 redo log file 文件个数。</p>
+<p>redo log file 的写入方式是循环写，类似循环链表，空间固定会用尽–触发 flush 操作。</p>
+<h2 id="crash-safe"><a href="#crash-safe" class="headerlink" title="crash-safe"></a>crash-safe</h2><p>redo log file 的存在使得 innodb 即使发生数据库异常重启，之前提交的记录也不会丢失，这个能力叫 crash-safe。但是并不是有 redo log 就一定获得了这个能力，innodb_flush_log_at_trx_commit 配置就是决定是否拥有 crash-safe 的。</p>
+<p>上面说到 redo log 记录也有细分 redo log buffer 和 redo log file，而 innodb_flush_log_at_trx_commit 就是控制事务提交时 redo log 记录策略的，取值含义如下：</p>
+<p>取 0：提交事务时只保证写入了 redo log buffer，buffer -&gt; file 的过程由 MySQL 主线程每秒执行一次刷新磁盘处理。</p>
+<p>取 1：提交事务时保证 redo log 已经写入磁盘的 redo log file 中。</p>
+<p>取 2：提交事务时保证 redo log 已经写入磁盘的 OS Cache 中，由系统处理 OS Cache -&gt; file 的过程，相当于 0 和 1 的中间态。</p>
+<p>由此可知，只有 innodb_flush_log_at_trx_commit &#x3D; 1 时才真正拥有 crash-safe 能力。0 和 2 都有可能异常重启时丢失数据，不过因为系统写入磁盘的操作 fsync() 是阻塞的，所以 1 的性能会显著低于同行。</p>
+<h1 id="归档日志-binlog"><a href="#归档日志-binlog" class="headerlink" title="归档日志 binlog"></a>归档日志 binlog</h1><blockquote>
+<p>MySQL Server 层、追加写、sync_binlog</p>
+</blockquote>
+<p>binlog 是 MySQL Server 层支持的所有存储引擎都能用，它是逻辑日志，记录的是【操作的原始逻辑，比如给 ID &#x3D; 1 这一行的 a 字段 +1】。</p>
+<p>binlog 是追加写，binlog 日志文件达到一定程度后会切换写入下一个文件，每次写入操作顺序追加，并不会覆盖之前的记录。</p>
+<p>因为 crash 发生时 binlog 不能保证其中的日志都已经被更新到磁盘，故没有 redo log 的 crash-safe 能力。</p>
+<h2 id="sync-binlog"><a href="#sync-binlog" class="headerlink" title="sync_binlog"></a>sync_binlog</h2><p>binlog 日志记录也有类似 redo log 的 buffer 和 file。MySQL 的 sync_binlog 配置控制着 binlog 日志写入磁盘的逻辑，并与 innodb_flush_log_at_trx_commit 类似。取值含义如下：</p>
+<p>取 0：事务提交时只保证写入了 OS Cache，cache -&gt; file 的过程由操作系统管理</p>
+<p>取 1：事务提交前即保证 binlog 日志写入到磁盘中</p>
+<p>取 N，N 为非 0 或 1 的非负整数：当收集到 N 个 binlog 日志后再进一次性写入文件操作</p>
+<p>显而易见，0 和 N 都在不同角度尝试提交性能。取 1 则性能差不少，但在服务奔溃的情况下，binlog 丢失的事务的 redo log 处于 prepare 状态所以提供了回滚事务的依据。</p>
+<p>为了保持事务的一致性，MySQL 官方文档推荐 innodb_flush_log_at_trx_commit 和 sync_binlog 都取 1。</p>
+<h1 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h1><p>所谓两阶段提交是保证跨系统(MySQL 中是 Server 层和存储引擎层 innodb)事务提交信息一致性的方案。 MySQL 中两阶段提交处理事务操作如下：</p>
+<p>假设语句： update table_1 set a &#x3D; a + 1 where id &#x3D; 1</p>
+<ol>
+<li>执行器先调用存储引擎取 id &#x3D; 1 这一行数据，存储引擎将 id &#x3D; 1 这一行所在数据页 A 加载到内存中，并返回 id &#x3D; 1 的行记录信息</li>
+<li>执行器拿到返回的 id &#x3D; 1 记录，将 a 列执行 +1 操作，得到新的记录行，再调用存储引擎接口写新行数据</li>
+<li>存储引擎将数据写入上述内存空间中的数据页 A，然后将更新操作记录到 redo log 中【将 A 中 m 字节到 n 字节部分的数据内容更新为新数据】。此时 redo log 处于 prepare 状态。然后存储引擎告知执行器执行完成，可以提交事务。</li>
+<li>执行器生成并记录 binlog</li>
+<li>执行器再次调起存储引擎接口，指示提交事务，引擎将刚刚的 redo log 从 prepare 状态修改为 commit 状态，完成。</li>
+</ol>
+<h1 id="回滚日志-undo-log"><a href="#回滚日志-undo-log" class="headerlink" title="回滚日志 undo log"></a>回滚日志 undo log</h1><blockquote>
+<p>作用、删除时机</p>
+</blockquote>
+<p>innodb 的每条记录在【更新】时都会记录一条回滚操作日志，方便需要的时候回溯行记录的历史版本，就是 undo log。</p>
+<p>注意插入的新纪录是没有 undo log 的，新插入的数据是幻读的问题了，undo log 则是为了实现事务隔离，解决可重复读问题存在。</p>
+<p>redo log 和 undo log 都是事务日志，是 innodb 存储引擎层的日志。</p>
+<p>undo log 会在系统判断没有任何事务需要用到该条日志记录时被删除。所谓没有任何事务需要用到，是指当前系统没有任何事务的 read-view 比这个 undo log 的版本更早</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://juejin.cn/post/6895265596985114638">Innodb 引擎:详解 redo log 存储结构</a></p>
+<p><a href="https://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html">MySQL 5.7 文档</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL事务</title>
     <url>/2023/02/f91535f/</url>
     <content><![CDATA[<h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><p>事务拥有四大特性，原子性、一致性、隔离性、持久性。</p>
@@ -795,66 +859,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL日志系统</title>
-    <url>/2023/02/964962dd/</url>
-    <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
-<p>redo log buffer 和 redo log file、循环写、innodb_flush_log_at_trx_commit、crash-safe</p>
-</blockquote>
-<p>redo log 是 innodb 特有的，为了优化 MySQL 每次更新操作都要直接操作磁盘带来的 IO 压力诞生。redo log 是物理日志，记录的是【在某个数据页上做了什么操作】。流程就是每次更新先写 redo log，等必要时候(系统空闲或 redo log 写满)再将 redo log 信息写入磁盘，这项技术就是常说的 WAL 技术，全称 Write-Ahead Logging。</p>
-<p>redo log 分为两部分：</p>
-<ul>
-<li>内存中的日志缓冲 redo log buffer</li>
-<li>磁盘中的重做日志文件 redo log file</li>
-</ul>
-<h2 id="redo-log-file"><a href="#redo-log-file" class="headerlink" title="redo log file"></a>redo log file</h2><p>一般情况说的 redo log 就是指 redo log file。需要注意的是：redo log file 即使写在磁盘上也比不使用 redo log 效率更高。原因是 redo log file 操作本质是 CPU 顺序磁盘 IO，比更新操作的随机 IO 快得多。redo log file 的配置是：</p>
-<p>innodb_log_file_size 控制每个 redo log file 文件大小；</p>
-<p>innodb_log_file_in_group 控制 redo log file 文件个数。</p>
-<p>redo log file 的写入方式是循环写，类似循环链表，空间固定会用尽–触发 flush 操作。</p>
-<h2 id="crash-safe"><a href="#crash-safe" class="headerlink" title="crash-safe"></a>crash-safe</h2><p>redo log file 的存在使得 innodb 即使发生数据库异常重启，之前提交的记录也不会丢失，这个能力叫 crash-safe。但是并不是有 redo log 就一定获得了这个能力，innodb_flush_log_at_trx_commit 配置就是决定是否拥有 crash-safe 的。</p>
-<p>上面说到 redo log 记录也有细分 redo log buffer 和 redo log file，而 innodb_flush_log_at_trx_commit 就是控制事务提交时 redo log 记录策略的，取值含义如下：</p>
-<p>取 0：提交事务时只保证写入了 redo log buffer，buffer -&gt; file 的过程由 MySQL 主线程每秒执行一次刷新磁盘处理。</p>
-<p>取 1：提交事务时保证 redo log 已经写入磁盘的 redo log file 中。</p>
-<p>取 2：提交事务时保证 redo log 已经写入磁盘的 OS Cache 中，由系统处理 OS Cache -&gt; file 的过程，相当于 0 和 1 的中间态。</p>
-<p>由此可知，只有 innodb_flush_log_at_trx_commit &#x3D; 1 时才真正拥有 crash-safe 能力。0 和 2 都有可能异常重启时丢失数据，不过因为系统写入磁盘的操作 fsync() 是阻塞的，所以 1 的性能会显著低于同行。</p>
-<h1 id="归档日志-binlog"><a href="#归档日志-binlog" class="headerlink" title="归档日志 binlog"></a>归档日志 binlog</h1><blockquote>
-<p>MySQL Server 层、追加写、sync_binlog</p>
-</blockquote>
-<p>binlog 是 MySQL Server 层支持的所有存储引擎都能用，它是逻辑日志，记录的是【操作的原始逻辑，比如给 ID &#x3D; 1 这一行的 a 字段 +1】。</p>
-<p>binlog 是追加写，binlog 日志文件达到一定程度后会切换写入下一个文件，每次写入操作顺序追加，并不会覆盖之前的记录。</p>
-<p>因为 crash 发生时 binlog 不能保证其中的日志都已经被更新到磁盘，故没有 redo log 的 crash-safe 能力。</p>
-<h2 id="sync-binlog"><a href="#sync-binlog" class="headerlink" title="sync_binlog"></a>sync_binlog</h2><p>binlog 日志记录也有类似 redo log 的 buffer 和 file。MySQL 的 sync_binlog 配置控制着 binlog 日志写入磁盘的逻辑，并与 innodb_flush_log_at_trx_commit 类似。取值含义如下：</p>
-<p>取 0：事务提交时只保证写入了 OS Cache，cache -&gt; file 的过程由操作系统管理</p>
-<p>取 1：事务提交前即保证 binlog 日志写入到磁盘中</p>
-<p>取 N，N 为非 0 或 1 的非负整数：当收集到 N 个 binlog 日志后再进一次性写入文件操作</p>
-<p>显而易见，0 和 N 都在不同角度尝试提交性能。取 1 则性能差不少，但在服务奔溃的情况下，binlog 丢失的事务的 redo log 处于 prepare 状态所以提供了回滚事务的依据。</p>
-<p>为了保持事务的一致性，MySQL 官方文档推荐 innodb_flush_log_at_trx_commit 和 sync_binlog 都取 1。</p>
-<h1 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h1><p>所谓两阶段提交是保证跨系统(MySQL 中是 Server 层和存储引擎层 innodb)事务提交信息一致性的方案。 MySQL 中两阶段提交处理事务操作如下：</p>
-<p>假设语句： update table_1 set a &#x3D; a + 1 where id &#x3D; 1</p>
-<ol>
-<li>执行器先调用存储引擎取 id &#x3D; 1 这一行数据，存储引擎将 id &#x3D; 1 这一行所在数据页 A 加载到内存中，并返回 id &#x3D; 1 的行记录信息</li>
-<li>执行器拿到返回的 id &#x3D; 1 记录，将 a 列执行 +1 操作，得到新的记录行，再调用存储引擎接口写新行数据</li>
-<li>存储引擎将数据写入上述内存空间中的数据页 A，然后将更新操作记录到 redo log 中【将 A 中 m 字节到 n 字节部分的数据内容更新为新数据】。此时 redo log 处于 prepare 状态。然后存储引擎告知执行器执行完成，可以提交事务。</li>
-<li>执行器生成并记录 binlog</li>
-<li>执行器再次调起存储引擎接口，指示提交事务，引擎将刚刚的 redo log 从 prepare 状态修改为 commit 状态，完成。</li>
-</ol>
-<h1 id="回滚日志-undo-log"><a href="#回滚日志-undo-log" class="headerlink" title="回滚日志 undo log"></a>回滚日志 undo log</h1><blockquote>
-<p>作用、删除时机</p>
-</blockquote>
-<p>innodb 的每条记录在【更新】时都会记录一条回滚操作日志，方便需要的时候回溯行记录的历史版本，就是 undo log。</p>
-<p>注意插入的新纪录是没有 undo log 的，新插入的数据是幻读的问题了，undo log 则是为了实现事务隔离，解决可重复读问题存在。</p>
-<p>redo log 和 undo log 都是事务日志，是 innodb 存储引擎层的日志。</p>
-<p>undo log 会在系统判断没有任何事务需要用到该条日志记录时被删除。所谓没有任何事务需要用到，是指当前系统没有任何事务的 read-view 比这个 undo log 的版本更早</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://juejin.cn/post/6895265596985114638">Innodb 引擎:详解 redo log 存储结构</a></p>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html">MySQL 5.7 文档</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL架构</title>
     <url>/2023/02/13b5e6a7/</url>
     <content><![CDATA[<h1 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h1><img src="../../images/1647334224885-6950995.png" alt="MySQL 架构" style="zoom:50%;" />
@@ -905,6 +909,115 @@
 <p>同时执行器会根据表的引擎定义调取对应引擎的接口，搜索引擎的接口诸如“取某个表的第一行”、“取下一行”等，</p>
 <h3 id="慢日志的-rows-examined"><a href="#慢日志的-rows-examined" class="headerlink" title="慢日志的 rows_examined"></a>慢日志的 rows_examined</h3><p>在 MySQL 慢日志中有个指标 rows_examined，含义就是执行器调用了搜索引擎取数据行的次数</p>
 <h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>MySQL 基础架构图出自极客林晓斌老师的《Mysql 实战 45 讲》，侵删。</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL锁</title>
+    <url>/2023/02/d940f18d/</url>
+    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
+<span id="more"></span>
+
+<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
+<p>使用场景、跟只读的区别</p>
+</blockquote>
+<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
+<p>通过以下语句可以施加全局锁（FTWRL）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
+<p>问：全库备份为什么要施加全局锁？</p>
+<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
+<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
+<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
+<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
+<ol>
+<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
+<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
+</ol>
+<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
+<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
+<p>表锁的语法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
+
+<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
+<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
+<p>表级锁不会死锁。因为两个前提：</p>
+<ol>
+<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
+<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
+</ol>
+<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
+<p>解决什么问题、使用方式、DDL 的正确方式</p>
+</blockquote>
+<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
+<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
+<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
+<p>MySQL 5.6 支持了 online DDL。</p>
+<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
+<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
+<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
+<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
+<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果遇到大表加字段呢</p>
+<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
+<p>安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
+
+<p>下面是常见执行示例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
+
+<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
+<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
+<p>自增锁是执行完立刻就释放资源的锁！</p>
+<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
+<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
+<blockquote>
+<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
+</blockquote>
+<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
+<p>定义、目的、优化</p>
+</blockquote>
+<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
+<ol>
+<li>锁在需要的时候才施加</li>
+<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
+<li>事务提交的时候释放锁资源</li>
+</ol>
+<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
+<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
+<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
+<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
+<p>处理策略、</p>
+</blockquote>
+<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
+<p>死锁可以优化但几乎无法杜绝。</p>
+<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
+<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
+<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
+<p>死锁监测是常用的策略。</p>
+<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
+<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
+<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
+<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
+<p>优化方法：</p>
+<ol>
+<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
+<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
+<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
+</ol>
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -1025,115 +1138,6 @@
 <p>在 MySQL &lt; 5.6 时， 此时会根据 name 字段索引筛选得到的主键值回表，取出行记录中的 age 和 ismale 进行判断，返回符合判断条件的记录。</p>
 <p>MySQL &gt;&#x3D;5.6 进一步优化，因为有索引（name，age）存在，将根据联合索引最左前缀原则拿到的索引信息，先判断索引中包含的字段是否符合条件（这里是 age，判断是否等于 10），符合时才会回表，以此减少回表次数，这就叫索引下推。</p>
 <h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p><a href="https://blog.csdn.net/shadow_2011/article/details/122369071">B+索引树插入记录操作讲解</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL锁</title>
-    <url>/2023/02/d940f18d/</url>
-    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
-<span id="more"></span>
-
-<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
-<p>使用场景、跟只读的区别</p>
-</blockquote>
-<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
-<p>通过以下语句可以施加全局锁（FTWRL）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
-<p>问：全库备份为什么要施加全局锁？</p>
-<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
-<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
-<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
-<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
-<ol>
-<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
-<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
-</ol>
-<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
-<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
-<p>表锁的语法是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
-
-<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
-<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
-<p>表级锁不会死锁。因为两个前提：</p>
-<ol>
-<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
-<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
-</ol>
-<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
-<p>解决什么问题、使用方式、DDL 的正确方式</p>
-</blockquote>
-<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
-<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
-<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
-<p>MySQL 5.6 支持了 online DDL。</p>
-<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
-<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
-<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
-<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
-<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>如果遇到大表加字段呢</p>
-<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
-<p>安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
-
-<p>下面是常见执行示例：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
-
-<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
-<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
-<p>自增锁是执行完立刻就释放资源的锁！</p>
-<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
-<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
-<blockquote>
-<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
-</blockquote>
-<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
-<p>定义、目的、优化</p>
-</blockquote>
-<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
-<ol>
-<li>锁在需要的时候才施加</li>
-<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
-<li>事务提交的时候释放锁资源</li>
-</ol>
-<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
-<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
-<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
-<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
-<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
-<p>处理策略、</p>
-</blockquote>
-<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
-<p>死锁可以优化但几乎无法杜绝。</p>
-<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
-<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
-<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
-<p>死锁监测是常用的策略。</p>
-<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
-<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
-<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
-<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
-<p>优化方法：</p>
-<ol>
-<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
-<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
-<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
-</ol>
 ]]></content>
       <categories>
         <category>技术分享</category>
