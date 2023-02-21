@@ -19,28 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="crontab 浅析">
+    <meta name="description" content="浅析 MySQL 架构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="crontab 任务配置基础">
-<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/fadd76df/index.html">
+<meta property="og:title" content="MySQL架构">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/13b5e6a7/index.html">
 <meta property="og:site_name" content="hwqDqwh">
-<meta property="og:description" content="crontab 浅析">
+<meta property="og:description" content="浅析 MySQL 架构">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-02-02T06:58:21.000Z">
-<meta property="article:modified_time" content="2023-02-06T03:28:28.467Z">
+<meta property="og:image" content="https://hwqdqwh.github.io/2023/images/1647334224885-6950995.png">
+<meta property="article:published_time" content="2023-02-21T03:43:42.000Z">
+<meta property="article:modified_time" content="2023-02-21T03:55:14.194Z">
 <meta property="article:author" content="hwqDqwh">
-<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hwqdqwh.github.io/2023/images/1647334224885-6950995.png">
 
 
-<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/fadd76df/">
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/13b5e6a7/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/fadd76df/","path":"2023/02/fadd76df/","title":"crontab 任务配置基础"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/13b5e6a7/","path":"2023/02/13b5e6a7/","title":"MySQL架构"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>crontab 任务配置基础 | hwqDqwh</title>
+<title>MySQL架构 | hwqDqwh</title>
   
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
   <script src="/js/third-party/analytics/google-analytics.js"></script>
@@ -146,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-text">基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%8A%A0"><span class="nav-text">附加</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E6%89%A7%E8%A1%8C%E5%BD%A2%E5%BC%8F"><span class="nav-text">字段执行形式</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-text">整体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E5%99%A8"><span class="nav-text">连接器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E8%87%AA%E5%8A%A8%E6%96%AD%E5%BC%80"><span class="nav-text">链接自动断开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E9%93%BE%E6%8E%A5%E5%92%8C%E7%9F%AD%E9%93%BE%E6%8E%A5"><span class="nav-text">长链接和短链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98"><span class="nav-text">查询缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98"><span class="nav-text">使用查询缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%99%A8"><span class="nav-text">分析器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%99%A8"><span class="nav-text">优化器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%99%A8"><span class="nav-text">执行器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%A2%E6%97%A5%E5%BF%97%E7%9A%84-rows-examined"><span class="nav-text">慢日志的 rows_examined</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-text">引用</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -204,7 +206,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/fadd76df/">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/13b5e6a7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/bu2ma-tiger.jpg">
@@ -217,12 +219,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="crontab 任务配置基础 | hwqDqwh">
-      <meta itemprop="description" content="crontab 浅析">
+      <meta itemprop="name" content="MySQL架构 | hwqDqwh">
+      <meta itemprop="description" content="浅析 MySQL 架构">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          crontab 任务配置基础
+          MySQL架构
         </h1>
 
         <div class="post-meta-container">
@@ -232,15 +234,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2023-02-02 14:58:21" itemprop="dateCreated datePublished" datetime="2023-02-02T14:58:21+08:00">2023-02-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-06 11:28:28" itemprop="dateModified" datetime="2023-02-06T11:28:28+08:00">2023-02-06</time>
+      <time title="Created: 2023-02-21 11:43:42 / Modified: 11:55:14" itemprop="dateCreated datePublished" datetime="2023-02-21T11:43:42+08:00">2023-02-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -255,7 +251,7 @@
   
 </div>
 
-            <div class="post-description">crontab 浅析</div>
+            <div class="post-description">浅析 MySQL 架构</div>
         </div>
       </header>
 
@@ -263,24 +259,54 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
-<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
-<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
-<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
-<p>动手测一下，crontab -e 添加任务</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
+        <h1 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h1><img src="../../images/1647334224885-6950995.png" alt="MySQL 架构" style="zoom:50%;" />
 
-<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>由此可见：</p>
+<p>大体来说，MySQL 可以分为 Server 层和存储引擎层两部分。</p>
+<p>Server 层包括连接器、查询缓存、分析器、优化器、执行器等，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。</p>
+<p>存储引擎层负责数据的存储和提取。</p>
+<p>InnoDB 从 MySQL 5.5.5 版本开始成为默认存储引擎。</p>
+<h2 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h2><p>连接器负责跟客户端建立连接、获取权限、维持和管理连接。</p>
+<p>要执行 MySQL 操作首先需要建立 MySQL 连接，例如使用工具或命令行 mysql -h -u -P 等。连接发起后首先会完成经典的 TCP 握手，然后连接器开始认证身份，用的就是输入的用户名和密码。</p>
+<p>认证身份顺序是：</p>
 <ol>
-<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
-<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
-<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
+<li>账密检查</li>
+<li>权限检查，主要检查用户(来源IP)是否有链接某库的权限等</li>
 </ol>
+<p>注意：连接建立后整个链接中执行的操作权限均依赖【权限检查】时读取到的用户权限，意味着建立连接后如果修改了权限需要重新建立 MySQL 链接。</p>
+<h3 id="链接自动断开"><a href="#链接自动断开" class="headerlink" title="链接自动断开"></a>链接自动断开</h3><p>链接建立后如果长时间无操作，连接器会自动断开，这个时间由配置 wait_timeout 控制，默认 8 小时。</p>
+<h3 id="长链接和短链接"><a href="#长链接和短链接" class="headerlink" title="长链接和短链接"></a>长链接和短链接</h3><p>MySQL 中区分长链接和短链接，顾名思义，长链接指建立连接后一直维持链接不断开，多次操作均使用相同链接。短链接则指每次只执行少数几个操作即断开，下次需要再重新建立连接。</p>
+<p>优缺点：</p>
+<p>长链接的优点是减少建立连接的资源消耗（扩展，建立连接过程中产生了哪些资源消耗呢？），缺点是内存资源消耗严重，因为 MySQL 的内存管理是基于链接的，申请的内存资源只有断开时才会释放。</p>
+<p>链接优缺点则相反。</p>
+<p>关于长链接的内存资源使用，后面再整理，目前的知识结构认为内存消耗大致有：执行操作将数据页查出放到内存、保存事务的数据视图、维持链接的信息（存疑）</p>
+<p>处理:</p>
+<ol>
+<li>定时断开长链接</li>
+<li>MySQL &gt;&#x3D; 5.7 时，可以通过执行 mysql_reset_connetion 初始化链接资源，此操作不需要断开链接但是会将链接恢复到创建完成的状态。</li>
+</ol>
+<h2 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h2><p>弊大于利的模块，一般不需要开启。</p>
+<p>查询缓存将过往的查询语句和结果以 key-value 的形式存储在内存中，当新查询过来时检查是否存在匹配记录，如果命中则在权限校验后直接返回结果。</p>
+<p>但是查询缓存有以下致命限制：</p>
+<ol>
+<li>查询缓存的匹配判断是【查询语句完全一致】</li>
+<li>只要对某表执行 insert&#x2F;update 操作，该表的所有查询缓存将清空</li>
+</ol>
+<p>由此导致的结果是查询缓存命中率非常低，往往在频繁查询的静态库时使用。</p>
+<p>注意：查询缓存功能在 mysql &gt;&#x3D; 8.0 被移除。</p>
+<h3 id="使用查询缓存"><a href="#使用查询缓存" class="headerlink" title="使用查询缓存"></a>使用查询缓存</h3><p>MySQL 也提供“按需使用”的方式。可以将参数 query_cache_type 设置成 DEMAND，由此对于默认的 SQL 语句都不使用查询缓存。而对于确定要使用查询缓存的语句，可以用 SQL_CACHE 显式指定，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select SQL_CACHE * from T where ID=10；</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h2><p>分析器主要做两件事，词法分析(解析器)和语法分析(预处理器)。</p>
+<p>词法分析：解释输入操作中的每个词的含义，生成解析树，比如识别 select 关键字，字段名等；</p>
+<p>语法分析：根据词法分析得到的语义解析树，判断操作是否满足 MySQL 语法，比如 SQL 是否书写错误、字段是否存在等。</p>
+<p>分析器也会做一次权限验证，叫 precheck。主要针对【能否做某个操作】做校验，比如是否有 create table 权限。</p>
+<h2 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h2><p>优化器负责选择索引和确定 join 查询的表连接顺序。</p>
+<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><p>执行器也会做权限检验，主要针对表级操作，譬如是否有操作某表的权限。</p>
+<p>同时执行器会根据表的引擎定义调取对应引擎的接口，搜索引擎的接口诸如“取某个表的第一行”、“取下一行”等，</p>
+<h3 id="慢日志的-rows-examined"><a href="#慢日志的-rows-examined" class="headerlink" title="慢日志的 rows_examined"></a>慢日志的 rows_examined</h3><p>在 MySQL 慢日志中有个指标 rows_examined，含义就是执行器调用了搜索引擎取数据行的次数</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>MySQL 基础架构图出自极客林晓斌老师的《Mysql 实战 45 讲》，侵删。</p>
 
     </div>
 
@@ -290,20 +316,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/02/84201577/" rel="prev" title="Linux 常用命令安装">
-                  <i class="fa fa-chevron-left"></i> Linux 常用命令安装
+                <a href="/2023/02/92e8b7bd/" rel="prev" title="pstree/strace/traceroute 和 lsof">
+                  <i class="fa fa-chevron-left"></i> pstree/strace/traceroute 和 lsof
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/02/964962dd/" rel="next" title="MySQL日志系统">
-                  MySQL日志系统 <i class="fa fa-chevron-right"></i>
+                <a href="/2023/02/38c89d47/" rel="next" title="gitbook 执行出错处理">
+                  gitbook 执行出错处理 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -369,7 +395,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"58f59f871070ae53d5ff78b6b8cde828"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"596e9c7262e6bdf91555fa71bc1fe751"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 

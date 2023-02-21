@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bu2ma-tiger-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bu2ma-tiger-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Microsoft+YaHei:300,300italic,400,400italic,700,700italic%7CMonaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="介绍Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。 miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Anaconda 使用">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/f053b2c8/index.html">
+<meta property="og:site_name" content="hwqDqwh">
+<meta property="og:description" content="介绍Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。 miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-21T03:09:17.000Z">
+<meta property="article:modified_time" content="2023-02-21T03:09:37.904Z">
+<meta property="article:author" content="hwqDqwh">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/f053b2c8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/f053b2c8/","path":"2023/02/f053b2c8/","title":"Anaconda 使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Anaconda 使用 | hwqDqwh</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0b4b5f0b10caf6b6c8082a757af8dbe2"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script><!--需要JQuery的支持-->
+  <script type="text/javascript" src ="/js/clicker.js" ></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">hwqDqwh</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">生而有翼，为何爬行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-gitbook"><a href="/gitbook/" rel="section"><i class="fa fa-book fa-fw"></i>gitbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-text">介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95"><span class="nav-text">踩坑记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#No-module-named-conda"><span class="nav-text">No module named conda</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hwqDqwh"
+      src="/images/bu2ma-tiger.jpg">
+  <p class="site-author-name" itemprop="name">hwqDqwh</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hwqDqwh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hwqDqwh" rel="noopener me" target="_blank">GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/f053b2c8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bu2ma-tiger.jpg">
+      <meta itemprop="name" content="hwqDqwh">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Anaconda 使用 | hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Anaconda 使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-02-21 11:09:17 / Modified: 11:09:37" itemprop="dateCreated datePublished" datetime="2023-02-21T11:09:17+08:00">2023-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。</p>
+<p>miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。</p>
+<span id="more"></span>
+
+<p>Anaconda 中的 conda 则是一个开源跨平台的包管理工具和系统管理工具。关于 conda 包管理和系统管理得分开理解。</p>
+<p>conda 作为包管理工具时一如 pip 之于 Python，用来管理环境包的安装。在 Anaconda 中的 pip 的作用可以视作 conda 的子集。</p>
+<p>作为系统管理工具时，conda 类似 docker 拿来即用的思想，支持快速构建独立虚拟环境，实现进程级别的隔离。不过需要注意 conda 和 docker 的区别：虚拟环境和容器的区别。conda 和 venv、virtualenv 一样通过环境变量（如 $PATH）替换实现环境隔离，虚拟环境安装的工具（如 Python3.8）宿主机也能找到其解释器。所以虚拟环境可以在不激活环境的情况下，通过手动指定完整路径执行不同版本的解释器。而 docker 的容器环境隔离依托 linux 系统的 namespace 技术实现，容器安装的特定版本语言解释器在宿主机是没有的。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先到 Anaconda 官网找到自己想下载的版本，wget 下载并执行之</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh</span><br><span class="line">bash Anaconda3-5.3.1-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
+
+<p>enter 确认，然后是用户协议，输入 yes</p>
+<p>然后是指定安装路径</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Anaconda3 will now be installed into this location:</span><br><span class="line">/root/anaconda3</span><br><span class="line">  - Press ENTER to confirm the location</span><br><span class="line">  - Press CTRL-C to abort the installation</span><br><span class="line">  - Or specify a different location below</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后可以选择是否在环境参数中添加 Anaconda 参数，yes</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">installation finished.</span><br><span class="line">Do you wish the installer to initialize Anaconda3</span><br><span class="line">in your /root/.bashrc ? [yes|no]</span><br><span class="line"></span><br><span class="line">[no] &gt;&gt;&gt; yes</span><br></pre></td></tr></table></figure>
+
+<p>是否安装 VSCode，no</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Anaconda is partnered with Microsoft! Microsoft VSCode is a streamlined</span><br><span class="line">code editor with support for development operations like debugging, task</span><br><span class="line">running and version control.</span><br><span class="line"></span><br><span class="line">To install Visual Studio Code, you will need:</span><br><span class="line">  - Administrator Privileges</span><br><span class="line">  - Internet connectivity</span><br><span class="line"></span><br><span class="line">Visual Studio Code License: https://code.visualstudio.com/license</span><br><span class="line">Do you wish to proceed with the installation of Microsoft VSCode? [yes|no]</span><br><span class="line">&gt;&gt;&gt; no</span><br></pre></td></tr></table></figure>
+
+<p>完成，验证一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 刷新环境变量</span><br><span class="line">source .bash_profile</span><br><span class="line"></span><br><span class="line"># 校验</span><br><span class="line">conda</span><br><span class="line"></span><br><span class="line"># 看到诸如以下的 help 指南就是成功了</span><br><span class="line">usage: conda [-h] [-V] command ...</span><br><span class="line">conda is a tool for managing and deploying applications, environments and packages.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>使用命令看一下 <a target="_blank" rel="noopener" href="https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html">conda文档</a> 就好😘</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="No-module-named-conda"><a href="#No-module-named-conda" class="headerlink" title="No module named conda"></a>No module named conda</h3><p>最后记录一下踩的坑</p>
+<p>修改环境的 Python 版本时， 有一次执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install python=3.8</span><br></pre></td></tr></table></figure>
+
+<p>得到了奇怪的报错：ModuleNotFoundError: No module named ‘conda’ 可有点秀，conda 报错没有名为 conda 的模块吗哈哈</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Preparing transaction: done</span><br><span class="line">Verifying transaction: done</span><br><span class="line">Executing transaction: done</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">	File &quot;/root/anaconda3/bin/conda&quot;, line 7, in &lt;module&gt;</span><br><span class="line">		from conda.cli import main</span><br><span class="line">		</span><br><span class="line">ModuleNotFoundError: No module named &#x27;conda&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>其实这类问题很普遍，几乎都是环境变量配置问题，常见于修改 base 环境的 Python 版本导致解释器找不到当前 conda 包。所以不要随便修改 base 环境 Python 版本，可以多开个虚拟环境嘛</p>
+<p>解决的话只要找回之前安装 Anaconda 的脚本执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
+
+<p>即可</p>
+<p>附，想要更新 base 环境的 Python 版本的话可以参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/ruhai/p/12684838.html">升级Anaconda默认的python版本</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/43a71ae4/" rel="prev" title="MySQL索引">
+                  <i class="fa fa-chevron-left"></i> MySQL索引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/92e8b7bd/" rel="next" title="pstree/strace/traceroute 和 lsof">
+                  pstree/strace/traceroute 和 lsof <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hwqDqwh</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"a6e85980bfbc2676f1051853f571cc98"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bu2ma-tiger-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bu2ma-tiger-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Microsoft+YaHei:300,300italic,400,400italic,700,700italic%7CMonaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录几个常用的 linux 命令  pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替 strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb traceroute: 跟踪当前到目的主机数据报传输链路的命令 lsof: 基于一切皆文件的系统文件描述符查看命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pstree&#x2F;strace&#x2F;traceroute 和 lsof">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/02/92e8b7bd/index.html">
+<meta property="og:site_name" content="hwqDqwh">
+<meta property="og:description" content="记录几个常用的 linux 命令  pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替 strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb traceroute: 跟踪当前到目的主机数据报传输链路的命令 lsof: 基于一切皆文件的系统文件描述符查看命令">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-21T03:21:28.000Z">
+<meta property="article:modified_time" content="2023-02-21T03:41:17.302Z">
+<meta property="article:author" content="hwqDqwh">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/02/92e8b7bd/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/02/92e8b7bd/","path":"2023/02/92e8b7bd/","title":"pstree/strace/traceroute 和 lsof"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pstree/strace/traceroute 和 lsof | hwqDqwh</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0b4b5f0b10caf6b6c8082a757af8dbe2"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script><!--需要JQuery的支持-->
+  <script type="text/javascript" src ="/js/clicker.js" ></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">hwqDqwh</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">生而有翼，为何爬行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-gitbook"><a href="/gitbook/" rel="section"><i class="fa fa-book fa-fw"></i>gitbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pstree"><span class="nav-text">pstree</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-text">文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#strace"><span class="nav-text">strace</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-1"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3-1"><span class="nav-text">文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-1"><span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#traceroute"><span class="nav-text">traceroute</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-2"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3-2"><span class="nav-text">文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-2"><span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lsof"><span class="nav-text">lsof</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-3"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3-3"><span class="nav-text">文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-3"><span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-text">注意</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hwqDqwh"
+      src="/images/bu2ma-tiger.jpg">
+  <p class="site-author-name" itemprop="name">hwqDqwh</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hwqDqwh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hwqDqwh" rel="noopener me" target="_blank">GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/02/92e8b7bd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bu2ma-tiger.jpg">
+      <meta itemprop="name" content="hwqDqwh">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="pstree/strace/traceroute 和 lsof | hwqDqwh">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pstree/strace/traceroute 和 lsof
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-02-21 11:21:28 / Modified: 11:41:17" itemprop="dateCreated datePublished" datetime="2023-02-21T11:21:28+08:00">2023-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>记录几个常用的 linux 命令</p>
+<ul>
+<li>pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替</li>
+<li>strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb</li>
+<li>traceroute: 跟踪当前到目的主机数据报传输链路的命令</li>
+<li>lsof: 基于一切皆文件的系统文件描述符查看命令</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="pstree"><a href="#pstree" class="headerlink" title="pstree"></a>pstree</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># mac</span><br><span class="line">brew install pstree</span><br><span class="line"></span><br><span class="line">#Fedora/Red Hat/CentOS</span><br><span class="line">yum -y install psmisc</span><br><span class="line"></span><br><span class="line">#Ubuntu/Debian</span><br><span class="line">apt-get install psmisc</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">             [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line"></span><br><span class="line">pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">-a, --arguments     show command line arguments</span><br><span class="line">                    显示进程的完整指令及参数</span><br><span class="line">-A, --ascii               use ASCII line drawing characters</span><br><span class="line">-c, --compact         don&#x27;t compact identical subtrees</span><br><span class="line">-h, --highlight-all   highlight current process and its ancestors</span><br><span class="line">                       突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因</span><br><span class="line">-H PID, --highlight-pid=PID highlight this process and its ancestors</span><br><span class="line">-g, --show-pgids    show process group ids; implies -c</span><br><span class="line">-G, --vt100           use VT100 line drawing characters</span><br><span class="line">-l, --long              don&#x27;t truncate long lines</span><br><span class="line">                         超长指令不再用 ... 代替</span><br><span class="line">-n, --numeric-sort  sort output by PID</span><br><span class="line">                           按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效</span><br><span class="line">-N type,--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)</span><br><span class="line">-p, --show-pids       show PIDs; implies -c</span><br><span class="line">                          显示 PID</span><br><span class="line">-s, --show-parents    show parents of the selected process</span><br><span class="line">                          显示父级进程</span><br><span class="line">-S, --ns-changes      show namespace transitions</span><br><span class="line">-u, --uid-changes     show uid transitions</span><br><span class="line">-U, --unicode         use UTF-8 (Unicode) line drawing characters</span><br><span class="line">-V, --version         display version information</span><br><span class="line">-Z,--security-context   show SELinux security contexts</span><br><span class="line"></span><br><span class="line">PID    start at this PID; default is 1 (init)</span><br><span class="line">USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 查看全部进程的树形</span><br><span class="line">pstree -anp</span><br><span class="line"></span><br><span class="line"># 根据进程号查看所在树的信息</span><br><span class="line">pstree -anps pid</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install strace</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="文档-1"><a href="#文档-1" class="headerlink" title="文档"></a>文档</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...</span><br><span class="line">             [-a column] [-o file] [-s strsize] [-P path]...</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line">   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line"></span><br><span class="line">Output format:</span><br><span class="line">  -a column      alignment COLUMN for printing syscall results (default 40)</span><br><span class="line">                    将系统调用结果根据字段对齐,默认 为40.</span><br><span class="line">  -i             print instruction pointer at time of syscall</span><br><span class="line">  -k             obtain stack trace between each syscall</span><br><span class="line">  -o file        send trace output to FILE instead of stderr                            </span><br><span class="line">  -q             suppress messages about attaching, detaching, etc. </span><br><span class="line">  -r             print relative timestamp</span><br><span class="line">               印出相对时间关于,,每一个系统调用.</span><br><span class="line">  -s strsize     limit length of print strings to STRSIZE chars (default 32)</span><br><span class="line">               指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)</span><br><span class="line">  -t             print absolute timestamp</span><br><span class="line">               在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间</span><br><span class="line">  -tt            print absolute timestamp with usecs</span><br><span class="line">               在输出中的每一行前加上时间信息,微秒级.</span><br><span class="line">     -T             print time spent in each syscall</span><br><span class="line">                   每次调用最后显示消耗时间</span><br><span class="line">  -x             print non-ascii strings in hex</span><br><span class="line">               以十六进制打印非 ascii 字符串</span><br><span class="line">  -xx            print all strings in hex</span><br><span class="line">               所有字符串以十六进制形式输出.</span><br><span class="line">  -X format      set the format for printing of named constants and flags</span><br><span class="line">  -y             print paths associated with file descriptor arguments</span><br><span class="line">  -yy            print protocol specific information associated with socket file descriptors</span><br><span class="line"></span><br><span class="line">Statistics:</span><br><span class="line">  -c            count time, calls, and errors for each syscall and report summary </span><br><span class="line">               统计每一系统调用的所执行的时间,次数和出错的次数等.</span><br><span class="line">  -C             like -c but also print regular output</span><br><span class="line">  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs</span><br><span class="line">  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)</span><br><span class="line">               针对性排序</span><br><span class="line">  -w             summarise syscall latency (default is system time)</span><br><span class="line"></span><br><span class="line">Filtering:</span><br><span class="line">  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...</span><br><span class="line">    options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm</span><br><span class="line">  -P path        trace accesses to path                                                     </span><br><span class="line"></span><br><span class="line">Tracing:</span><br><span class="line">  -b execve      detach on execve syscall</span><br><span class="line">  -D             run tracer process as a detached grandchild, not as parent</span><br><span class="line">  -f             follow forks</span><br><span class="line">               跟踪由fork调用所产生的子进程.</span><br><span class="line">  -ff            follow forks with output into separate files</span><br><span class="line">               如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.</span><br><span class="line">  -I interruptible</span><br><span class="line"></span><br><span class="line">    1:          no signals are blocked</span><br><span class="line">    2:          fatal signals are blocked while decoding syscall (default)</span><br><span class="line">    3:          fatal signals are always blocked (default if &#x27;-o FILE PROG&#x27;)</span><br><span class="line">    4:          fatal signals and SIGTSTP (^Z) are always blocked</span><br><span class="line">                (useful to make &#x27;strace -o FILE PROG&#x27; not stop on ^Z)</span><br><span class="line"></span><br><span class="line">Startup:</span><br><span class="line"></span><br><span class="line">  -E var         remove var from the environment for command</span><br><span class="line">  -E var=val     put var=val in the environment for command</span><br><span class="line">  -p pid         trace process with process id PID, may be repeated</span><br><span class="line">               跟踪指定的进程pid.</span><br><span class="line">  -u username    run command as username handling setuid and/or setgid</span><br><span class="line">               以username的UID和GID执行被跟踪的命令</span><br><span class="line"></span><br><span class="line">Miscellaneous:</span><br><span class="line"></span><br><span class="line">  -d             enable debug output to stderr</span><br><span class="line">               输出strace关于标准错误的调试信息.,这个输出现在还不会看</span><br><span class="line">  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  </span><br><span class="line">  -h             print help message</span><br><span class="line">  -V             print version                  </span><br></pre></td></tr></table></figure>
+
+
+
+<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier&#x3D;][!]value1[,value2]…</p>
+<p>qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace&#x3D;open,表示只跟踪open调用.而-etrace!&#x3D;open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\</p>
+<p>-e trace&#x3D;set 只跟踪指定的系统 调用.例如:-e trace&#x3D;open,close,rean,write表示只跟踪这四个系统调用.默认的为set&#x3D;all.</p>
+<p>-e trace&#x3D;file 只跟踪有关文件操作的系统调用.</p>
+<p>-e trace&#x3D;process 只跟踪有关进程控制的系统调用.</p>
+<p>-e trace&#x3D;network 跟踪与网络有关的所有系统调用.</p>
+<p>-e strace&#x3D;signal 跟踪所有与系统信号有关的 系统调用</p>
+<p>-e trace&#x3D;ipc 跟踪所有与进程通讯有关的系统调用</p>
+<p>-e abbrev&#x3D;set 设定strace输出的系统调用的结果集.-v 等与 abbrev&#x3D;none.默认为abbrev&#x3D;all.</p>
+<p>-e raw&#x3D;set 将指定的系统调用的参数以十六进制显示.</p>
+<p>-e signal&#x3D;set 指定跟踪的系统信号.默认为all.如 signal&#x3D;!SIGIO(或者signal&#x3D;!io),表示不跟踪SIGIO信号.</p>
+<p>-e read&#x3D;set 输出从指定文件中读出 的数据.例如: -e read&#x3D;3,5</p>
+<p>-e write&#x3D;set 输出写入到指定文件中的数据.</p>
+<h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记</span><br><span class="line"></span><br><span class="line">2021年 12月 08日 星期三 18:23:50 CST</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 61.33    0.000655         164         4           open</span><br><span class="line"> 10.49    0.000112          11        10           mmap</span><br><span class="line">  6.09    0.000065          16         4           mprotect</span><br><span class="line">  4.96    0.000053          13         4           brk</span><br><span class="line">  3.93    0.000042          14         3           munmap</span><br><span class="line">  3.09    0.000033          11         3           read</span><br><span class="line">  3.00    0.000032           5         6           close</span><br><span class="line">  3.00    0.000032           5         6           fstat</span><br><span class="line">  1.69    0.000018          18         1         1 access</span><br><span class="line">  1.22    0.000013          13         1           execve</span><br><span class="line">  0.66    0.000007           7         1           arch_prctl</span><br><span class="line">  0.56    0.000006           6         1           write</span><br><span class="line">  0.00    0.000000           0         1           lseek</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.001068                    45         1 total</span><br><span class="line"></span><br><span class="line"># strace -cp 18700 统计进程各个系统调用的时间消耗</span><br><span class="line">strace: Process 18700 attached</span><br><span class="line">^Cstrace: Process 18700 detached</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 34.48    0.002522          10       256           poll</span><br><span class="line"> 34.24    0.002505          12       206           sendto</span><br><span class="line"> 27.66    0.002023           8       257           recvfrom</span><br><span class="line">  3.47    0.000254          64         4           write</span><br><span class="line">  0.15    0.000011          11         1           restart_syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.007315                   724           total</span><br><span class="line"></span><br><span class="line"># strace -Tp 16266 统计每个系统调用的耗时</span><br><span class="line"># 每行的最后使用&lt;&gt;展示调用的耗时,单位</span><br><span class="line">......</span><br><span class="line">read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;</span><br><span class="line">lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;</span><br><span class="line">read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;</span><br><span class="line">read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;</span><br><span class="line">write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;</span><br><span class="line">write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;</span><br><span class="line">write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;</span><br><span class="line">write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;</span><br><span class="line">write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;</span><br><span class="line">pselect6(1, [0], NULL, NULL, &#123;3, 0&#125;, &#123;[WINCH], 8&#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"># strace -e trace=network ping 127.0.0.1</span><br><span class="line"># -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用</span><br><span class="line">socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)</span><br><span class="line">socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3</span><br><span class="line">connect(3, &#123;sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, 16) = 0</span><br><span class="line">getsockname(3, &#123;sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, [16]) = 0</span><br><span class="line">ping: icmp open socket: 不允许的操作</span><br><span class="line">+++ exited with 2 +++</span><br><span class="line"></span><br><span class="line"># strace -tt -s 10 -o test.txt 5912</span><br><span class="line"># 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中</span><br><span class="line"># -o test.txt 等价于 2&gt;text.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install traceroute</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-2"><a href="#文档-2" class="headerlink" title="文档"></a>文档</h2><p>traceroute 命令用于追踪数据包在网络传输过程中的路径</p>
+<p>traceroute 输出每行表示一个网关,每行包含三个时间</p>
+<p>有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了</p>
+<p>traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -4                          Use IPv4</span><br><span class="line">  -6                          Use IPv6</span><br><span class="line">  -d  --debug                 Enable socket level debugging</span><br><span class="line">  -F  --dont-fragment         Do not fragment packets</span><br><span class="line">  -f first_ttl  --first=first_ttl</span><br><span class="line">                             Start from the first_ttl hop (instead from 1)</span><br><span class="line">  -g gate,...  --gateway=gate,...</span><br><span class="line">                             Route packets through the specified gateway</span><br><span class="line">                             (maximum 8 for IPv4 and 127 for IPv6)</span><br><span class="line">  -I  --icmp                  Use ICMP ECHO for tracerouting</span><br><span class="line">  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)</span><br><span class="line">  -i device  --interface=device</span><br><span class="line">                             Specify a network interface to operate with</span><br><span class="line">  -m max_ttl  --max-hops=max_ttl</span><br><span class="line">                             Set the max number of hops (max TTL to be</span><br><span class="line">                             reached). Default is 30</span><br><span class="line">  -N squeries  --sim-queries=squeries</span><br><span class="line">                             Set the number of probes to be tried</span><br><span class="line">                             simultaneously (default is 16)</span><br><span class="line">  -n                          Do not resolve IP addresses to their domain names</span><br><span class="line">                               直接使用IP地址而非主机名称</span><br><span class="line">  -p port  --port=port        Set the destination port to use. It is either</span><br><span class="line">                             initial udp port value for &quot;default&quot; method</span><br><span class="line">                             (incremented by each probe, default is 33434), or</span><br><span class="line">                             initial seq for &quot;icmp&quot; (incremented as well,</span><br><span class="line">                             default from 1), or some constant destination</span><br><span class="line">                             port for other methods (with default of 80 for</span><br><span class="line">                             &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)</span><br><span class="line">  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6</span><br><span class="line">                             traffic class) value for outgoing packets</span><br><span class="line">  -l flow_label  --flowlabel=flow_label</span><br><span class="line">                             Use specified flow_label for IPv6 packets</span><br><span class="line"></span><br><span class="line">  -w waittime  --wait=waittime</span><br><span class="line">                             Set the number of seconds to wait for response to</span><br><span class="line">                             a probe (default is 5.0). Non-integer (float</span><br><span class="line">                             point) values allowed too</span><br><span class="line"></span><br><span class="line">  -q nqueries  --queries=nqueries</span><br><span class="line">                             Set the number of probes per each hop. Default is3</span><br><span class="line"></span><br><span class="line">  -r                          Bypass the normal routing and send directly to a</span><br><span class="line">                             host on an attached network</span><br><span class="line">                             忽略普通的Routing Table，直接将数据包送到远端主机上</span><br><span class="line"></span><br><span class="line">  -s src_addr  --source=src_addr</span><br><span class="line">                             Use source src_addr for outgoing packets</span><br><span class="line"></span><br><span class="line">  -z sendwait  --sendwait=sendwait</span><br><span class="line">                             Minimal time interval between probes (default 0).</span><br><span class="line">                             If the value is more than 10, then it specifies a</span><br><span class="line">                             number in milliseconds, else it is a number of</span><br><span class="line">                             seconds (float point values allowed too)</span><br><span class="line"></span><br><span class="line">  -e  --extensions            Show ICMP extensions (if present), including MPLS</span><br><span class="line"></span><br><span class="line">  -A  --as-path-lookups       Perform AS path lookups in routing registries and</span><br><span class="line">                             print results directly after the corresponding</span><br><span class="line">                             addresses</span><br><span class="line"></span><br><span class="line">  -M name  --module=name      Use specified module (either builtin or external)</span><br><span class="line">                             for traceroute operations. Most methods have</span><br><span class="line">                             their shortcuts (`-I&#x27; means `-M icmp&#x27; etc.)</span><br><span class="line"></span><br><span class="line">  -O OPTS,...  --options=OPTS,...</span><br><span class="line">                             Use module-specific option OPTS for the</span><br><span class="line">                             traceroute module. Several OPTS allowed,</span><br><span class="line">                             separated by comma. If OPTS is &quot;help&quot;, print info</span><br><span class="line">                             about available options</span><br><span class="line"></span><br><span class="line">  --sport=num                 Use source port num for outgoing packets. Implies</span><br><span class="line">                             `-N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --fwmark=num                Set firewall mark for outgoing packets</span><br><span class="line">  </span><br><span class="line">  -U  --udp                   Use UDP to particular port for tracerouting</span><br><span class="line">                             (instead of increasing the port per each probe),</span><br><span class="line">                             default port is 53</span><br><span class="line"></span><br><span class="line">  -UL                         Use UDPLITE for tracerouting (default dest port</span><br><span class="line">                             is 53)</span><br><span class="line"></span><br><span class="line">  -D  --dccp                  Use DCCP Request for tracerouting (default port</span><br><span class="line">                             is 33434)</span><br><span class="line"></span><br><span class="line">  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting</span><br><span class="line"></span><br><span class="line">  --mtu                       Discover MTU along the path being traced. Implies</span><br><span class="line">                             `-F -N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --back                      Guess the number of hops in the backward path and</span><br><span class="line">                             print if it differs</span><br><span class="line"></span><br><span class="line">  -V  --version               Print version info and exit</span><br><span class="line"></span><br><span class="line">  --help                      Read this help and exit</span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">\+     host          The host to traceroute to</span><br><span class="line">     packetlen     The full packet length (default is the length of an IP</span><br><span class="line">                   header plus 40). Can be ignored or increased to a minimal</span><br><span class="line">                   allowed value</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-2"><a href="#常用命令-2" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示</span><br><span class="line">traceroute -n www.baidu.com</span><br><span class="line"></span><br><span class="line"># 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误</span><br><span class="line">traceroute -r www.baidu.com</span><br><span class="line"></span><br><span class="line"># 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的</span><br><span class="line">traceroute -4 www.baidu.com</span><br><span class="line">traceroute -6 www.baidu.com</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h1><h2 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-3"><a href="#文档-3" class="headerlink" title="文档"></a>文档</h2><p>lsof 命令用于查看系统进程打开的文件</p>
+<p>在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">lsof 4.87</span><br><span class="line"></span><br><span class="line"> latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/</span><br><span class="line"> latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ</span><br><span class="line"> latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man</span><br><span class="line"> usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]</span><br><span class="line"> [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]</span><br><span class="line">[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]</span><br><span class="line"></span><br><span class="line">Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.</span><br><span class="line">  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks</span><br><span class="line">  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files</span><br><span class="line">  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*</span><br><span class="line">  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers</span><br><span class="line">  -n no host names         -N select NFS files        -o list file offset</span><br><span class="line">  -O no overhead *RISKY*   -P no port names           -R list paRent PID</span><br><span class="line">  -s list file size        -t terse listing           -T disable TCP/TPI info</span><br><span class="line">  -U select Unix socket    -v list version info       -V verbose search</span><br><span class="line">  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]</span><br><span class="line">  </span><br><span class="line">  -- end option scan</span><br><span class="line">  +f|-f  +filesystem or -file names     +|-f[gG] flaGs</span><br><span class="line">  -F [f] select fields; -F? for help</span><br><span class="line">  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)</span><br><span class="line">                                       +m [m] use|create mount supplement</span><br><span class="line">  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)</span><br><span class="line">  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)</span><br><span class="line">  -T qs TCP/TPI Q,St (s) info</span><br><span class="line">  -g [s] exclude(^)|select and print process group IDs</span><br><span class="line">  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.</span><br><span class="line">      An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and</span><br><span class="line">     &lt;fmt&gt; is an strftime(3) format for the marker line.</span><br><span class="line">  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).</span><br><span class="line">  -u s   exclude(^)|select login|UID set s</span><br><span class="line">  -x [fl] cross over +d|+D File systems or symbolic Links</span><br><span class="line">  names  select named files or files on named file systems</span><br><span class="line">Anyone can list all files; /dev warnings disabled; kernel ID check disabled.</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 查看某进程打开的文件</span><br><span class="line">lsof -p pid</span><br><span class="line"></span><br><span class="line"># 查看正在使用某端口进程</span><br><span class="line">lsof -i:80</span><br><span class="line"></span><br><span class="line"># 列出打开文件的进程</span><br><span class="line">lsof $filename</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/f053b2c8/" rel="prev" title="Anaconda 使用">
+                  <i class="fa fa-chevron-left"></i> Anaconda 使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/13b5e6a7/" rel="next" title="MySQL架构">
+                  MySQL架构 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hwqDqwh</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"762b984d40d99aeacd932a287c7e2a80"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+</body>
+</html>
