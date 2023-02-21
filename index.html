@@ -227,7 +227,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2023-02-21 18:19:43 / Modified: 18:31:40" itemprop="dateCreated datePublished" datetime="2023-02-21T18:19:43+08:00">2023-02-21</time>
+      <time title="Created: 2023-02-21 18:19:43 / Modified: 18:32:56" itemprop="dateCreated datePublished" datetime="2023-02-21T18:19:43+08:00">2023-02-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -250,26 +250,14 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
-<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
-
-
-
-<p>当前环境</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
-<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
-<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>参考：</p>
-<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/38c89d47/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

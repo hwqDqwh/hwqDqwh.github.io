@@ -1,137 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>gridea 对接百度&amp;谷歌统计</title>
-    <url>/2023/02/e8fb5eb8/</url>
-    <content><![CDATA[<blockquote>
-<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
-</blockquote>
-<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
-<li>登录到百度统计</li>
-<li>在账户设置的【网站列表】添加自己的博客网站</li>
-</ol>
-<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
-<ol start="3">
-<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
-</li>
-<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
-<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
-<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
-</li>
-<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
-</li>
-<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
-<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
-</li>
-<li><p>搞定。</p>
-</li>
-</ol>
-<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
-<ol>
-<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
-</li>
-<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
-<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
-</li>
-<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
-<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
-</li>
-<li><p>【关于您的商家】随便填</p>
-</li>
-<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
-<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
-</li>
-<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
-</li>
-<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
-</li>
-<li><p>搞定</p>
-</li>
-</ol>
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
-<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
-<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
-<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>filebeat 和 logstash 的关系</title>
-    <url>/2023/02/53c6448/</url>
-    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
-<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
-<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
-<p>目前学习的程度看应该是很准确的比喻。</p>
-<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logstash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
-<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
-<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>elasticsearch</tag>
-        <tag>filebeat</tag>
-        <tag>kibana</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于 github.io 博客的 gitbook 搭建</title>
-    <url>/2023/02/ad836518/</url>
-    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
-<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
-<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
-<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
-<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
-
-<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
-
-<p>然后提交 gitbook 项目 到 github 仓库</p>
-<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
-<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
-<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
-<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
-<p>最终效果：</p>
-<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
-<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
-<p>优点：</p>
-<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
-<p>缺点：</p>
-<ul>
-<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
-</li>
-<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
-</li>
-<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
-</li>
-<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
-</li>
-</ul>
-<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
-<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>es 基础概念</title>
     <url>/2023/02/3fe4a59a/</url>
     <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>es 主旨是随时可用和按需扩容</p>
@@ -380,6 +249,238 @@
       </tags>
   </entry>
   <entry>
+    <title>filebeat 和 logstash 的关系</title>
+    <url>/2023/02/53c6448/</url>
+    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
+<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
+<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
+<p>目前学习的程度看应该是很准确的比喻。</p>
+<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logstash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
+<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
+<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>elasticsearch</tag>
+        <tag>filebeat</tag>
+        <tag>kibana</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>gitbook 执行出错处理</title>
+    <url>/2023/02/38c89d47/</url>
+    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
+<span id="more"></span>
+
+<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当前环境</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
+<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
+<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：</p>
+<p><a href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>gridea 对接百度&amp;谷歌统计</title>
+    <url>/2023/02/e8fb5eb8/</url>
+    <content><![CDATA[<blockquote>
+<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
+</blockquote>
+<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
+<li>登录到百度统计</li>
+<li>在账户设置的【网站列表】添加自己的博客网站</li>
+</ol>
+<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
+<ol start="3">
+<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
+</li>
+<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
+<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
+<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
+</li>
+<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
+</li>
+<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
+<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
+</li>
+<li><p>搞定。</p>
+</li>
+</ol>
+<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
+<ol>
+<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
+</li>
+<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
+<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
+</li>
+<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
+<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
+</li>
+<li><p>【关于您的商家】随便填</p>
+</li>
+<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
+<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
+</li>
+<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
+</li>
+<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
+</li>
+<li><p>搞定</p>
+</li>
+</ol>
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
+<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
+<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
+<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>go 的 var 和 :=</title>
+    <url>/2023/02/9a311670/</url>
+    <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
+<h2 id="var"><a href="#var" class="headerlink" title="var"></a>var</h2><blockquote>
+<p>纯正且符合印象的变量声明关键字</p>
+</blockquote>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> variable [<span class="keyword">type</span>] [= expression]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>type: 变量类型，如未声明则会进行类型推断</p>
+<p>expression: 变量初始值</p>
+<h3 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h3><ol>
+<li>使用 var 时 type 和 expression 可选但不能同时省略，否则将得到致命错误，如 var apple</li>
+<li>var 声明不指定 expression 时，go 会根据 type 自动给出默认值— go 中变量声明后必定会有初始值，只不过是隐式指定还是显式指定，如下：</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"># /Users/hewenqian/apps/<span class="keyword">go</span>/go_study/test/var_test.<span class="keyword">go</span></span><br><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;testing&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestVar</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> f <span class="type">float64</span></span><br><span class="line">    <span class="keyword">var</span> b <span class="type">bool</span></span><br><span class="line">    # 空对象</span><br><span class="line">    <span class="keyword">var</span> o <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;i is %d,\n&quot;</span>, i)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;s is %s,\n&quot;</span>, s)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;f is %f,\n&quot;</span>, f)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;b is %t,\n&quot;</span>, b)</span><br><span class="line">    <span class="comment">// 这里 %v 和 %+v 有啥区别</span></span><br><span class="line">    fmt.Printf(<span class="string">&quot;o is %v,\n&quot;</span>, o)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  go_study git:(main) go test -v ./test/var_test.go</span><br><span class="line">=== RUN   TestVar</span><br><span class="line">i is 0,</span><br><span class="line">s is ,</span><br><span class="line">f is 0.000000,</span><br><span class="line">b is false,</span><br><span class="line">o is &lt;nil&gt;,</span><br><span class="line">--- PASS: TestVar (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      command-line-arguments    0.252s</span><br><span class="line">➜  go_study git:(main)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>综上，虽然定义语句没有显式指定变量值，但人家是有值的。</p>
+<p>思考：有哪些语言的哪些类型可以是声明时未指定默认值（底层的话应该是值未分配具体内存空间？）的呢？</p>
+<h2 id="x3D"><a href="#x3D" class="headerlink" title=":&#x3D;"></a>:&#x3D;</h2><p>:&#x3D; 主要用于函数内声明局部变量。</p>
+<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>variable :&#x3D; 表达式或值</p>
+<p>变量的类型有 go 针对 [表达式或值自动] 推断</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于 github.io 博客的 gitbook 搭建</title>
+    <url>/2023/02/ad836518/</url>
+    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
+<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
+<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
+<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
+<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
+
+<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
+
+<p>然后提交 gitbook 项目 到 github 仓库</p>
+<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
+<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
+<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
+<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
+<p>最终效果：</p>
+<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
+<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
+<p>优点：</p>
+<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
+<p>缺点：</p>
+<ul>
+<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
+</li>
+<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
+</li>
+<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
+</li>
+<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
+</li>
+</ul>
+<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
+<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>crontab 任务配置基础</title>
+    <url>/2023/02/fadd76df/</url>
+    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
+<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
+<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
+<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
+<p>动手测一下，crontab -e 添加任务</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
+
+<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<p>由此可见：</p>
+<ol>
+<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
+<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
+<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
+</ol>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>组织一个可维护可扩展的 go 项目目录</title>
     <url>/2023/02/df63fc18/</url>
     <content><![CDATA[<blockquote>
@@ -479,45 +580,6 @@
       </tags>
   </entry>
   <entry>
-    <title>go 的 var 和 :=</title>
-    <url>/2023/02/9a311670/</url>
-    <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
-<h2 id="var"><a href="#var" class="headerlink" title="var"></a>var</h2><blockquote>
-<p>纯正且符合印象的变量声明关键字</p>
-</blockquote>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> variable [<span class="keyword">type</span>] [= expression]</span><br></pre></td></tr></table></figure>
-
-
-
-<p>type: 变量类型，如未声明则会进行类型推断</p>
-<p>expression: 变量初始值</p>
-<h3 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h3><ol>
-<li>使用 var 时 type 和 expression 可选但不能同时省略，否则将得到致命错误，如 var apple</li>
-<li>var 声明不指定 expression 时，go 会根据 type 自动给出默认值— go 中变量声明后必定会有初始值，只不过是隐式指定还是显式指定，如下：</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"># /Users/hewenqian/apps/<span class="keyword">go</span>/go_study/test/var_test.<span class="keyword">go</span></span><br><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;testing&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestVar</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> f <span class="type">float64</span></span><br><span class="line">    <span class="keyword">var</span> b <span class="type">bool</span></span><br><span class="line">    # 空对象</span><br><span class="line">    <span class="keyword">var</span> o <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;i is %d,\n&quot;</span>, i)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;s is %s,\n&quot;</span>, s)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;f is %f,\n&quot;</span>, f)</span><br><span class="line">    fmt.Printf(<span class="string">&quot;b is %t,\n&quot;</span>, b)</span><br><span class="line">    <span class="comment">// 这里 %v 和 %+v 有啥区别</span></span><br><span class="line">    fmt.Printf(<span class="string">&quot;o is %v,\n&quot;</span>, o)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  go_study git:(main) go test -v ./test/var_test.go</span><br><span class="line">=== RUN   TestVar</span><br><span class="line">i is 0,</span><br><span class="line">s is ,</span><br><span class="line">f is 0.000000,</span><br><span class="line">b is false,</span><br><span class="line">o is &lt;nil&gt;,</span><br><span class="line">--- PASS: TestVar (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      command-line-arguments    0.252s</span><br><span class="line">➜  go_study git:(main)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>综上，虽然定义语句没有显式指定变量值，但人家是有值的。</p>
-<p>思考：有哪些语言的哪些类型可以是声明时未指定默认值（底层的话应该是值未分配具体内存空间？）的呢？</p>
-<h2 id="x3D"><a href="#x3D" class="headerlink" title=":&#x3D;"></a>:&#x3D;</h2><p>:&#x3D; 主要用于函数内声明局部变量。</p>
-<h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>variable :&#x3D; 表达式或值</p>
-<p>变量的类型有 go 针对 [表达式或值自动] 推断</p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>golang</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux 常用命令安装</title>
     <url>/2023/02/84201577/</url>
     <content><![CDATA[<p>-bash: rz: 未找到命令</p>
@@ -535,63 +597,79 @@
       </tags>
   </entry>
   <entry>
-    <title>gitbook 执行出错处理</title>
-    <url>/2023/02/38c89d47/</url>
-    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
-<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
+    <title>Anaconda 使用</title>
+    <url>/2023/02/f053b2c8/</url>
+    <content><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。</p>
+<p>miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。</p>
+<span id="more"></span>
+
+<p>Anaconda 中的 conda 则是一个开源跨平台的包管理工具和系统管理工具。关于 conda 包管理和系统管理得分开理解。</p>
+<p>conda 作为包管理工具时一如 pip 之于 Python，用来管理环境包的安装。在 Anaconda 中的 pip 的作用可以视作 conda 的子集。</p>
+<p>作为系统管理工具时，conda 类似 docker 拿来即用的思想，支持快速构建独立虚拟环境，实现进程级别的隔离。不过需要注意 conda 和 docker 的区别：虚拟环境和容器的区别。conda 和 venv、virtualenv 一样通过环境变量（如 $PATH）替换实现环境隔离，虚拟环境安装的工具（如 Python3.8）宿主机也能找到其解释器。所以虚拟环境可以在不激活环境的情况下，通过手动指定完整路径执行不同版本的解释器。而 docker 的容器环境隔离依托 linux 系统的 namespace 技术实现，容器安装的特定版本语言解释器在宿主机是没有的。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先到 Anaconda 官网找到自己想下载的版本，wget 下载并执行之</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh</span><br><span class="line">bash Anaconda3-5.3.1-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
+
+<p>enter 确认，然后是用户协议，输入 yes</p>
+<p>然后是指定安装路径</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda3 will now be installed into this location:</span><br><span class="line">/root/anaconda3</span><br><span class="line">  - Press ENTER to confirm the location</span><br><span class="line">  - Press CTRL-C to abort the installation</span><br><span class="line">  - Or specify a different location below</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后可以选择是否在环境参数中添加 Anaconda 参数，yes</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">installation finished.</span><br><span class="line">Do you wish the installer to initialize Anaconda3</span><br><span class="line">in your /root/.bashrc ? [yes|no]</span><br><span class="line"></span><br><span class="line">[no] &gt;&gt;&gt; yes</span><br></pre></td></tr></table></figure>
+
+<p>是否安装 VSCode，no</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda is partnered with Microsoft! Microsoft VSCode is a streamlined</span><br><span class="line">code editor with support for development operations like debugging, task</span><br><span class="line">running and version control.</span><br><span class="line"></span><br><span class="line">To install Visual Studio Code, you will need:</span><br><span class="line">  - Administrator Privileges</span><br><span class="line">  - Internet connectivity</span><br><span class="line"></span><br><span class="line">Visual Studio Code License: https://code.visualstudio.com/license</span><br><span class="line">Do you wish to proceed with the installation of Microsoft VSCode? [yes|no]</span><br><span class="line">&gt;&gt;&gt; no</span><br></pre></td></tr></table></figure>
+
+<p>完成，验证一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 刷新环境变量</span><br><span class="line">source .bash_profile</span><br><span class="line"></span><br><span class="line"># 校验</span><br><span class="line">conda</span><br><span class="line"></span><br><span class="line"># 看到诸如以下的 help 指南就是成功了</span><br><span class="line">usage: conda [-h] [-V] command ...</span><br><span class="line">conda is a tool for managing and deploying applications, environments and packages.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 
 
-<p>当前环境</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>使用命令看一下 <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html">conda文档</a> 就好😘</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="No-module-named-conda"><a href="#No-module-named-conda" class="headerlink" title="No module named conda"></a>No module named conda</h3><p>最后记录一下踩的坑</p>
+<p>修改环境的 Python 版本时， 有一次执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install python=3.8</span><br></pre></td></tr></table></figure>
 
+<p>得到了奇怪的报错：ModuleNotFoundError: No module named ‘conda’ 可有点秀，conda 报错没有名为 conda 的模块吗哈哈</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Preparing transaction: done</span><br><span class="line">Verifying transaction: done</span><br><span class="line">Executing transaction: done</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">	File &quot;/root/anaconda3/bin/conda&quot;, line 7, in &lt;module&gt;</span><br><span class="line">		from conda.cli import main</span><br><span class="line">		</span><br><span class="line">ModuleNotFoundError: No module named &#x27;conda&#x27;</span><br></pre></td></tr></table></figure>
 
+<p>其实这类问题很普遍，几乎都是环境变量配置问题，常见于修改 base 环境的 Python 版本导致解释器找不到当前 conda 包。所以不要随便修改 base 环境 Python 版本，可以多开个虚拟环境嘛</p>
+<p>解决的话只要找回之前安装 Anaconda 的脚本执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
 
-<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
-<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
-<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>参考：</p>
-<p><a href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>crontab 任务配置基础</title>
-    <url>/2023/02/fadd76df/</url>
-    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
-<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
-<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
-<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
-<p>动手测一下，crontab -e 添加任务</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
-
-<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>由此可见：</p>
-<ol>
-<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
-<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
-<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
-</ol>
+<p>即可</p>
+<p>附，想要更新 base 环境的 Python 版本的话可以参考 <a href="https://www.cnblogs.com/ruhai/p/12684838.html">升级Anaconda默认的python版本</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>Linux</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python __init__ 和 __new__</title>
+    <url>/2023/02/b1009463/</url>
+    <content><![CDATA[<p>__init__ 是初始化方法，没有返回值</p>
+<p>__new__ 才是真正的构造方法，返回当前类实例化对象</p>
+<span id="more"></span>
+
+<h1 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ python python3 study/init_new.py</span><br><span class="line">this is new</span><br><span class="line">this is init</span><br><span class="line">called by u</span><br><span class="line">➜ python</span><br></pre></td></tr></table></figure>
+
+<p>输出表明了 __init__，__new__ 和 常规函数的调用顺序是 new &gt; init &gt; others</p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
+<p>需要注意的是：解释器是依据 __new__ 返回的对象调用 __init__ 的，所以如果 __new__ 中返回了其它类的实例对象，将调用其它类的 __init__ 而不是当前类的 __init__ 。</p>
+<p>例如将上述代码的 return super().__new__(cls) 修改为 return object() 后，仅会得到 this is new 的输出</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
+<p><a href="https://peps.python.org/pep-3114/">PEP 3114 new 重命名为 __new__</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -684,63 +762,76 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL日志系统</title>
-    <url>/2023/02/964962dd/</url>
-    <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
-<p>redo log buffer 和 redo log file、循环写、innodb_flush_log_at_trx_commit、crash-safe</p>
+    <title>由 map 深入理解 yield 和生成器</title>
+    <url>/2023/02/38446edf/</url>
+    <content><![CDATA[<p>首先看下 map 方法的使用代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    map_iter = <span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * x, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1, 4, 9]</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到输出两次 map_iter 中的值只有第一次正常获取了，后面拿到的都是空。这里是因为 map 内部的 yield 使用。</p>
+<h1 id="map-中的-yield"><a href="#map-中的-yield" class="headerlink" title="map 中的 yield"></a>map 中的 yield</h1><blockquote>
+<p>map(func, list[ , list]) 列表中的 list 依次调用函数 func</p>
 </blockquote>
-<p>redo log 是 innodb 特有的，为了优化 MySQL 每次更新操作都要直接操作磁盘带来的 IO 压力诞生。redo log 是物理日志，记录的是【在某个数据页上做了什么操作】。流程就是每次更新先写 redo log，等必要时候(系统空闲或 redo log 写满)再将 redo log 信息写入磁盘，这项技术就是常说的 WAL 技术，全称 Write-Ahead Logging。</p>
-<p>redo log 分为两部分：</p>
-<ul>
-<li>内存中的日志缓冲 redo log buffer</li>
-<li>磁盘中的重做日志文件 redo log file</li>
-</ul>
-<h2 id="redo-log-file"><a href="#redo-log-file" class="headerlink" title="redo log file"></a>redo log file</h2><p>一般情况说的 redo log 就是指 redo log file。需要注意的是：redo log file 即使写在磁盘上也比不使用 redo log 效率更高。原因是 redo log file 操作本质是 CPU 顺序磁盘 IO，比更新操作的随机 IO 快得多。redo log file 的配置是：</p>
-<p>innodb_log_file_size 控制每个 redo log file 文件大小；</p>
-<p>innodb_log_file_in_group 控制 redo log file 文件个数。</p>
-<p>redo log file 的写入方式是循环写，类似循环链表，空间固定会用尽–触发 flush 操作。</p>
-<h2 id="crash-safe"><a href="#crash-safe" class="headerlink" title="crash-safe"></a>crash-safe</h2><p>redo log file 的存在使得 innodb 即使发生数据库异常重启，之前提交的记录也不会丢失，这个能力叫 crash-safe。但是并不是有 redo log 就一定获得了这个能力，innodb_flush_log_at_trx_commit 配置就是决定是否拥有 crash-safe 的。</p>
-<p>上面说到 redo log 记录也有细分 redo log buffer 和 redo log file，而 innodb_flush_log_at_trx_commit 就是控制事务提交时 redo log 记录策略的，取值含义如下：</p>
-<p>取 0：提交事务时只保证写入了 redo log buffer，buffer -&gt; file 的过程由 MySQL 主线程每秒执行一次刷新磁盘处理。</p>
-<p>取 1：提交事务时保证 redo log 已经写入磁盘的 redo log file 中。</p>
-<p>取 2：提交事务时保证 redo log 已经写入磁盘的 OS Cache 中，由系统处理 OS Cache -&gt; file 的过程，相当于 0 和 1 的中间态。</p>
-<p>由此可知，只有 innodb_flush_log_at_trx_commit &#x3D; 1 时才真正拥有 crash-safe 能力。0 和 2 都有可能异常重启时丢失数据，不过因为系统写入磁盘的操作 fsync() 是阻塞的，所以 1 的性能会显著低于同行。</p>
-<h1 id="归档日志-binlog"><a href="#归档日志-binlog" class="headerlink" title="归档日志 binlog"></a>归档日志 binlog</h1><blockquote>
-<p>MySQL Server 层、追加写、sync_binlog</p>
+<p>查阅文档 <a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a> 可以看到</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().</span></span><br><span class="line"><span class="comment"># 当函数输入形如元组时，参见 itertools.starmap().</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The difference between map() and starmap() parallels the distinction between function(a,b) and function(*c)</span></span><br><span class="line"><span class="comment"># map() 和 starmap() 的区别是参数形式</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># starmap 源码示例</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">starmap</span>(<span class="params">function, iterable</span>):</span><br><span class="line">    <span class="comment"># starmap(pow, [(2,5), (3,2), (10,3)]) --&gt; 32 9 1000</span></span><br><span class="line">    <span class="keyword">for</span> args <span class="keyword">in</span> iterable:</span><br><span class="line">        <span class="keyword">yield</span> function(*args)</span><br></pre></td></tr></table></figure>
+
+<p>由此我们明确了 map 方法实现基于 yield，那么为什么 yield 会导致 map 方法返回值只能遍历一次呢</p>
+<h2 id="了解-yield"><a href="#了解-yield" class="headerlink" title="了解 yield"></a>了解 yield</h2><p>包含 yield 关键字的函数称为生成器，生成器是 Python 新引入的概念。</p>
+<p>生成器长得很像普通函数，看上去几乎只是 return 被 yield 代替的感觉。但生成器是一种迭代器，行为跟普通函数有很大区别。</p>
+<p>生成器函数被调用时，函数体的代码不会被执行，而是返回一个迭代器。每请求一次迭代器（g.next() 或 g.__next__()）就执行一次生成器中的代码，直到遇到 yield 和 return。当遇到 yield 时生成一个值输出，然后冻结函数等待下次请求后从冻结的代码处（yield 下一行）继续执行。当遇到 return 时意味着停止该生成器。</p>
+<p>yield 代码使用示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">g = (i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line">g.__next__()</span><br><span class="line"><span class="comment"># output: 4</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">sum</span>(i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># output: 13</span></span><br></pre></td></tr></table></figure>
+
+<p>由此我们理解了 yield 关键在作用是定义生成器，也知道了生成器的执行原理，那么生成器是什么呢？如此我们需要了解可迭代对象、迭代器和生成器。</p>
+<h1 id="可迭代对象"><a href="#可迭代对象" class="headerlink" title="可迭代对象"></a>可迭代对象</h1><blockquote>
+<p>如果一个对象拥有 __iter__ 方法，则称为可迭代对象</p>
 </blockquote>
-<p>binlog 是 MySQL Server 层支持的所有存储引擎都能用，它是逻辑日志，记录的是【操作的原始逻辑，比如给 ID &#x3D; 1 这一行的 a 字段 +1】。</p>
-<p>binlog 是追加写，binlog 日志文件达到一定程度后会切换写入下一个文件，每次写入操作顺序追加，并不会覆盖之前的记录。</p>
-<p>因为 crash 发生时 binlog 不能保证其中的日志都已经被更新到磁盘，故没有 redo log 的 crash-safe 能力。</p>
-<h2 id="sync-binlog"><a href="#sync-binlog" class="headerlink" title="sync_binlog"></a>sync_binlog</h2><p>binlog 日志记录也有类似 redo log 的 buffer 和 file。MySQL 的 sync_binlog 配置控制着 binlog 日志写入磁盘的逻辑，并与 innodb_flush_log_at_trx_commit 类似。取值含义如下：</p>
-<p>取 0：事务提交时只保证写入了 OS Cache，cache -&gt; file 的过程由操作系统管理</p>
-<p>取 1：事务提交前即保证 binlog 日志写入到磁盘中</p>
-<p>取 N，N 为非 0 或 1 的非负整数：当收集到 N 个 binlog 日志后再进一次性写入文件操作</p>
-<p>显而易见，0 和 N 都在不同角度尝试提交性能。取 1 则性能差不少，但在服务奔溃的情况下，binlog 丢失的事务的 redo log 处于 prepare 状态所以提供了回滚事务的依据。</p>
-<p>为了保持事务的一致性，MySQL 官方文档推荐 innodb_flush_log_at_trx_commit 和 sync_binlog 都取 1。</p>
-<h1 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h1><p>所谓两阶段提交是保证跨系统(MySQL 中是 Server 层和存储引擎层 innodb)事务提交信息一致性的方案。 MySQL 中两阶段提交处理事务操作如下：</p>
-<p>假设语句： update table_1 set a &#x3D; a + 1 where id &#x3D; 1</p>
+<p>对象是否包含 __iter__ 可以通过 dir(object) 检查，我们日常利用循环遍历的对象都是可迭代对象，常见的有列表、元组、字典。可以参见另一篇关于 python.for 循环的博客。</p>
+<p>以下是简单的实现可迭代对象代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterable</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义可迭代对象类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> MyIterator(self.data)  <span class="comment"># 返回该可迭代对象的迭代器类的实例</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><blockquote>
+<p>如果一个可迭代对象拥有 __next__ 函数，则为迭代器</p>
+</blockquote>
+<p>注：__next__ 方法在 Python 2.x 是 new，见 <a href="https://peps.python.org/pep-3114/">PEP 3114</a></p>
+<p>另外需要注意的是 __iter__ 方法要求返回的是具体的迭代器实例。所以在可迭代对象中返回的是对应的迭代器实例，在迭代器中则只需要返回自身。</p>
+<p>以下是简单的迭代器代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterator</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义迭代器类，其是MyList可迭代对象的迭代器类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        self.up = num  <span class="comment"># 上边界</span></span><br><span class="line">        self.now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self  <span class="comment"># 返回该对象的迭代器类的实例；因为自己就是迭代器，所以返回 self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):  <span class="comment"># 迭代器类必须实现的方法</span></span><br><span class="line">        <span class="keyword">while</span> self.now &lt; self.up:</span><br><span class="line">            self.now += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> self.now - <span class="number">1</span>  <span class="comment"># 返回当前迭代值</span></span><br><span class="line">        <span class="keyword">raise</span> StopIteration  <span class="comment"># 超出上边界，抛出异常</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><blockquote>
+<p>生成器则是一种特殊的迭代器，使用 yield 关键字的函数被称为生成器</p>
+</blockquote>
+<p>理解生成器需要注意：</p>
 <ol>
-<li>执行器先调用存储引擎取 id &#x3D; 1 这一行数据，存储引擎将 id &#x3D; 1 这一行所在数据页 A 加载到内存中，并返回 id &#x3D; 1 的行记录信息</li>
-<li>执行器拿到返回的 id &#x3D; 1 记录，将 a 列执行 +1 操作，得到新的记录行，再调用存储引擎接口写新行数据</li>
-<li>存储引擎将数据写入上述内存空间中的数据页 A，然后将更新操作记录到 redo log 中【将 A 中 m 字节到 n 字节部分的数据内容更新为新数据】。此时 redo log 处于 prepare 状态。然后存储引擎告知执行器执行完成，可以提交事务。</li>
-<li>执行器生成并记录 binlog</li>
-<li>执行器再次调起存储引擎接口，指示提交事务，引擎将刚刚的 redo log 从 prepare 状态修改为 commit 状态，完成。</li>
+<li>生成器支持了更多操作方法（python &gt;&#x3D; 2.5， <a href="https://peps.python.org/pep-0342/">PEP 342</a>），比如允许在迭代过程中修改当前迭代值（生成器与迭代器的主要区别）</li>
+<li>虽然也可以通过类模拟生成器的逻辑，但生成器的定义是使用 yield 关键字</li>
 </ol>
-<h1 id="回滚日志-undo-log"><a href="#回滚日志-undo-log" class="headerlink" title="回滚日志 undo log"></a>回滚日志 undo log</h1><blockquote>
-<p>作用、删除时机</p>
-</blockquote>
-<p>innodb 的每条记录在【更新】时都会记录一条回滚操作日志，方便需要的时候回溯行记录的历史版本，就是 undo log。</p>
-<p>注意插入的新纪录是没有 undo log 的，新插入的数据是幻读的问题了，undo log 则是为了实现事务隔离，解决可重复读问题存在。</p>
-<p>redo log 和 undo log 都是事务日志，是 innodb 存储引擎层的日志。</p>
-<p>undo log 会在系统判断没有任何事务需要用到该条日志记录时被删除。所谓没有任何事务需要用到，是指当前系统没有任何事务的 read-view 比这个 undo log 的版本更早</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://juejin.cn/post/6895265596985114638">Innodb 引擎:详解 redo log 存储结构</a></p>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html">MySQL 5.7 文档</a></p>
+<p>以下是一段生成器示例代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">myGenerator</span>(<span class="params">num</span>):  <span class="comment"># 定义生成器</span></span><br><span class="line">    now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line">    <span class="keyword">while</span> now &lt; num:</span><br><span class="line">        val = (<span class="keyword">yield</span> now)  <span class="comment"># 返回当前迭代值，并接受可能的send发送值；yield在下面会解释</span></span><br><span class="line">        now = now + <span class="number">1</span> <span class="keyword">if</span> val <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> val  <span class="comment"># val为None，迭代值自增1，否则重新设定当前迭代值为val</span></span><br><span class="line">    <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">my_g = myGenerator(<span class="number">5</span>)  <span class="comment"># 得到一个生成器对象</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__()) <span class="comment"># 返回当前迭代值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(my_g)) <span class="comment"># 等价 my_g.__next__()</span></span><br><span class="line"></span><br><span class="line">my_g.send(<span class="number">3</span>)  <span class="comment"># 重新设定当前的迭代值，Python &gt;= 2.5</span></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__())</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">dir</span>(my_g))  <span class="comment"># 返回该对象所拥有的方法名，可以看到__iter__与__next__在其中</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  python python3 study/generator.py</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">4</span><br><span class="line">[&#x27;__class__&#x27;, &#x27;__del__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__iter__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__name__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__next__&#x27;, &#x27;__qualname__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;close&#x27;, &#x27;gi_code&#x27;, &#x27;gi_frame&#x27;, &#x27;gi_running&#x27;, &#x27;gi_yieldfrom&#x27;, &#x27;send&#x27;, &#x27;throw&#x27;]</span><br><span class="line">➜  python </span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是 send 需要在生成器挂起后（也就是先触发一次 yield）才有意义，否则会报错</p>
+<p>TypeError: can’t send non-None value to a just-started generator</p>
+<p>除此以外生成器在 Python &gt;&#x3D; 2.5 还支持 throw 和 close 方法，作用分别是在生成器内的 yield 表达式中抛出一个异常，和停止生成器，具体可以看 <a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342</a></p>
+<p>关于生成器在 python 底层的运行逻辑，知乎有大佬做了解释：<a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a>，后面关于【再次遇到 yield value2】 的逻辑没看明白，等我完全搞明白了自己写一个整理。。。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a></p>
+<p><a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342 生成器增强</a></p>
+<p>《Python 基础教程（第二版·修订版）》</p>
+<p><a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>Mysql</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -850,6 +941,66 @@
 
 
 
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL日志系统</title>
+    <url>/2023/02/964962dd/</url>
+    <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
+<p>redo log buffer 和 redo log file、循环写、innodb_flush_log_at_trx_commit、crash-safe</p>
+</blockquote>
+<p>redo log 是 innodb 特有的，为了优化 MySQL 每次更新操作都要直接操作磁盘带来的 IO 压力诞生。redo log 是物理日志，记录的是【在某个数据页上做了什么操作】。流程就是每次更新先写 redo log，等必要时候(系统空闲或 redo log 写满)再将 redo log 信息写入磁盘，这项技术就是常说的 WAL 技术，全称 Write-Ahead Logging。</p>
+<p>redo log 分为两部分：</p>
+<ul>
+<li>内存中的日志缓冲 redo log buffer</li>
+<li>磁盘中的重做日志文件 redo log file</li>
+</ul>
+<h2 id="redo-log-file"><a href="#redo-log-file" class="headerlink" title="redo log file"></a>redo log file</h2><p>一般情况说的 redo log 就是指 redo log file。需要注意的是：redo log file 即使写在磁盘上也比不使用 redo log 效率更高。原因是 redo log file 操作本质是 CPU 顺序磁盘 IO，比更新操作的随机 IO 快得多。redo log file 的配置是：</p>
+<p>innodb_log_file_size 控制每个 redo log file 文件大小；</p>
+<p>innodb_log_file_in_group 控制 redo log file 文件个数。</p>
+<p>redo log file 的写入方式是循环写，类似循环链表，空间固定会用尽–触发 flush 操作。</p>
+<h2 id="crash-safe"><a href="#crash-safe" class="headerlink" title="crash-safe"></a>crash-safe</h2><p>redo log file 的存在使得 innodb 即使发生数据库异常重启，之前提交的记录也不会丢失，这个能力叫 crash-safe。但是并不是有 redo log 就一定获得了这个能力，innodb_flush_log_at_trx_commit 配置就是决定是否拥有 crash-safe 的。</p>
+<p>上面说到 redo log 记录也有细分 redo log buffer 和 redo log file，而 innodb_flush_log_at_trx_commit 就是控制事务提交时 redo log 记录策略的，取值含义如下：</p>
+<p>取 0：提交事务时只保证写入了 redo log buffer，buffer -&gt; file 的过程由 MySQL 主线程每秒执行一次刷新磁盘处理。</p>
+<p>取 1：提交事务时保证 redo log 已经写入磁盘的 redo log file 中。</p>
+<p>取 2：提交事务时保证 redo log 已经写入磁盘的 OS Cache 中，由系统处理 OS Cache -&gt; file 的过程，相当于 0 和 1 的中间态。</p>
+<p>由此可知，只有 innodb_flush_log_at_trx_commit &#x3D; 1 时才真正拥有 crash-safe 能力。0 和 2 都有可能异常重启时丢失数据，不过因为系统写入磁盘的操作 fsync() 是阻塞的，所以 1 的性能会显著低于同行。</p>
+<h1 id="归档日志-binlog"><a href="#归档日志-binlog" class="headerlink" title="归档日志 binlog"></a>归档日志 binlog</h1><blockquote>
+<p>MySQL Server 层、追加写、sync_binlog</p>
+</blockquote>
+<p>binlog 是 MySQL Server 层支持的所有存储引擎都能用，它是逻辑日志，记录的是【操作的原始逻辑，比如给 ID &#x3D; 1 这一行的 a 字段 +1】。</p>
+<p>binlog 是追加写，binlog 日志文件达到一定程度后会切换写入下一个文件，每次写入操作顺序追加，并不会覆盖之前的记录。</p>
+<p>因为 crash 发生时 binlog 不能保证其中的日志都已经被更新到磁盘，故没有 redo log 的 crash-safe 能力。</p>
+<h2 id="sync-binlog"><a href="#sync-binlog" class="headerlink" title="sync_binlog"></a>sync_binlog</h2><p>binlog 日志记录也有类似 redo log 的 buffer 和 file。MySQL 的 sync_binlog 配置控制着 binlog 日志写入磁盘的逻辑，并与 innodb_flush_log_at_trx_commit 类似。取值含义如下：</p>
+<p>取 0：事务提交时只保证写入了 OS Cache，cache -&gt; file 的过程由操作系统管理</p>
+<p>取 1：事务提交前即保证 binlog 日志写入到磁盘中</p>
+<p>取 N，N 为非 0 或 1 的非负整数：当收集到 N 个 binlog 日志后再进一次性写入文件操作</p>
+<p>显而易见，0 和 N 都在不同角度尝试提交性能。取 1 则性能差不少，但在服务奔溃的情况下，binlog 丢失的事务的 redo log 处于 prepare 状态所以提供了回滚事务的依据。</p>
+<p>为了保持事务的一致性，MySQL 官方文档推荐 innodb_flush_log_at_trx_commit 和 sync_binlog 都取 1。</p>
+<h1 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h1><p>所谓两阶段提交是保证跨系统(MySQL 中是 Server 层和存储引擎层 innodb)事务提交信息一致性的方案。 MySQL 中两阶段提交处理事务操作如下：</p>
+<p>假设语句： update table_1 set a &#x3D; a + 1 where id &#x3D; 1</p>
+<ol>
+<li>执行器先调用存储引擎取 id &#x3D; 1 这一行数据，存储引擎将 id &#x3D; 1 这一行所在数据页 A 加载到内存中，并返回 id &#x3D; 1 的行记录信息</li>
+<li>执行器拿到返回的 id &#x3D; 1 记录，将 a 列执行 +1 操作，得到新的记录行，再调用存储引擎接口写新行数据</li>
+<li>存储引擎将数据写入上述内存空间中的数据页 A，然后将更新操作记录到 redo log 中【将 A 中 m 字节到 n 字节部分的数据内容更新为新数据】。此时 redo log 处于 prepare 状态。然后存储引擎告知执行器执行完成，可以提交事务。</li>
+<li>执行器生成并记录 binlog</li>
+<li>执行器再次调起存储引擎接口，指示提交事务，引擎将刚刚的 redo log 从 prepare 状态修改为 commit 状态，完成。</li>
+</ol>
+<h1 id="回滚日志-undo-log"><a href="#回滚日志-undo-log" class="headerlink" title="回滚日志 undo log"></a>回滚日志 undo log</h1><blockquote>
+<p>作用、删除时机</p>
+</blockquote>
+<p>innodb 的每条记录在【更新】时都会记录一条回滚操作日志，方便需要的时候回溯行记录的历史版本，就是 undo log。</p>
+<p>注意插入的新纪录是没有 undo log 的，新插入的数据是幻读的问题了，undo log 则是为了实现事务隔离，解决可重复读问题存在。</p>
+<p>redo log 和 undo log 都是事务日志，是 innodb 存储引擎层的日志。</p>
+<p>undo log 会在系统判断没有任何事务需要用到该条日志记录时被删除。所谓没有任何事务需要用到，是指当前系统没有任何事务的 read-view 比这个 undo log 的版本更早</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://juejin.cn/post/6895265596985114638">Innodb 引擎:详解 redo log 存储结构</a></p>
+<p><a href="https://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html">MySQL 5.7 文档</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -1144,155 +1295,6 @@
       </categories>
       <tags>
         <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python __init__ 和 __new__</title>
-    <url>/2023/02/b1009463/</url>
-    <content><![CDATA[<p>__init__ 是初始化方法，没有返回值</p>
-<p>__new__ 才是真正的构造方法，返回当前类实例化对象</p>
-<span id="more"></span>
-
-<h1 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ python python3 study/init_new.py</span><br><span class="line">this is new</span><br><span class="line">this is init</span><br><span class="line">called by u</span><br><span class="line">➜ python</span><br></pre></td></tr></table></figure>
-
-<p>输出表明了 __init__，__new__ 和 常规函数的调用顺序是 new &gt; init &gt; others</p>
-<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
-<p>需要注意的是：解释器是依据 __new__ 返回的对象调用 __init__ 的，所以如果 __new__ 中返回了其它类的实例对象，将调用其它类的 __init__ 而不是当前类的 __init__ 。</p>
-<p>例如将上述代码的 return super().__new__(cls) 修改为 return object() 后，仅会得到 this is new 的输出</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
-<p><a href="https://peps.python.org/pep-3114/">PEP 3114 new 重命名为 __new__</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>由 map 深入理解 yield 和生成器</title>
-    <url>/2023/02/38446edf/</url>
-    <content><![CDATA[<p>首先看下 map 方法的使用代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    map_iter = <span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * x, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1, 4, 9]</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
-
-<p>可以看到输出两次 map_iter 中的值只有第一次正常获取了，后面拿到的都是空。这里是因为 map 内部的 yield 使用。</p>
-<h1 id="map-中的-yield"><a href="#map-中的-yield" class="headerlink" title="map 中的 yield"></a>map 中的 yield</h1><blockquote>
-<p>map(func, list[ , list]) 列表中的 list 依次调用函数 func</p>
-</blockquote>
-<p>查阅文档 <a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a> 可以看到</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().</span></span><br><span class="line"><span class="comment"># 当函数输入形如元组时，参见 itertools.starmap().</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The difference between map() and starmap() parallels the distinction between function(a,b) and function(*c)</span></span><br><span class="line"><span class="comment"># map() 和 starmap() 的区别是参数形式</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># starmap 源码示例</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">starmap</span>(<span class="params">function, iterable</span>):</span><br><span class="line">    <span class="comment"># starmap(pow, [(2,5), (3,2), (10,3)]) --&gt; 32 9 1000</span></span><br><span class="line">    <span class="keyword">for</span> args <span class="keyword">in</span> iterable:</span><br><span class="line">        <span class="keyword">yield</span> function(*args)</span><br></pre></td></tr></table></figure>
-
-<p>由此我们明确了 map 方法实现基于 yield，那么为什么 yield 会导致 map 方法返回值只能遍历一次呢</p>
-<h2 id="了解-yield"><a href="#了解-yield" class="headerlink" title="了解 yield"></a>了解 yield</h2><p>包含 yield 关键字的函数称为生成器，生成器是 Python 新引入的概念。</p>
-<p>生成器长得很像普通函数，看上去几乎只是 return 被 yield 代替的感觉。但生成器是一种迭代器，行为跟普通函数有很大区别。</p>
-<p>生成器函数被调用时，函数体的代码不会被执行，而是返回一个迭代器。每请求一次迭代器（g.next() 或 g.__next__()）就执行一次生成器中的代码，直到遇到 yield 和 return。当遇到 yield 时生成一个值输出，然后冻结函数等待下次请求后从冻结的代码处（yield 下一行）继续执行。当遇到 return 时意味着停止该生成器。</p>
-<p>yield 代码使用示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">g = (i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line">g.__next__()</span><br><span class="line"><span class="comment"># output: 4</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">sum</span>(i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># output: 13</span></span><br></pre></td></tr></table></figure>
-
-<p>由此我们理解了 yield 关键在作用是定义生成器，也知道了生成器的执行原理，那么生成器是什么呢？如此我们需要了解可迭代对象、迭代器和生成器。</p>
-<h1 id="可迭代对象"><a href="#可迭代对象" class="headerlink" title="可迭代对象"></a>可迭代对象</h1><blockquote>
-<p>如果一个对象拥有 __iter__ 方法，则称为可迭代对象</p>
-</blockquote>
-<p>对象是否包含 __iter__ 可以通过 dir(object) 检查，我们日常利用循环遍历的对象都是可迭代对象，常见的有列表、元组、字典。可以参见另一篇关于 python.for 循环的博客。</p>
-<p>以下是简单的实现可迭代对象代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterable</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义可迭代对象类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> MyIterator(self.data)  <span class="comment"># 返回该可迭代对象的迭代器类的实例</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><blockquote>
-<p>如果一个可迭代对象拥有 __next__ 函数，则为迭代器</p>
-</blockquote>
-<p>注：__next__ 方法在 Python 2.x 是 new，见 <a href="https://peps.python.org/pep-3114/">PEP 3114</a></p>
-<p>另外需要注意的是 __iter__ 方法要求返回的是具体的迭代器实例。所以在可迭代对象中返回的是对应的迭代器实例，在迭代器中则只需要返回自身。</p>
-<p>以下是简单的迭代器代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterator</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义迭代器类，其是MyList可迭代对象的迭代器类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        self.up = num  <span class="comment"># 上边界</span></span><br><span class="line">        self.now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self  <span class="comment"># 返回该对象的迭代器类的实例；因为自己就是迭代器，所以返回 self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):  <span class="comment"># 迭代器类必须实现的方法</span></span><br><span class="line">        <span class="keyword">while</span> self.now &lt; self.up:</span><br><span class="line">            self.now += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> self.now - <span class="number">1</span>  <span class="comment"># 返回当前迭代值</span></span><br><span class="line">        <span class="keyword">raise</span> StopIteration  <span class="comment"># 超出上边界，抛出异常</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><blockquote>
-<p>生成器则是一种特殊的迭代器，使用 yield 关键字的函数被称为生成器</p>
-</blockquote>
-<p>理解生成器需要注意：</p>
-<ol>
-<li>生成器支持了更多操作方法（python &gt;&#x3D; 2.5， <a href="https://peps.python.org/pep-0342/">PEP 342</a>），比如允许在迭代过程中修改当前迭代值（生成器与迭代器的主要区别）</li>
-<li>虽然也可以通过类模拟生成器的逻辑，但生成器的定义是使用 yield 关键字</li>
-</ol>
-<p>以下是一段生成器示例代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">myGenerator</span>(<span class="params">num</span>):  <span class="comment"># 定义生成器</span></span><br><span class="line">    now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line">    <span class="keyword">while</span> now &lt; num:</span><br><span class="line">        val = (<span class="keyword">yield</span> now)  <span class="comment"># 返回当前迭代值，并接受可能的send发送值；yield在下面会解释</span></span><br><span class="line">        now = now + <span class="number">1</span> <span class="keyword">if</span> val <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> val  <span class="comment"># val为None，迭代值自增1，否则重新设定当前迭代值为val</span></span><br><span class="line">    <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">my_g = myGenerator(<span class="number">5</span>)  <span class="comment"># 得到一个生成器对象</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__()) <span class="comment"># 返回当前迭代值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(my_g)) <span class="comment"># 等价 my_g.__next__()</span></span><br><span class="line"></span><br><span class="line">my_g.send(<span class="number">3</span>)  <span class="comment"># 重新设定当前的迭代值，Python &gt;= 2.5</span></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__())</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">dir</span>(my_g))  <span class="comment"># 返回该对象所拥有的方法名，可以看到__iter__与__next__在其中</span></span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  python python3 study/generator.py</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">4</span><br><span class="line">[&#x27;__class__&#x27;, &#x27;__del__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__iter__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__name__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__next__&#x27;, &#x27;__qualname__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;close&#x27;, &#x27;gi_code&#x27;, &#x27;gi_frame&#x27;, &#x27;gi_running&#x27;, &#x27;gi_yieldfrom&#x27;, &#x27;send&#x27;, &#x27;throw&#x27;]</span><br><span class="line">➜  python </span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是 send 需要在生成器挂起后（也就是先触发一次 yield）才有意义，否则会报错</p>
-<p>TypeError: can’t send non-None value to a just-started generator</p>
-<p>除此以外生成器在 Python &gt;&#x3D; 2.5 还支持 throw 和 close 方法，作用分别是在生成器内的 yield 表达式中抛出一个异常，和停止生成器，具体可以看 <a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342</a></p>
-<p>关于生成器在 python 底层的运行逻辑，知乎有大佬做了解释：<a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a>，后面关于【再次遇到 yield value2】 的逻辑没看明白，等我完全搞明白了自己写一个整理。。。</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a></p>
-<p><a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342 生成器增强</a></p>
-<p>《Python 基础教程（第二版·修订版）》</p>
-<p><a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Anaconda 使用</title>
-    <url>/2023/02/f053b2c8/</url>
-    <content><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。</p>
-<p>miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。</p>
-<span id="more"></span>
-
-<p>Anaconda 中的 conda 则是一个开源跨平台的包管理工具和系统管理工具。关于 conda 包管理和系统管理得分开理解。</p>
-<p>conda 作为包管理工具时一如 pip 之于 Python，用来管理环境包的安装。在 Anaconda 中的 pip 的作用可以视作 conda 的子集。</p>
-<p>作为系统管理工具时，conda 类似 docker 拿来即用的思想，支持快速构建独立虚拟环境，实现进程级别的隔离。不过需要注意 conda 和 docker 的区别：虚拟环境和容器的区别。conda 和 venv、virtualenv 一样通过环境变量（如 $PATH）替换实现环境隔离，虚拟环境安装的工具（如 Python3.8）宿主机也能找到其解释器。所以虚拟环境可以在不激活环境的情况下，通过手动指定完整路径执行不同版本的解释器。而 docker 的容器环境隔离依托 linux 系统的 namespace 技术实现，容器安装的特定版本语言解释器在宿主机是没有的。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先到 Anaconda 官网找到自己想下载的版本，wget 下载并执行之</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh</span><br><span class="line">bash Anaconda3-5.3.1-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
-
-<p>enter 确认，然后是用户协议，输入 yes</p>
-<p>然后是指定安装路径</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda3 will now be installed into this location:</span><br><span class="line">/root/anaconda3</span><br><span class="line">  - Press ENTER to confirm the location</span><br><span class="line">  - Press CTRL-C to abort the installation</span><br><span class="line">  - Or specify a different location below</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后可以选择是否在环境参数中添加 Anaconda 参数，yes</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">installation finished.</span><br><span class="line">Do you wish the installer to initialize Anaconda3</span><br><span class="line">in your /root/.bashrc ? [yes|no]</span><br><span class="line"></span><br><span class="line">[no] &gt;&gt;&gt; yes</span><br></pre></td></tr></table></figure>
-
-<p>是否安装 VSCode，no</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda is partnered with Microsoft! Microsoft VSCode is a streamlined</span><br><span class="line">code editor with support for development operations like debugging, task</span><br><span class="line">running and version control.</span><br><span class="line"></span><br><span class="line">To install Visual Studio Code, you will need:</span><br><span class="line">  - Administrator Privileges</span><br><span class="line">  - Internet connectivity</span><br><span class="line"></span><br><span class="line">Visual Studio Code License: https://code.visualstudio.com/license</span><br><span class="line">Do you wish to proceed with the installation of Microsoft VSCode? [yes|no]</span><br><span class="line">&gt;&gt;&gt; no</span><br></pre></td></tr></table></figure>
-
-<p>完成，验证一下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 刷新环境变量</span><br><span class="line">source .bash_profile</span><br><span class="line"></span><br><span class="line"># 校验</span><br><span class="line">conda</span><br><span class="line"></span><br><span class="line"># 看到诸如以下的 help 指南就是成功了</span><br><span class="line">usage: conda [-h] [-V] command ...</span><br><span class="line">conda is a tool for managing and deploying applications, environments and packages.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>使用命令看一下 <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html">conda文档</a> 就好😘</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="No-module-named-conda"><a href="#No-module-named-conda" class="headerlink" title="No module named conda"></a>No module named conda</h3><p>最后记录一下踩的坑</p>
-<p>修改环境的 Python 版本时， 有一次执行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install python=3.8</span><br></pre></td></tr></table></figure>
-
-<p>得到了奇怪的报错：ModuleNotFoundError: No module named ‘conda’ 可有点秀，conda 报错没有名为 conda 的模块吗哈哈</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Preparing transaction: done</span><br><span class="line">Verifying transaction: done</span><br><span class="line">Executing transaction: done</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">	File &quot;/root/anaconda3/bin/conda&quot;, line 7, in &lt;module&gt;</span><br><span class="line">		from conda.cli import main</span><br><span class="line">		</span><br><span class="line">ModuleNotFoundError: No module named &#x27;conda&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>其实这类问题很普遍，几乎都是环境变量配置问题，常见于修改 base 环境的 Python 版本导致解释器找不到当前 conda 包。所以不要随便修改 base 环境 Python 版本，可以多开个虚拟环境嘛</p>
-<p>解决的话只要找回之前安装 Anaconda 的脚本执行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
-
-<p>即可</p>
-<p>附，想要更新 base 环境的 Python 版本的话可以参考 <a href="https://www.cnblogs.com/ruhai/p/12684838.html">升级Anaconda默认的python版本</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
 </search>
