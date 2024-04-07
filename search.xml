@@ -1,6 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>gitbook 执行出错处理</title>
+    <url>/2023/02/38c89d47/</url>
+    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
+<span id="more"></span>
+
+<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当前环境</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
+<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
+<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：</p>
+<p><a href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>gridea 对接百度&amp;谷歌统计</title>
+    <url>/2023/02/e8fb5eb8/</url>
+    <content><![CDATA[<blockquote>
+<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
+</blockquote>
+<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
+<li>登录到百度统计</li>
+<li>在账户设置的【网站列表】添加自己的博客网站</li>
+</ol>
+<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
+<ol start="3">
+<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
+</li>
+<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
+<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
+<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
+</li>
+<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
+</li>
+<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
+<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
+</li>
+<li><p>搞定。</p>
+</li>
+</ol>
+<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
+<ol>
+<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
+</li>
+<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
+<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
+</li>
+<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
+<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
+</li>
+<li><p>【关于您的商家】随便填</p>
+</li>
+<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
+<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
+</li>
+<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
+</li>
+<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
+</li>
+<li><p>搞定</p>
+</li>
+</ol>
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
+<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
+<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
+<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo 博客操作记录</title>
+    <url>/2024/04/2607021d/</url>
+    <content><![CDATA[<p>一年后的今天，我忽发奇想准备梳理一下脑海的知识，然后踌躇满志的我很不幸地发现自己把一年前搞的博客给忘了，以致于陷入如何新建一个博客文章的搞笑境地。</p>
+<p>翻到 hexo 的官方网站，似乎已经有点不认识了，很显然 hexo 也在前行。</p>
+<p>那还是记一下自己用的版本操作吧，如果还想得起来的话？</p>
+<h2 id="新建博客"><a href="#新建博客" class="headerlink" title="新建博客"></a>新建博客</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &#x27;文章名&#x27; -p &#x27;目录名&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>目录名是相对路径，在 hwqDqwh.github.io&#x2F;source&#x2F;_post 内，如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &#x27;hexo 博客操作记录&#x27; -p &#x27;blog/hexo 博客操作记录&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我以前是有通过 hexo-abbrlink 生成永久路径的，但是上述 new 命令并没有生成，这是个问题</p>
+<p>发布</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo s </span><br><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo g</span><br></pre></td></tr></table></figure>
+
+<p> Cl 是啥我已经忘了，以下也找不到</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>基于 github.io 博客的 gitbook 搭建</title>
+    <url>/2023/02/ad836518/</url>
+    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
+<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
+<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
+<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
+<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
+
+<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
+
+<p>然后提交 gitbook 项目 到 github 仓库</p>
+<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
+<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
+<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
+<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
+<p>最终效果：</p>
+<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
+<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
+<p>优点：</p>
+<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
+<p>缺点：</p>
+<ul>
+<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
+</li>
+<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
+</li>
+<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
+</li>
+<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
+</li>
+</ul>
+<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
+<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>filebeat 和 logstash 的关系</title>
+    <url>/2023/02/53c6448/</url>
+    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
+<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
+<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
+<p>目前学习的程度看应该是很准确的比喻。</p>
+<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logsvvtash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
+<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
+<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>elasticsearch</tag>
+        <tag>filebeat</tag>
+        <tag>kibana</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>es 基础概念</title>
     <url>/2023/02/3fe4a59a/</url>
     <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>es 主旨是随时可用和按需扩容</p>
@@ -249,120 +433,6 @@
       </tags>
   </entry>
   <entry>
-    <title>filebeat 和 logstash 的关系</title>
-    <url>/2023/02/53c6448/</url>
-    <content><![CDATA[<p>在了解 ELK 的架构过程中，发现我们的服务部署还是用到了 filebeat，顺带也一并了解下，然后就发现貌似 filebeat 和 logstash 都是负责收集日志的，这下就很有必要深入了解下了。</p>
-<h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><p>看到知乎有个很有意思的比喻：</p>
-<p>filebeat 和 logstash 的关系就像环卫工人和垃圾车，垃圾车自己也可以自动将垃圾倒上车，但是会吵到你，有环卫工人配合的话就不会打扰你了。</p>
-<p>目前学习的程度看应该是很准确的比喻。</p>
-<h1 id="历史渊源"><a href="#历史渊源" class="headerlink" title="历史渊源"></a>历史渊源</h1><p>关于这两个工具的开发者也是有故事的，logstash 的作者原本为了优化 logstash 的日志采集写了个新的 logstash-forwarder，加入 elastic 公司以后，将 logstash-forwarder 和公司内部的另一个项目 packetbeat 合并后命名为 filebeat，从此 filebeat 成为 beats 的一员。</p>
-<h1 id="架构关系"><a href="#架构关系" class="headerlink" title="架构关系"></a>架构关系</h1><p>另外下面是网上找到的一张关于这几个服务的架构关系图。</p>
-<p><img src="/../../images/image-20230202145401390.png" alt="image-20230202145401390"></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>elasticsearch</tag>
-        <tag>filebeat</tag>
-        <tag>kibana</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>gitbook 执行出错处理</title>
-    <url>/2023/02/38c89d47/</url>
-    <content><![CDATA[<h1 id="TypeError-cb-apply-is-not-a-function"><a href="#TypeError-cb-apply-is-not-a-function" class="headerlink" title="TypeError: cb.apply is not a function"></a>TypeError: cb.apply is not a function</h1><p>某一天回去写 gitbook，挥洒完汗水准备构建上线，发现自己 gitbook 环境歇菜了。</p>
-<span id="more"></span>
-
-<p>原因是最近在搞 hexo 怒将以前的旧版本 node V10 给删了，导致 gitbook build 出错：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook build</span><br><span class="line">/Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287</span><br><span class="line">      if (cb) cb.apply(this, arguments)</span><br><span class="line">                 ^</span><br><span class="line"></span><br><span class="line">TypeError: cb.apply is not a function</span><br><span class="line">    at /Users/hewenqian/.nvm/versions/node/v19.5.0/lib/node_modules/gitbook-cli/node_modules/npm/node_modules/graceful-fs/polyfills.js:287:18</span><br><span class="line">    at FSReqCallback.oncomplete (node:fs:191:5)</span><br><span class="line"></span><br><span class="line">Node.js v19.5.0</span><br></pre></td></tr></table></figure>
-
-
-
-<p>当前环境</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  gitbook_local gitbook -V</span><br><span class="line">CLI version: 2.3.2</span><br><span class="line">GitBook version: 3.2.3</span><br><span class="line"></span><br><span class="line">➜  gitbook_local node -v</span><br><span class="line">v19.5.0</span><br><span class="line"></span><br><span class="line">➜  gitbook_local npm --version</span><br><span class="line">9.4.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>网上的类似问题很多，大体可以归纳出结论：gitbook 3.2.3 只能适用在 node 10 以下。有两个解决思路，一：重装旧版本环境或 gitbook，二：就地解决！</p>
-<p>自己不是用 nvm 嘛，把 node v10 装回来应该就能解决问题。只是自己用 node 只是需要，注意力不想放在这里，那就得尝试就地解决了。</p>
-<p>vim &#x2F;Users&#x2F;hewenqian&#x2F;.nvm&#x2F;versions&#x2F;node&#x2F;v19.5.0&#x2F;lib&#x2F;node_modules&#x2F;gitbook-cli&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;graceful-fs&#x2F;polyfills.js 检查调用，将该文件的第 62-64 行注释掉，亲测有效！</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// fs.stat = statFix(fs.stat)</span><br><span class="line">// fs.fstat = statFix(fs.fstat)</span><br><span class="line">// fs.lstat = statFix(fs.lstat)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>参考：</p>
-<p><a href="https://stackoverflow.com/questions/63214997/typeerror-cb-apply-is-not-a-function">解决问题参考</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>gridea 对接百度&amp;谷歌统计</title>
-    <url>/2023/02/e8fb5eb8/</url>
-    <content><![CDATA[<blockquote>
-<p>谁不好奇自己的博客王章每天有没有访问量呢，嘻嘻</p>
-</blockquote>
-<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><ol>
-<li>登录到百度统计</li>
-<li>在账户设置的【网站列表】添加自己的博客网站</li>
-</ol>
-<p><img src="/../../images/image-20230130171829973.png" alt="image-20230130171829973"></p>
-<ol start="3">
-<li><p>网站添加完以后在网站列表的操作列，点击【获取代码】</p>
-</li>
-<li><p>如果是自建网站，就将整块 js 代码复制贴到自己网站下。gridea 的话只需要提取其中的 ID 填入 gridea 客户端设置里即可</p>
-<p><img src="/../../images/image-20230130172143421.png" alt="image-20230130172143421"></p>
-<p><img src="/../../images/image-20230130172227849.png" alt="image-20230130172227849"></p>
-</li>
-<li><p>保存 gridea 设置并同步，等待几分钟保证设置生效。</p>
-</li>
-<li><p>接着可以回到网站列表，点击【代码检查】，百度会检查站点的统计 ID 是否已就绪。</p>
-<p><img src="/../../images/image-20230130172315380.png" alt="image-20230130172315380"></p>
-</li>
-<li><p>搞定。</p>
-</li>
-</ol>
-<h2 id="谷歌统计"><a href="#谷歌统计" class="headerlink" title="谷歌统计"></a>谷歌统计</h2><p>谷歌统计就有点难受了，主要是因为 gridea 只支持谷歌旧版的 Google Analytics。关键在于谷歌强推新版 GA4，并且将于 2023-07 停止收集 Google Analytics，看 gridea 作者能否尽快迭代跟进了。如果届时没有支持的话，也许可以试下在 gridea【基础配置-底部信息】直接贴谷歌的 js 代码，未验证。</p>
-<ol>
-<li><p>登录谷歌账号到谷歌统计，点击谷歌统计后台右下角的【管理】</p>
-</li>
-<li><p>首先我们需要申请一个谷歌统计账号，点击管理界面中的【创建账号】，创建账号主要分三步分别是账号开设、媒体资源设置、关于您的商家。【账号开设】看情况填</p>
-<p><img src="/../../images/image-20230130173738614.png" alt="image-20230130173738614"></p>
-</li>
-<li><p>使用旧版 Google Analytics 的话，需要注意在【媒体资源设置】时，点击【显示高级选项】并打开【创建 Universal Analytics 媒体资源】。这里谷歌也有红字提醒了 20230701 停止服务的信息。下面选【同时创建 GA 和 GA4 媒体资源】（另一个也行）</p>
-<p><img src="/../../images/image-20230130174043492.png" alt="image-20230130174043492"></p>
-</li>
-<li><p>【关于您的商家】随便填</p>
-</li>
-<li><p>然后就创建好了，谷歌会跳转到媒体资源详情页。这里没有我们需要的统计 ID，回到上一层，注意看左上角的媒体资源列表，展开其中带 UA 字样的就是我们目前需要的统计 ID（或【跟踪信息-跟踪代码】）</p>
-<p><img src="/../../images/image-20230130174736444.png" alt="image-20230130174736444"></p>
-</li>
-<li><p>复制贴到 gridea 客户端里，保存并同步。</p>
-</li>
-<li><p>没注意到谷歌统计有没有验证 ID 正确性的地方，笔者是自己手动测试数据收集的哈哈。</p>
-</li>
-<li><p>搞定</p>
-</li>
-</ol>
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a href="https://tongji.baidu.com/web5/10000523480/welcome/login">百度统计</a></p>
-<p><a href="https://tongji.baidu.com/web/help/article?id=174&type=0">百度统计文档</a></p>
-<p><a href="https://analytics.google.com/analytics/web">谷歌统计</a></p>
-<p><a href="https://support.google.com/analytics/answer/6132368">谷歌统计文档</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/364820717">UA 和 GA4 的区别</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>go 的 var 和 :=</title>
     <url>/2023/02/9a311670/</url>
     <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
@@ -399,85 +469,6 @@
       </categories>
       <tags>
         <tag>golang</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于 github.io 博客的 gitbook 搭建</title>
-    <url>/2023/02/ad836518/</url>
-    <content><![CDATA[<p>尽管已经搭建了个人博客，依然准备额外搭建一个个人 gitbook。个人博客用于常规笔记和分享，gitbook 则学习、阅读侧重笔记，将线上课程笔记之类的成体系梳理，方便以后查阅。</p>
-<h1 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</span><br><span class="line">nvm install node</span><br><span class="line">nvm install npm</span><br><span class="line">npm install -g gitbook-cli</span><br><span class="line">gitbook -V</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>环境安装完成后，创建两个目录，gitbook 和 git_book_local</p>
-<p>gitbook 是 github 仓库的本地目录，用作版本管理</p>
-<p>gitbook_local 作为本地编辑 gitbook 的工作目录</p>
-<p>markdown 编辑待发布内容并同步到 gitbook_local 目录下，然后执行初始化和构建等操作，操作命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 在新增新目录或初始化时执行</span><br><span class="line">gitbook init</span><br><span class="line"></span><br><span class="line"># 构建静态页面，我发现这个 build 的 --output= 选项没屁用，先不纠结了哈哈</span><br><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line"># 启动本地预览服务器</span><br><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
-
-<p>本地预览没问题后，将 build 构建的 _book 目录内容拷贝到 gitbook 目录下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注意这个 _book 后面的 /</span><br><span class="line">cd ~/apps/gitbook_local</span><br><span class="line">cp -r ./_book/ ../gitbook/</span><br></pre></td></tr></table></figure>
-
-<p>然后提交 gitbook 项目 到 github 仓库</p>
-<p><img src="/../../images/gitbook%E9%A1%B9%E7%9B%AE.png" alt="gitbook项目"></p>
-<p>项目发布后进入 github 项目的 settings -&gt; Pages 开启 GitHub Pages（仅第一次需要），如下</p>
-<p>![github page开启](..&#x2F;..&#x2F;images&#x2F;github page开启.png)</p>
-<p>最终的访问路径 <a href="https://hwqdqwh.github.io/gitbook/">https://hwqdqwh.github.io/gitbook/</a> 贼爽</p>
-<p>最终效果：</p>
-<p><img src="/../../images/%E6%95%88%E6%9E%9C%E5%9B%BE.png" alt="效果图"></p>
-<h1 id="网页端-gitbook"><a href="#网页端-gitbook" class="headerlink" title="网页端 gitbook"></a>网页端 gitbook</h1><p>还试用了 gitbook 的网页端，<a href="https://app.gitbook.com/">https://app.gitbook.com/</a></p>
-<p>优点：</p>
-<p>不需要安装本地环境，注册后关联 github 即可使用，就是快又简单一些</p>
-<p>缺点：</p>
-<ul>
-<li><p>gitbook 线上端发布后是另一个域名 <a href="https://hwqdqwh.gitbook.io/hwqdqwh/">https://hwqdqwh.gitbook.io/hwqdqwh/</a> 与目标不符，我本意还是放在 github pages 下跟博客背靠背</p>
-</li>
-<li><p>gitbook 线上端看了网上关于其版本的迭代，没有提供客户端的编辑工具，只能网站操作不喜欢</p>
-</li>
-<li><p>gitbook 是独立的版本管理（虽然可以同步到 github）</p>
-</li>
-<li><p>gitbook 发布后的页面主题非常不喜欢（它这居中布局略丑）</p>
-</li>
-</ul>
-<p>![gitbook web效果图](..&#x2F;..&#x2F;images&#x2F;gitbook web效果图.png)</p>
-<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h3 id="mac-下-markdown-编辑目录不是-gitbook-local-时的处理"><a href="#mac-下-markdown-编辑目录不是-gitbook-local-时的处理" class="headerlink" title="mac 下 markdown 编辑目录不是 gitbook_local 时的处理"></a>mac 下 markdown 编辑目录不是 gitbook_local 时的处理</h3><p>在创建软链时还遇到 No such file or directory 的奇怪问题</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ln –sf &quot;/Users/hewenqian/markdown/基于\ github.io\ 博客的\ gitbook\ 搭建.md&quot; /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md</span><br><span class="line">ln: /Users/hewenqian/apps/gitbook_local/gitbook/gitbook.md: No such file or directory</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>crontab 任务配置基础</title>
-    <url>/2023/02/fadd76df/</url>
-    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
-<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
-<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
-<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
-<p>动手测一下，crontab -e 添加任务</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
-
-<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>由此可见：</p>
-<ol>
-<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
-<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
-<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
-</ol>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -588,6 +579,12 @@
 <p>-bash: unzip: 未找到命令</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install zip</span><br></pre></td></tr></table></figure>
 
+<p>lsof</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
+
+<p>iostat</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo yum install sysstat</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -597,241 +594,93 @@
       </tags>
   </entry>
   <entry>
-    <title>Anaconda 使用</title>
-    <url>/2023/02/f053b2c8/</url>
-    <content><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。</p>
-<p>miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。</p>
-<span id="more"></span>
-
-<p>Anaconda 中的 conda 则是一个开源跨平台的包管理工具和系统管理工具。关于 conda 包管理和系统管理得分开理解。</p>
-<p>conda 作为包管理工具时一如 pip 之于 Python，用来管理环境包的安装。在 Anaconda 中的 pip 的作用可以视作 conda 的子集。</p>
-<p>作为系统管理工具时，conda 类似 docker 拿来即用的思想，支持快速构建独立虚拟环境，实现进程级别的隔离。不过需要注意 conda 和 docker 的区别：虚拟环境和容器的区别。conda 和 venv、virtualenv 一样通过环境变量（如 $PATH）替换实现环境隔离，虚拟环境安装的工具（如 Python3.8）宿主机也能找到其解释器。所以虚拟环境可以在不激活环境的情况下，通过手动指定完整路径执行不同版本的解释器。而 docker 的容器环境隔离依托 linux 系统的 namespace 技术实现，容器安装的特定版本语言解释器在宿主机是没有的。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先到 Anaconda 官网找到自己想下载的版本，wget 下载并执行之</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh</span><br><span class="line">bash Anaconda3-5.3.1-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
-
-<p>enter 确认，然后是用户协议，输入 yes</p>
-<p>然后是指定安装路径</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda3 will now be installed into this location:</span><br><span class="line">/root/anaconda3</span><br><span class="line">  - Press ENTER to confirm the location</span><br><span class="line">  - Press CTRL-C to abort the installation</span><br><span class="line">  - Or specify a different location below</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后可以选择是否在环境参数中添加 Anaconda 参数，yes</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">installation finished.</span><br><span class="line">Do you wish the installer to initialize Anaconda3</span><br><span class="line">in your /root/.bashrc ? [yes|no]</span><br><span class="line"></span><br><span class="line">[no] &gt;&gt;&gt; yes</span><br></pre></td></tr></table></figure>
-
-<p>是否安装 VSCode，no</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda is partnered with Microsoft! Microsoft VSCode is a streamlined</span><br><span class="line">code editor with support for development operations like debugging, task</span><br><span class="line">running and version control.</span><br><span class="line"></span><br><span class="line">To install Visual Studio Code, you will need:</span><br><span class="line">  - Administrator Privileges</span><br><span class="line">  - Internet connectivity</span><br><span class="line"></span><br><span class="line">Visual Studio Code License: https://code.visualstudio.com/license</span><br><span class="line">Do you wish to proceed with the installation of Microsoft VSCode? [yes|no]</span><br><span class="line">&gt;&gt;&gt; no</span><br></pre></td></tr></table></figure>
-
-<p>完成，验证一下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 刷新环境变量</span><br><span class="line">source .bash_profile</span><br><span class="line"></span><br><span class="line"># 校验</span><br><span class="line">conda</span><br><span class="line"></span><br><span class="line"># 看到诸如以下的 help 指南就是成功了</span><br><span class="line">usage: conda [-h] [-V] command ...</span><br><span class="line">conda is a tool for managing and deploying applications, environments and packages.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+    <title></title>
+    <url>/2023/09/0/</url>
+    <content><![CDATA[<h1 id="更新-openssl"><a href="#更新-openssl" class="headerlink" title="更新 openssl"></a>更新 openssl</h1><p>发现自己 KVM 上面的 openssl 版本还是 1.0.2，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.0.2k-fips  26 Jan 2017</span><br></pre></td></tr></table></figure>
 
 
 
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>使用命令看一下 <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html">conda文档</a> 就好😘</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="No-module-named-conda"><a href="#No-module-named-conda" class="headerlink" title="No module named conda"></a>No module named conda</h3><p>最后记录一下踩的坑</p>
-<p>修改环境的 Python 版本时， 有一次执行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install python=3.8</span><br></pre></td></tr></table></figure>
+<p>在使用 composer 时发现该版本还存在 ssl 证书的 bug，</p>
+<p><a href="https://github.com/composer/composer/issues/10759">https://github.com/composer/composer/issues/10759</a></p>
+<p>更新一下版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://www.openssl.org/source/openssl-1.1.1i.tar.gz --no-check-certificate</span><br><span class="line">tar -xzvf openssl-1.1.1i.tar.gz</span><br><span class="line">cd openssl-1.1.1i</span><br><span class="line">./config</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
 
-<p>得到了奇怪的报错：ModuleNotFoundError: No module named ‘conda’ 可有点秀，conda 报错没有名为 conda 的模块吗哈哈</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Preparing transaction: done</span><br><span class="line">Verifying transaction: done</span><br><span class="line">Executing transaction: done</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">	File &quot;/root/anaconda3/bin/conda&quot;, line 7, in &lt;module&gt;</span><br><span class="line">		from conda.cli import main</span><br><span class="line">		</span><br><span class="line">ModuleNotFoundError: No module named &#x27;conda&#x27;</span><br></pre></td></tr></table></figure>
 
-<p>其实这类问题很普遍，几乎都是环境变量配置问题，常见于修改 base 环境的 Python 版本导致解释器找不到当前 conda 包。所以不要随便修改 base 环境 Python 版本，可以多开个虚拟环境嘛</p>
-<p>解决的话只要找回之前安装 Anaconda 的脚本执行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
 
-<p>即可</p>
-<p>附，想要更新 base 环境的 Python 版本的话可以参考 <a href="https://www.cnblogs.com/ruhai/p/12684838.html">升级Anaconda默认的python版本</a></p>
+<p>安装后报错 openssl: error while loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory，继续执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/libssl.so.1.1</span><br><span class="line">sudo ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后重新打开回话，openssl version 就是新的版本了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.1.1i  8 Dec 2020</span><br></pre></td></tr></table></figure>
+
 ]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
   </entry>
   <entry>
-    <title>Python __init__ 和 __new__</title>
-    <url>/2023/02/b1009463/</url>
-    <content><![CDATA[<p>__init__ 是初始化方法，没有返回值</p>
-<p>__new__ 才是真正的构造方法，返回当前类实例化对象</p>
-<span id="more"></span>
+    <title>crontab 任务配置基础</title>
+    <url>/2023/02/fadd76df/</url>
+    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
+<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
+<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
+<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
+<p>动手测一下，crontab -e 添加任务</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
 
-<h1 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ python python3 study/init_new.py</span><br><span class="line">this is new</span><br><span class="line">this is init</span><br><span class="line">called by u</span><br><span class="line">➜ python</span><br></pre></td></tr></table></figure>
-
-<p>输出表明了 __init__，__new__ 和 常规函数的调用顺序是 new &gt; init &gt; others</p>
-<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
-<p>需要注意的是：解释器是依据 __new__ 返回的对象调用 __init__ 的，所以如果 __new__ 中返回了其它类的实例对象，将调用其它类的 __init__ 而不是当前类的 __init__ 。</p>
-<p>例如将上述代码的 return super().__new__(cls) 修改为 return object() 后，仅会得到 this is new 的输出</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
-<p><a href="https://peps.python.org/pep-3114/">PEP 3114 new 重命名为 __new__</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pstree/strace/traceroute 和 lsof</title>
-    <url>/2023/02/92e8b7bd/</url>
-    <content><![CDATA[<p>记录几个常用的 linux 命令</p>
-<ul>
-<li>pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替</li>
-<li>strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb</li>
-<li>traceroute: 跟踪当前到目的主机数据报传输链路的命令</li>
-<li>lsof: 基于一切皆文件的系统文件描述符查看命令</li>
-</ul>
-<span id="more"></span>
-
-<h1 id="pstree"><a href="#pstree" class="headerlink" title="pstree"></a>pstree</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mac</span><br><span class="line">brew install pstree</span><br><span class="line"></span><br><span class="line">#Fedora/Red Hat/CentOS</span><br><span class="line">yum -y install psmisc</span><br><span class="line"></span><br><span class="line">#Ubuntu/Debian</span><br><span class="line">apt-get install psmisc</span><br></pre></td></tr></table></figure>
+<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 
 
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">             [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line"></span><br><span class="line">pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">-a, --arguments     show command line arguments</span><br><span class="line">                    显示进程的完整指令及参数</span><br><span class="line">-A, --ascii               use ASCII line drawing characters</span><br><span class="line">-c, --compact         don&#x27;t compact identical subtrees</span><br><span class="line">-h, --highlight-all   highlight current process and its ancestors</span><br><span class="line">                       突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因</span><br><span class="line">-H PID, --highlight-pid=PID highlight this process and its ancestors</span><br><span class="line">-g, --show-pgids    show process group ids; implies -c</span><br><span class="line">-G, --vt100           use VT100 line drawing characters</span><br><span class="line">-l, --long              don&#x27;t truncate long lines</span><br><span class="line">                         超长指令不再用 ... 代替</span><br><span class="line">-n, --numeric-sort  sort output by PID</span><br><span class="line">                           按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效</span><br><span class="line">-N type,--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)</span><br><span class="line">-p, --show-pids       show PIDs; implies -c</span><br><span class="line">                          显示 PID</span><br><span class="line">-s, --show-parents    show parents of the selected process</span><br><span class="line">                          显示父级进程</span><br><span class="line">-S, --ns-changes      show namespace transitions</span><br><span class="line">-u, --uid-changes     show uid transitions</span><br><span class="line">-U, --unicode         use UTF-8 (Unicode) line drawing characters</span><br><span class="line">-V, --version         display version information</span><br><span class="line">-Z,--security-context   show SELinux security contexts</span><br><span class="line"></span><br><span class="line">PID    start at this PID; default is 1 (init)</span><br><span class="line">USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看全部进程的树形</span><br><span class="line">pstree -anp</span><br><span class="line"></span><br><span class="line"># 根据进程号查看所在树的信息</span><br><span class="line">pstree -anps pid</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install strace</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="文档-1"><a href="#文档-1" class="headerlink" title="文档"></a>文档</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...</span><br><span class="line">             [-a column] [-o file] [-s strsize] [-P path]...</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line">   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line"></span><br><span class="line">Output format:</span><br><span class="line">  -a column      alignment COLUMN for printing syscall results (default 40)</span><br><span class="line">                    将系统调用结果根据字段对齐,默认 为40.</span><br><span class="line">  -i             print instruction pointer at time of syscall</span><br><span class="line">  -k             obtain stack trace between each syscall</span><br><span class="line">  -o file        send trace output to FILE instead of stderr                            </span><br><span class="line">  -q             suppress messages about attaching, detaching, etc. </span><br><span class="line">  -r             print relative timestamp</span><br><span class="line">               印出相对时间关于,,每一个系统调用.</span><br><span class="line">  -s strsize     limit length of print strings to STRSIZE chars (default 32)</span><br><span class="line">               指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)</span><br><span class="line">  -t             print absolute timestamp</span><br><span class="line">               在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间</span><br><span class="line">  -tt            print absolute timestamp with usecs</span><br><span class="line">               在输出中的每一行前加上时间信息,微秒级.</span><br><span class="line">     -T             print time spent in each syscall</span><br><span class="line">                   每次调用最后显示消耗时间</span><br><span class="line">  -x             print non-ascii strings in hex</span><br><span class="line">               以十六进制打印非 ascii 字符串</span><br><span class="line">  -xx            print all strings in hex</span><br><span class="line">               所有字符串以十六进制形式输出.</span><br><span class="line">  -X format      set the format for printing of named constants and flags</span><br><span class="line">  -y             print paths associated with file descriptor arguments</span><br><span class="line">  -yy            print protocol specific information associated with socket file descriptors</span><br><span class="line"></span><br><span class="line">Statistics:</span><br><span class="line">  -c            count time, calls, and errors for each syscall and report summary </span><br><span class="line">               统计每一系统调用的所执行的时间,次数和出错的次数等.</span><br><span class="line">  -C             like -c but also print regular output</span><br><span class="line">  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs</span><br><span class="line">  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)</span><br><span class="line">               针对性排序</span><br><span class="line">  -w             summarise syscall latency (default is system time)</span><br><span class="line"></span><br><span class="line">Filtering:</span><br><span class="line">  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...</span><br><span class="line">    options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm</span><br><span class="line">  -P path        trace accesses to path                                                     </span><br><span class="line"></span><br><span class="line">Tracing:</span><br><span class="line">  -b execve      detach on execve syscall</span><br><span class="line">  -D             run tracer process as a detached grandchild, not as parent</span><br><span class="line">  -f             follow forks</span><br><span class="line">               跟踪由fork调用所产生的子进程.</span><br><span class="line">  -ff            follow forks with output into separate files</span><br><span class="line">               如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.</span><br><span class="line">  -I interruptible</span><br><span class="line"></span><br><span class="line">    1:          no signals are blocked</span><br><span class="line">    2:          fatal signals are blocked while decoding syscall (default)</span><br><span class="line">    3:          fatal signals are always blocked (default if &#x27;-o FILE PROG&#x27;)</span><br><span class="line">    4:          fatal signals and SIGTSTP (^Z) are always blocked</span><br><span class="line">                (useful to make &#x27;strace -o FILE PROG&#x27; not stop on ^Z)</span><br><span class="line"></span><br><span class="line">Startup:</span><br><span class="line"></span><br><span class="line">  -E var         remove var from the environment for command</span><br><span class="line">  -E var=val     put var=val in the environment for command</span><br><span class="line">  -p pid         trace process with process id PID, may be repeated</span><br><span class="line">               跟踪指定的进程pid.</span><br><span class="line">  -u username    run command as username handling setuid and/or setgid</span><br><span class="line">               以username的UID和GID执行被跟踪的命令</span><br><span class="line"></span><br><span class="line">Miscellaneous:</span><br><span class="line"></span><br><span class="line">  -d             enable debug output to stderr</span><br><span class="line">               输出strace关于标准错误的调试信息.,这个输出现在还不会看</span><br><span class="line">  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  </span><br><span class="line">  -h             print help message</span><br><span class="line">  -V             print version                  </span><br></pre></td></tr></table></figure>
-
-
-
-<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier&#x3D;][!]value1[,value2]…</p>
-<p>qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace&#x3D;open,表示只跟踪open调用.而-etrace!&#x3D;open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\</p>
-<p>-e trace&#x3D;set 只跟踪指定的系统 调用.例如:-e trace&#x3D;open,close,rean,write表示只跟踪这四个系统调用.默认的为set&#x3D;all.</p>
-<p>-e trace&#x3D;file 只跟踪有关文件操作的系统调用.</p>
-<p>-e trace&#x3D;process 只跟踪有关进程控制的系统调用.</p>
-<p>-e trace&#x3D;network 跟踪与网络有关的所有系统调用.</p>
-<p>-e strace&#x3D;signal 跟踪所有与系统信号有关的 系统调用</p>
-<p>-e trace&#x3D;ipc 跟踪所有与进程通讯有关的系统调用</p>
-<p>-e abbrev&#x3D;set 设定strace输出的系统调用的结果集.-v 等与 abbrev&#x3D;none.默认为abbrev&#x3D;all.</p>
-<p>-e raw&#x3D;set 将指定的系统调用的参数以十六进制显示.</p>
-<p>-e signal&#x3D;set 指定跟踪的系统信号.默认为all.如 signal&#x3D;!SIGIO(或者signal&#x3D;!io),表示不跟踪SIGIO信号.</p>
-<p>-e read&#x3D;set 输出从指定文件中读出 的数据.例如: -e read&#x3D;3,5</p>
-<p>-e write&#x3D;set 输出写入到指定文件中的数据.</p>
-<h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记</span><br><span class="line"></span><br><span class="line">2021年 12月 08日 星期三 18:23:50 CST</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 61.33    0.000655         164         4           open</span><br><span class="line"> 10.49    0.000112          11        10           mmap</span><br><span class="line">  6.09    0.000065          16         4           mprotect</span><br><span class="line">  4.96    0.000053          13         4           brk</span><br><span class="line">  3.93    0.000042          14         3           munmap</span><br><span class="line">  3.09    0.000033          11         3           read</span><br><span class="line">  3.00    0.000032           5         6           close</span><br><span class="line">  3.00    0.000032           5         6           fstat</span><br><span class="line">  1.69    0.000018          18         1         1 access</span><br><span class="line">  1.22    0.000013          13         1           execve</span><br><span class="line">  0.66    0.000007           7         1           arch_prctl</span><br><span class="line">  0.56    0.000006           6         1           write</span><br><span class="line">  0.00    0.000000           0         1           lseek</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.001068                    45         1 total</span><br><span class="line"></span><br><span class="line"># strace -cp 18700 统计进程各个系统调用的时间消耗</span><br><span class="line">strace: Process 18700 attached</span><br><span class="line">^Cstrace: Process 18700 detached</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 34.48    0.002522          10       256           poll</span><br><span class="line"> 34.24    0.002505          12       206           sendto</span><br><span class="line"> 27.66    0.002023           8       257           recvfrom</span><br><span class="line">  3.47    0.000254          64         4           write</span><br><span class="line">  0.15    0.000011          11         1           restart_syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.007315                   724           total</span><br><span class="line"></span><br><span class="line"># strace -Tp 16266 统计每个系统调用的耗时</span><br><span class="line"># 每行的最后使用&lt;&gt;展示调用的耗时,单位</span><br><span class="line">......</span><br><span class="line">read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;</span><br><span class="line">lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;</span><br><span class="line">read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;</span><br><span class="line">read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;</span><br><span class="line">write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;</span><br><span class="line">write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;</span><br><span class="line">write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;</span><br><span class="line">write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;</span><br><span class="line">write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;</span><br><span class="line">pselect6(1, [0], NULL, NULL, &#123;3, 0&#125;, &#123;[WINCH], 8&#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"># strace -e trace=network ping 127.0.0.1</span><br><span class="line"># -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用</span><br><span class="line">socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)</span><br><span class="line">socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3</span><br><span class="line">connect(3, &#123;sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, 16) = 0</span><br><span class="line">getsockname(3, &#123;sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, [16]) = 0</span><br><span class="line">ping: icmp open socket: 不允许的操作</span><br><span class="line">+++ exited with 2 +++</span><br><span class="line"></span><br><span class="line"># strace -tt -s 10 -o test.txt 5912</span><br><span class="line"># 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中</span><br><span class="line"># -o test.txt 等价于 2&gt;text.txt</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install traceroute</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="文档-2"><a href="#文档-2" class="headerlink" title="文档"></a>文档</h2><p>traceroute 命令用于追踪数据包在网络传输过程中的路径</p>
-<p>traceroute 输出每行表示一个网关,每行包含三个时间</p>
-<p>有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了</p>
-<p>traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -4                          Use IPv4</span><br><span class="line">  -6                          Use IPv6</span><br><span class="line">  -d  --debug                 Enable socket level debugging</span><br><span class="line">  -F  --dont-fragment         Do not fragment packets</span><br><span class="line">  -f first_ttl  --first=first_ttl</span><br><span class="line">                             Start from the first_ttl hop (instead from 1)</span><br><span class="line">  -g gate,...  --gateway=gate,...</span><br><span class="line">                             Route packets through the specified gateway</span><br><span class="line">                             (maximum 8 for IPv4 and 127 for IPv6)</span><br><span class="line">  -I  --icmp                  Use ICMP ECHO for tracerouting</span><br><span class="line">  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)</span><br><span class="line">  -i device  --interface=device</span><br><span class="line">                             Specify a network interface to operate with</span><br><span class="line">  -m max_ttl  --max-hops=max_ttl</span><br><span class="line">                             Set the max number of hops (max TTL to be</span><br><span class="line">                             reached). Default is 30</span><br><span class="line">  -N squeries  --sim-queries=squeries</span><br><span class="line">                             Set the number of probes to be tried</span><br><span class="line">                             simultaneously (default is 16)</span><br><span class="line">  -n                          Do not resolve IP addresses to their domain names</span><br><span class="line">                               直接使用IP地址而非主机名称</span><br><span class="line">  -p port  --port=port        Set the destination port to use. It is either</span><br><span class="line">                             initial udp port value for &quot;default&quot; method</span><br><span class="line">                             (incremented by each probe, default is 33434), or</span><br><span class="line">                             initial seq for &quot;icmp&quot; (incremented as well,</span><br><span class="line">                             default from 1), or some constant destination</span><br><span class="line">                             port for other methods (with default of 80 for</span><br><span class="line">                             &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)</span><br><span class="line">  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6</span><br><span class="line">                             traffic class) value for outgoing packets</span><br><span class="line">  -l flow_label  --flowlabel=flow_label</span><br><span class="line">                             Use specified flow_label for IPv6 packets</span><br><span class="line"></span><br><span class="line">  -w waittime  --wait=waittime</span><br><span class="line">                             Set the number of seconds to wait for response to</span><br><span class="line">                             a probe (default is 5.0). Non-integer (float</span><br><span class="line">                             point) values allowed too</span><br><span class="line"></span><br><span class="line">  -q nqueries  --queries=nqueries</span><br><span class="line">                             Set the number of probes per each hop. Default is3</span><br><span class="line"></span><br><span class="line">  -r                          Bypass the normal routing and send directly to a</span><br><span class="line">                             host on an attached network</span><br><span class="line">                             忽略普通的Routing Table，直接将数据包送到远端主机上</span><br><span class="line"></span><br><span class="line">  -s src_addr  --source=src_addr</span><br><span class="line">                             Use source src_addr for outgoing packets</span><br><span class="line"></span><br><span class="line">  -z sendwait  --sendwait=sendwait</span><br><span class="line">                             Minimal time interval between probes (default 0).</span><br><span class="line">                             If the value is more than 10, then it specifies a</span><br><span class="line">                             number in milliseconds, else it is a number of</span><br><span class="line">                             seconds (float point values allowed too)</span><br><span class="line"></span><br><span class="line">  -e  --extensions            Show ICMP extensions (if present), including MPLS</span><br><span class="line"></span><br><span class="line">  -A  --as-path-lookups       Perform AS path lookups in routing registries and</span><br><span class="line">                             print results directly after the corresponding</span><br><span class="line">                             addresses</span><br><span class="line"></span><br><span class="line">  -M name  --module=name      Use specified module (either builtin or external)</span><br><span class="line">                             for traceroute operations. Most methods have</span><br><span class="line">                             their shortcuts (`-I&#x27; means `-M icmp&#x27; etc.)</span><br><span class="line"></span><br><span class="line">  -O OPTS,...  --options=OPTS,...</span><br><span class="line">                             Use module-specific option OPTS for the</span><br><span class="line">                             traceroute module. Several OPTS allowed,</span><br><span class="line">                             separated by comma. If OPTS is &quot;help&quot;, print info</span><br><span class="line">                             about available options</span><br><span class="line"></span><br><span class="line">  --sport=num                 Use source port num for outgoing packets. Implies</span><br><span class="line">                             `-N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --fwmark=num                Set firewall mark for outgoing packets</span><br><span class="line">  </span><br><span class="line">  -U  --udp                   Use UDP to particular port for tracerouting</span><br><span class="line">                             (instead of increasing the port per each probe),</span><br><span class="line">                             default port is 53</span><br><span class="line"></span><br><span class="line">  -UL                         Use UDPLITE for tracerouting (default dest port</span><br><span class="line">                             is 53)</span><br><span class="line"></span><br><span class="line">  -D  --dccp                  Use DCCP Request for tracerouting (default port</span><br><span class="line">                             is 33434)</span><br><span class="line"></span><br><span class="line">  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting</span><br><span class="line"></span><br><span class="line">  --mtu                       Discover MTU along the path being traced. Implies</span><br><span class="line">                             `-F -N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --back                      Guess the number of hops in the backward path and</span><br><span class="line">                             print if it differs</span><br><span class="line"></span><br><span class="line">  -V  --version               Print version info and exit</span><br><span class="line"></span><br><span class="line">  --help                      Read this help and exit</span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">\+     host          The host to traceroute to</span><br><span class="line">     packetlen     The full packet length (default is the length of an IP</span><br><span class="line">                   header plus 40). Can be ignored or increased to a minimal</span><br><span class="line">                   allowed value</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令-2"><a href="#常用命令-2" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示</span><br><span class="line">traceroute -n www.baidu.com</span><br><span class="line"></span><br><span class="line"># 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误</span><br><span class="line">traceroute -r www.baidu.com</span><br><span class="line"></span><br><span class="line"># 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的</span><br><span class="line">traceroute -4 www.baidu.com</span><br><span class="line">traceroute -6 www.baidu.com</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h1><h2 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="文档-3"><a href="#文档-3" class="headerlink" title="文档"></a>文档</h2><p>lsof 命令用于查看系统进程打开的文件</p>
-<p>在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsof 4.87</span><br><span class="line"></span><br><span class="line"> latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/</span><br><span class="line"> latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ</span><br><span class="line"> latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man</span><br><span class="line"> usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]</span><br><span class="line"> [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]</span><br><span class="line">[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]</span><br><span class="line"></span><br><span class="line">Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.</span><br><span class="line">  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks</span><br><span class="line">  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files</span><br><span class="line">  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*</span><br><span class="line">  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers</span><br><span class="line">  -n no host names         -N select NFS files        -o list file offset</span><br><span class="line">  -O no overhead *RISKY*   -P no port names           -R list paRent PID</span><br><span class="line">  -s list file size        -t terse listing           -T disable TCP/TPI info</span><br><span class="line">  -U select Unix socket    -v list version info       -V verbose search</span><br><span class="line">  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]</span><br><span class="line">  </span><br><span class="line">  -- end option scan</span><br><span class="line">  +f|-f  +filesystem or -file names     +|-f[gG] flaGs</span><br><span class="line">  -F [f] select fields; -F? for help</span><br><span class="line">  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)</span><br><span class="line">                                       +m [m] use|create mount supplement</span><br><span class="line">  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)</span><br><span class="line">  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)</span><br><span class="line">  -T qs TCP/TPI Q,St (s) info</span><br><span class="line">  -g [s] exclude(^)|select and print process group IDs</span><br><span class="line">  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.</span><br><span class="line">      An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and</span><br><span class="line">     &lt;fmt&gt; is an strftime(3) format for the marker line.</span><br><span class="line">  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).</span><br><span class="line">  -u s   exclude(^)|select login|UID set s</span><br><span class="line">  -x [fl] cross over +d|+D File systems or symbolic Links</span><br><span class="line">  names  select named files or files on named file systems</span><br><span class="line">Anyone can list all files; /dev warnings disabled; kernel ID check disabled.</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看某进程打开的文件</span><br><span class="line">lsof -p pid</span><br><span class="line"></span><br><span class="line"># 查看正在使用某端口进程</span><br><span class="line">lsof -i:80</span><br><span class="line"></span><br><span class="line"># 列出打开文件的进程</span><br><span class="line">lsof $filename</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>由 map 深入理解 yield 和生成器</title>
-    <url>/2023/02/38446edf/</url>
-    <content><![CDATA[<p>首先看下 map 方法的使用代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    map_iter = <span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * x, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1, 4, 9]</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
-
-<p>可以看到输出两次 map_iter 中的值只有第一次正常获取了，后面拿到的都是空。这里是因为 map 内部的 yield 使用。</p>
-<h1 id="map-中的-yield"><a href="#map-中的-yield" class="headerlink" title="map 中的 yield"></a>map 中的 yield</h1><blockquote>
-<p>map(func, list[ , list]) 列表中的 list 依次调用函数 func</p>
-</blockquote>
-<p>查阅文档 <a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a> 可以看到</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().</span></span><br><span class="line"><span class="comment"># 当函数输入形如元组时，参见 itertools.starmap().</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The difference between map() and starmap() parallels the distinction between function(a,b) and function(*c)</span></span><br><span class="line"><span class="comment"># map() 和 starmap() 的区别是参数形式</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># starmap 源码示例</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">starmap</span>(<span class="params">function, iterable</span>):</span><br><span class="line">    <span class="comment"># starmap(pow, [(2,5), (3,2), (10,3)]) --&gt; 32 9 1000</span></span><br><span class="line">    <span class="keyword">for</span> args <span class="keyword">in</span> iterable:</span><br><span class="line">        <span class="keyword">yield</span> function(*args)</span><br></pre></td></tr></table></figure>
-
-<p>由此我们明确了 map 方法实现基于 yield，那么为什么 yield 会导致 map 方法返回值只能遍历一次呢</p>
-<h2 id="了解-yield"><a href="#了解-yield" class="headerlink" title="了解 yield"></a>了解 yield</h2><p>包含 yield 关键字的函数称为生成器，生成器是 Python 新引入的概念。</p>
-<p>生成器长得很像普通函数，看上去几乎只是 return 被 yield 代替的感觉。但生成器是一种迭代器，行为跟普通函数有很大区别。</p>
-<p>生成器函数被调用时，函数体的代码不会被执行，而是返回一个迭代器。每请求一次迭代器（g.next() 或 g.__next__()）就执行一次生成器中的代码，直到遇到 yield 和 return。当遇到 yield 时生成一个值输出，然后冻结函数等待下次请求后从冻结的代码处（yield 下一行）继续执行。当遇到 return 时意味着停止该生成器。</p>
-<p>yield 代码使用示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">g = (i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line">g.__next__()</span><br><span class="line"><span class="comment"># output: 4</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">sum</span>(i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># output: 13</span></span><br></pre></td></tr></table></figure>
-
-<p>由此我们理解了 yield 关键在作用是定义生成器，也知道了生成器的执行原理，那么生成器是什么呢？如此我们需要了解可迭代对象、迭代器和生成器。</p>
-<h1 id="可迭代对象"><a href="#可迭代对象" class="headerlink" title="可迭代对象"></a>可迭代对象</h1><blockquote>
-<p>如果一个对象拥有 __iter__ 方法，则称为可迭代对象</p>
-</blockquote>
-<p>对象是否包含 __iter__ 可以通过 dir(object) 检查，我们日常利用循环遍历的对象都是可迭代对象，常见的有列表、元组、字典。可以参见另一篇关于 python.for 循环的博客。</p>
-<p>以下是简单的实现可迭代对象代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterable</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义可迭代对象类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> MyIterator(self.data)  <span class="comment"># 返回该可迭代对象的迭代器类的实例</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><blockquote>
-<p>如果一个可迭代对象拥有 __next__ 函数，则为迭代器</p>
-</blockquote>
-<p>注：__next__ 方法在 Python 2.x 是 new，见 <a href="https://peps.python.org/pep-3114/">PEP 3114</a></p>
-<p>另外需要注意的是 __iter__ 方法要求返回的是具体的迭代器实例。所以在可迭代对象中返回的是对应的迭代器实例，在迭代器中则只需要返回自身。</p>
-<p>以下是简单的迭代器代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterator</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义迭代器类，其是MyList可迭代对象的迭代器类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        self.up = num  <span class="comment"># 上边界</span></span><br><span class="line">        self.now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self  <span class="comment"># 返回该对象的迭代器类的实例；因为自己就是迭代器，所以返回 self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):  <span class="comment"># 迭代器类必须实现的方法</span></span><br><span class="line">        <span class="keyword">while</span> self.now &lt; self.up:</span><br><span class="line">            self.now += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> self.now - <span class="number">1</span>  <span class="comment"># 返回当前迭代值</span></span><br><span class="line">        <span class="keyword">raise</span> StopIteration  <span class="comment"># 超出上边界，抛出异常</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><blockquote>
-<p>生成器则是一种特殊的迭代器，使用 yield 关键字的函数被称为生成器</p>
-</blockquote>
-<p>理解生成器需要注意：</p>
+<p>由此可见：</p>
 <ol>
-<li>生成器支持了更多操作方法（python &gt;&#x3D; 2.5， <a href="https://peps.python.org/pep-0342/">PEP 342</a>），比如允许在迭代过程中修改当前迭代值（生成器与迭代器的主要区别）</li>
-<li>虽然也可以通过类模拟生成器的逻辑，但生成器的定义是使用 yield 关键字</li>
+<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
+<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
+<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
 </ol>
-<p>以下是一段生成器示例代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">myGenerator</span>(<span class="params">num</span>):  <span class="comment"># 定义生成器</span></span><br><span class="line">    now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line">    <span class="keyword">while</span> now &lt; num:</span><br><span class="line">        val = (<span class="keyword">yield</span> now)  <span class="comment"># 返回当前迭代值，并接受可能的send发送值；yield在下面会解释</span></span><br><span class="line">        now = now + <span class="number">1</span> <span class="keyword">if</span> val <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> val  <span class="comment"># val为None，迭代值自增1，否则重新设定当前迭代值为val</span></span><br><span class="line">    <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">my_g = myGenerator(<span class="number">5</span>)  <span class="comment"># 得到一个生成器对象</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__()) <span class="comment"># 返回当前迭代值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(my_g)) <span class="comment"># 等价 my_g.__next__()</span></span><br><span class="line"></span><br><span class="line">my_g.send(<span class="number">3</span>)  <span class="comment"># 重新设定当前的迭代值，Python &gt;= 2.5</span></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__())</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">dir</span>(my_g))  <span class="comment"># 返回该对象所拥有的方法名，可以看到__iter__与__next__在其中</span></span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  python python3 study/generator.py</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">4</span><br><span class="line">[&#x27;__class__&#x27;, &#x27;__del__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__iter__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__name__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__next__&#x27;, &#x27;__qualname__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;close&#x27;, &#x27;gi_code&#x27;, &#x27;gi_frame&#x27;, &#x27;gi_running&#x27;, &#x27;gi_yieldfrom&#x27;, &#x27;send&#x27;, &#x27;throw&#x27;]</span><br><span class="line">➜  python </span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是 send 需要在生成器挂起后（也就是先触发一次 yield）才有意义，否则会报错</p>
-<p>TypeError: can’t send non-None value to a just-started generator</p>
-<p>除此以外生成器在 Python &gt;&#x3D; 2.5 还支持 throw 和 close 方法，作用分别是在生成器内的 yield 表达式中抛出一个异常，和停止生成器，具体可以看 <a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342</a></p>
-<p>关于生成器在 python 底层的运行逻辑，知乎有大佬做了解释：<a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a>，后面关于【再次遇到 yield value2】 的逻辑没看明白，等我完全搞明白了自己写一个整理。。。</p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a></p>
-<p><a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342 生成器增强</a></p>
-<p>《Python 基础教程（第二版·修订版）》</p>
-<p><a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>Python</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/03/0/</url>
+    <content><![CDATA[<h1 id="arch"><a href="#arch" class="headerlink" title="arch"></a>arch</h1><p>用来看服务器底层架构的命令</p>
+<p>输出形如 x86_64 说明是 64 位系统，如果是 i686 或 i386 说明是 32 位系统。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>服务器压力分析</title>
+    <url>/2023/02/fadd76df/</url>
+    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
+<p>五个占位依次对应分钟、小时、日、月、周几，这些很基础不需要太多整理，记住周几取值[0,6]，0 表示周日即可。</p>
+<h1 id="附加"><a href="#附加" class="headerlink" title="附加"></a>附加</h1><h2 id="字段执行形式"><a href="#字段执行形式" class="headerlink" title="字段执行形式"></a>字段执行形式</h2><p>忽然有一天想到一个问题，*&#x2F;45 * * * * 会以怎样的形式执行呢？</p>
+<p>首先肯定是每小时的 45 分都会执行，那么假设上一次执行是 00:45，下一次执行是 01:30 还是其它时间点？</p>
+<p>动手测一下，crontab -e 添加任务</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*/7 * * * * date &gt;&gt; /work/tmp/test_crontab.log</span><br></pre></td></tr></table></figure>
+
+<p>tail -100f &#x2F;work&#x2F;tmp&#x2F;test_crontab.log 静候可以发现，在跨小时时的执行时间为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mon Jun 13 17:30:01 CST 2022 # 第一个是手动执行，为了获得当前时间</span><br><span class="line">Mon Jun 13 17:35:01 CST 2022</span><br><span class="line">Mon Jun 13 17:42:02 CST 2022</span><br><span class="line">Mon Jun 13 17:49:02 CST 2022</span><br><span class="line">Mon Jun 13 17:56:01 CST 2022</span><br><span class="line">Mon Jun 13 18:00:01 CST 2022</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<p>由此可见：</p>
+<ol>
+<li>*&#x2F;7 不是从 crontab -e 创建任务开始算的，而是每小时的 0 分开始算，比如在 00:30 创建了上述任务，下次执行是 00:35 而不是 00:37</li>
+<li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
+<li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
+</ol>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -950,6 +799,95 @@
       </tags>
   </entry>
   <entry>
+    <title>pstree/strace/traceroute 和 lsof</title>
+    <url>/2023/02/92e8b7bd/</url>
+    <content><![CDATA[<p>记录几个常用的 linux 命令</p>
+<ul>
+<li>pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替</li>
+<li>strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb</li>
+<li>traceroute: 跟踪当前到目的主机数据报传输链路的命令</li>
+<li>lsof: 基于一切皆文件的系统文件描述符查看命令</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="pstree"><a href="#pstree" class="headerlink" title="pstree"></a>pstree</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mac</span><br><span class="line">brew install pstree</span><br><span class="line"></span><br><span class="line">#Fedora/Red Hat/CentOS</span><br><span class="line">yum -y install psmisc</span><br><span class="line"></span><br><span class="line">#Ubuntu/Debian</span><br><span class="line">apt-get install psmisc</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">             [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line"></span><br><span class="line">pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">-a, --arguments     show command line arguments</span><br><span class="line">                    显示进程的完整指令及参数</span><br><span class="line">-A, --ascii               use ASCII line drawing characters</span><br><span class="line">-c, --compact         don&#x27;t compact identical subtrees</span><br><span class="line">-h, --highlight-all   highlight current process and its ancestors</span><br><span class="line">                       突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因</span><br><span class="line">-H PID, --highlight-pid=PID highlight this process and its ancestors</span><br><span class="line">-g, --show-pgids    show process group ids; implies -c</span><br><span class="line">-G, --vt100           use VT100 line drawing characters</span><br><span class="line">-l, --long              don&#x27;t truncate long lines</span><br><span class="line">                         超长指令不再用 ... 代替</span><br><span class="line">-n, --numeric-sort  sort output by PID</span><br><span class="line">                           按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效</span><br><span class="line">-N type,--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)</span><br><span class="line">-p, --show-pids       show PIDs; implies -c</span><br><span class="line">                          显示 PID</span><br><span class="line">-s, --show-parents    show parents of the selected process</span><br><span class="line">                          显示父级进程</span><br><span class="line">-S, --ns-changes      show namespace transitions</span><br><span class="line">-u, --uid-changes     show uid transitions</span><br><span class="line">-U, --unicode         use UTF-8 (Unicode) line drawing characters</span><br><span class="line">-V, --version         display version information</span><br><span class="line">-Z,--security-context   show SELinux security contexts</span><br><span class="line"></span><br><span class="line">PID    start at this PID; default is 1 (init)</span><br><span class="line">USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看全部进程的树形</span><br><span class="line">pstree -anp</span><br><span class="line"></span><br><span class="line"># 根据进程号查看所在树的信息</span><br><span class="line">pstree -anps pid</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install strace</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="文档-1"><a href="#文档-1" class="headerlink" title="文档"></a>文档</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...</span><br><span class="line">             [-a column] [-o file] [-s strsize] [-P path]...</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line">   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line"></span><br><span class="line">Output format:</span><br><span class="line">  -a column      alignment COLUMN for printing syscall results (default 40)</span><br><span class="line">                    将系统调用结果根据字段对齐,默认 为40.</span><br><span class="line">  -i             print instruction pointer at time of syscall</span><br><span class="line">  -k             obtain stack trace between each syscall</span><br><span class="line">  -o file        send trace output to FILE instead of stderr                            </span><br><span class="line">  -q             suppress messages about attaching, detaching, etc. </span><br><span class="line">  -r             print relative timestamp</span><br><span class="line">               印出相对时间关于,,每一个系统调用.</span><br><span class="line">  -s strsize     limit length of print strings to STRSIZE chars (default 32)</span><br><span class="line">               指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)</span><br><span class="line">  -t             print absolute timestamp</span><br><span class="line">               在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间</span><br><span class="line">  -tt            print absolute timestamp with usecs</span><br><span class="line">               在输出中的每一行前加上时间信息,微秒级.</span><br><span class="line">     -T             print time spent in each syscall</span><br><span class="line">                   每次调用最后显示消耗时间</span><br><span class="line">  -x             print non-ascii strings in hex</span><br><span class="line">               以十六进制打印非 ascii 字符串</span><br><span class="line">  -xx            print all strings in hex</span><br><span class="line">               所有字符串以十六进制形式输出.</span><br><span class="line">  -X format      set the format for printing of named constants and flags</span><br><span class="line">  -y             print paths associated with file descriptor arguments</span><br><span class="line">  -yy            print protocol specific information associated with socket file descriptors</span><br><span class="line"></span><br><span class="line">Statistics:</span><br><span class="line">  -c            count time, calls, and errors for each syscall and report summary </span><br><span class="line">               统计每一系统调用的所执行的时间,次数和出错的次数等.</span><br><span class="line">  -C             like -c but also print regular output</span><br><span class="line">  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs</span><br><span class="line">  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)</span><br><span class="line">               针对性排序</span><br><span class="line">  -w             summarise syscall latency (default is system time)</span><br><span class="line"></span><br><span class="line">Filtering:</span><br><span class="line">  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...</span><br><span class="line">    options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm</span><br><span class="line">  -P path        trace accesses to path                                                     </span><br><span class="line"></span><br><span class="line">Tracing:</span><br><span class="line">  -b execve      detach on execve syscall</span><br><span class="line">  -D             run tracer process as a detached grandchild, not as parent</span><br><span class="line">  -f             follow forks</span><br><span class="line">               跟踪由fork调用所产生的子进程.</span><br><span class="line">  -ff            follow forks with output into separate files</span><br><span class="line">               如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.</span><br><span class="line">  -I interruptible</span><br><span class="line"></span><br><span class="line">    1:          no signals are blocked</span><br><span class="line">    2:          fatal signals are blocked while decoding syscall (default)</span><br><span class="line">    3:          fatal signals are always blocked (default if &#x27;-o FILE PROG&#x27;)</span><br><span class="line">    4:          fatal signals and SIGTSTP (^Z) are always blocked</span><br><span class="line">                (useful to make &#x27;strace -o FILE PROG&#x27; not stop on ^Z)</span><br><span class="line"></span><br><span class="line">Startup:</span><br><span class="line"></span><br><span class="line">  -E var         remove var from the environment for command</span><br><span class="line">  -E var=val     put var=val in the environment for command</span><br><span class="line">  -p pid         trace process with process id PID, may be repeated</span><br><span class="line">               跟踪指定的进程pid.</span><br><span class="line">  -u username    run command as username handling setuid and/or setgid</span><br><span class="line">               以username的UID和GID执行被跟踪的命令</span><br><span class="line"></span><br><span class="line">Miscellaneous:</span><br><span class="line"></span><br><span class="line">  -d             enable debug output to stderr</span><br><span class="line">               输出strace关于标准错误的调试信息.,这个输出现在还不会看</span><br><span class="line">  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  </span><br><span class="line">  -h             print help message</span><br><span class="line">  -V             print version                  </span><br></pre></td></tr></table></figure>
+
+
+
+<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier&#x3D;][!]value1[,value2]…</p>
+<p>qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace&#x3D;open,表示只跟踪open调用.而-etrace!&#x3D;open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\</p>
+<p>-e trace&#x3D;set 只跟踪指定的系统 调用.例如:-e trace&#x3D;open,close,rean,write表示只跟踪这四个系统调用.默认的为set&#x3D;all.</p>
+<p>-e trace&#x3D;file 只跟踪有关文件操作的系统调用.</p>
+<p>-e trace&#x3D;process 只跟踪有关进程控制的系统调用.</p>
+<p>-e trace&#x3D;network 跟踪与网络有关的所有系统调用.</p>
+<p>-e strace&#x3D;signal 跟踪所有与系统信号有关的 系统调用</p>
+<p>-e trace&#x3D;ipc 跟踪所有与进程通讯有关的系统调用</p>
+<p>-e abbrev&#x3D;set 设定strace输出的系统调用的结果集.-v 等与 abbrev&#x3D;none.默认为abbrev&#x3D;all.</p>
+<p>-e raw&#x3D;set 将指定的系统调用的参数以十六进制显示.</p>
+<p>-e signal&#x3D;set 指定跟踪的系统信号.默认为all.如 signal&#x3D;!SIGIO(或者signal&#x3D;!io),表示不跟踪SIGIO信号.</p>
+<p>-e read&#x3D;set 输出从指定文件中读出 的数据.例如: -e read&#x3D;3,5</p>
+<p>-e write&#x3D;set 输出写入到指定文件中的数据.</p>
+<h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记</span><br><span class="line"></span><br><span class="line">2021年 12月 08日 星期三 18:23:50 CST</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 61.33    0.000655         164         4           open</span><br><span class="line"> 10.49    0.000112          11        10           mmap</span><br><span class="line">  6.09    0.000065          16         4           mprotect</span><br><span class="line">  4.96    0.000053          13         4           brk</span><br><span class="line">  3.93    0.000042          14         3           munmap</span><br><span class="line">  3.09    0.000033          11         3           read</span><br><span class="line">  3.00    0.000032           5         6           close</span><br><span class="line">  3.00    0.000032           5         6           fstat</span><br><span class="line">  1.69    0.000018          18         1         1 access</span><br><span class="line">  1.22    0.000013          13         1           execve</span><br><span class="line">  0.66    0.000007           7         1           arch_prctl</span><br><span class="line">  0.56    0.000006           6         1           write</span><br><span class="line">  0.00    0.000000           0         1           lseek</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.001068                    45         1 total</span><br><span class="line"></span><br><span class="line"># strace -cp 18700 统计进程各个系统调用的时间消耗</span><br><span class="line">strace: Process 18700 attached</span><br><span class="line">^Cstrace: Process 18700 detached</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 34.48    0.002522          10       256           poll</span><br><span class="line"> 34.24    0.002505          12       206           sendto</span><br><span class="line"> 27.66    0.002023           8       257           recvfrom</span><br><span class="line">  3.47    0.000254          64         4           write</span><br><span class="line">  0.15    0.000011          11         1           restart_syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.007315                   724           total</span><br><span class="line"></span><br><span class="line"># strace -Tp 16266 统计每个系统调用的耗时</span><br><span class="line"># 每行的最后使用&lt;&gt;展示调用的耗时,单位</span><br><span class="line">......</span><br><span class="line">read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;</span><br><span class="line">lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;</span><br><span class="line">read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;</span><br><span class="line">read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;</span><br><span class="line">write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;</span><br><span class="line">write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;</span><br><span class="line">write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;</span><br><span class="line">write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;</span><br><span class="line">write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;</span><br><span class="line">pselect6(1, [0], NULL, NULL, &#123;3, 0&#125;, &#123;[WINCH], 8&#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"># strace -e trace=network ping 127.0.0.1</span><br><span class="line"># -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用</span><br><span class="line">socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)</span><br><span class="line">socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3</span><br><span class="line">connect(3, &#123;sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, 16) = 0</span><br><span class="line">getsockname(3, &#123;sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, [16]) = 0</span><br><span class="line">ping: icmp open socket: 不允许的操作</span><br><span class="line">+++ exited with 2 +++</span><br><span class="line"></span><br><span class="line"># strace -tt -s 10 -o test.txt 5912</span><br><span class="line"># 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中</span><br><span class="line"># -o test.txt 等价于 2&gt;text.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install traceroute</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-2"><a href="#文档-2" class="headerlink" title="文档"></a>文档</h2><p>traceroute 命令用于追踪数据包在网络传输过程中的路径</p>
+<p>traceroute 输出每行表示一个网关,每行包含三个时间</p>
+<p>有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了</p>
+<p>traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -4                          Use IPv4</span><br><span class="line">  -6                          Use IPv6</span><br><span class="line">  -d  --debug                 Enable socket level debugging</span><br><span class="line">  -F  --dont-fragment         Do not fragment packets</span><br><span class="line">  -f first_ttl  --first=first_ttl</span><br><span class="line">                             Start from the first_ttl hop (instead from 1)</span><br><span class="line">  -g gate,...  --gateway=gate,...</span><br><span class="line">                             Route packets through the specified gateway</span><br><span class="line">                             (maximum 8 for IPv4 and 127 for IPv6)</span><br><span class="line">  -I  --icmp                  Use ICMP ECHO for tracerouting</span><br><span class="line">  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)</span><br><span class="line">  -i device  --interface=device</span><br><span class="line">                             Specify a network interface to operate with</span><br><span class="line">  -m max_ttl  --max-hops=max_ttl</span><br><span class="line">                             Set the max number of hops (max TTL to be</span><br><span class="line">                             reached). Default is 30</span><br><span class="line">  -N squeries  --sim-queries=squeries</span><br><span class="line">                             Set the number of probes to be tried</span><br><span class="line">                             simultaneously (default is 16)</span><br><span class="line">  -n                          Do not resolve IP addresses to their domain names</span><br><span class="line">                               直接使用IP地址而非主机名称</span><br><span class="line">  -p port  --port=port        Set the destination port to use. It is either</span><br><span class="line">                             initial udp port value for &quot;default&quot; method</span><br><span class="line">                             (incremented by each probe, default is 33434), or</span><br><span class="line">                             initial seq for &quot;icmp&quot; (incremented as well,</span><br><span class="line">                             default from 1), or some constant destination</span><br><span class="line">                             port for other methods (with default of 80 for</span><br><span class="line">                             &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)</span><br><span class="line">  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6</span><br><span class="line">                             traffic class) value for outgoing packets</span><br><span class="line">  -l flow_label  --flowlabel=flow_label</span><br><span class="line">                             Use specified flow_label for IPv6 packets</span><br><span class="line"></span><br><span class="line">  -w waittime  --wait=waittime</span><br><span class="line">                             Set the number of seconds to wait for response to</span><br><span class="line">                             a probe (default is 5.0). Non-integer (float</span><br><span class="line">                             point) values allowed too</span><br><span class="line"></span><br><span class="line">  -q nqueries  --queries=nqueries</span><br><span class="line">                             Set the number of probes per each hop. Default is3</span><br><span class="line"></span><br><span class="line">  -r                          Bypass the normal routing and send directly to a</span><br><span class="line">                             host on an attached network</span><br><span class="line">                             忽略普通的Routing Table，直接将数据包送到远端主机上</span><br><span class="line"></span><br><span class="line">  -s src_addr  --source=src_addr</span><br><span class="line">                             Use source src_addr for outgoing packets</span><br><span class="line"></span><br><span class="line">  -z sendwait  --sendwait=sendwait</span><br><span class="line">                             Minimal time interval between probes (default 0).</span><br><span class="line">                             If the value is more than 10, then it specifies a</span><br><span class="line">                             number in milliseconds, else it is a number of</span><br><span class="line">                             seconds (float point values allowed too)</span><br><span class="line"></span><br><span class="line">  -e  --extensions            Show ICMP extensions (if present), including MPLS</span><br><span class="line"></span><br><span class="line">  -A  --as-path-lookups       Perform AS path lookups in routing registries and</span><br><span class="line">                             print results directly after the corresponding</span><br><span class="line">                             addresses</span><br><span class="line"></span><br><span class="line">  -M name  --module=name      Use specified module (either builtin or external)</span><br><span class="line">                             for traceroute operations. Most methods have</span><br><span class="line">                             their shortcuts (`-I&#x27; means `-M icmp&#x27; etc.)</span><br><span class="line"></span><br><span class="line">  -O OPTS,...  --options=OPTS,...</span><br><span class="line">                             Use module-specific option OPTS for the</span><br><span class="line">                             traceroute module. Several OPTS allowed,</span><br><span class="line">                             separated by comma. If OPTS is &quot;help&quot;, print info</span><br><span class="line">                             about available options</span><br><span class="line"></span><br><span class="line">  --sport=num                 Use source port num for outgoing packets. Implies</span><br><span class="line">                             `-N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --fwmark=num                Set firewall mark for outgoing packets</span><br><span class="line">  </span><br><span class="line">  -U  --udp                   Use UDP to particular port for tracerouting</span><br><span class="line">                             (instead of increasing the port per each probe),</span><br><span class="line">                             default port is 53</span><br><span class="line"></span><br><span class="line">  -UL                         Use UDPLITE for tracerouting (default dest port</span><br><span class="line">                             is 53)</span><br><span class="line"></span><br><span class="line">  -D  --dccp                  Use DCCP Request for tracerouting (default port</span><br><span class="line">                             is 33434)</span><br><span class="line"></span><br><span class="line">  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting</span><br><span class="line"></span><br><span class="line">  --mtu                       Discover MTU along the path being traced. Implies</span><br><span class="line">                             `-F -N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --back                      Guess the number of hops in the backward path and</span><br><span class="line">                             print if it differs</span><br><span class="line"></span><br><span class="line">  -V  --version               Print version info and exit</span><br><span class="line"></span><br><span class="line">  --help                      Read this help and exit</span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">\+     host          The host to traceroute to</span><br><span class="line">     packetlen     The full packet length (default is the length of an IP</span><br><span class="line">                   header plus 40). Can be ignored or increased to a minimal</span><br><span class="line">                   allowed value</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-2"><a href="#常用命令-2" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示</span><br><span class="line">traceroute -n www.baidu.com</span><br><span class="line"></span><br><span class="line"># 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误</span><br><span class="line">traceroute -r www.baidu.com</span><br><span class="line"></span><br><span class="line"># 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的</span><br><span class="line">traceroute -4 www.baidu.com</span><br><span class="line">traceroute -6 www.baidu.com</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h1><h2 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-3"><a href="#文档-3" class="headerlink" title="文档"></a>文档</h2><p>lsof 命令用于查看系统进程打开的文件</p>
+<p>在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsof 4.87</span><br><span class="line"></span><br><span class="line"> latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/</span><br><span class="line"> latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ</span><br><span class="line"> latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man</span><br><span class="line"> usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]</span><br><span class="line"> [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]</span><br><span class="line">[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]</span><br><span class="line"></span><br><span class="line">Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.</span><br><span class="line">  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks</span><br><span class="line">  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files</span><br><span class="line">  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*</span><br><span class="line">  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers</span><br><span class="line">  -n no host names         -N select NFS files        -o list file offset</span><br><span class="line">  -O no overhead *RISKY*   -P no port names           -R list paRent PID</span><br><span class="line">  -s list file size        -t terse listing           -T disable TCP/TPI info</span><br><span class="line">  -U select Unix socket    -v list version info       -V verbose search</span><br><span class="line">  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]</span><br><span class="line">  </span><br><span class="line">  -- end option scan</span><br><span class="line">  +f|-f  +filesystem or -file names     +|-f[gG] flaGs</span><br><span class="line">  -F [f] select fields; -F? for help</span><br><span class="line">  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)</span><br><span class="line">                                       +m [m] use|create mount supplement</span><br><span class="line">  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)</span><br><span class="line">  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)</span><br><span class="line">  -T qs TCP/TPI Q,St (s) info</span><br><span class="line">  -g [s] exclude(^)|select and print process group IDs</span><br><span class="line">  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.</span><br><span class="line">      An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and</span><br><span class="line">     &lt;fmt&gt; is an strftime(3) format for the marker line.</span><br><span class="line">  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).</span><br><span class="line">  -u s   exclude(^)|select login|UID set s</span><br><span class="line">  -x [fl] cross over +d|+D File systems or symbolic Links</span><br><span class="line">  names  select named files or files on named file systems</span><br><span class="line">Anyone can list all files; /dev warnings disabled; kernel ID check disabled.</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看某进程打开的文件</span><br><span class="line">lsof -p pid</span><br><span class="line"></span><br><span class="line"># 查看正在使用某端口进程</span><br><span class="line">lsof -i:80</span><br><span class="line"></span><br><span class="line"># 列出打开文件的进程</span><br><span class="line">lsof $filename</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL日志系统</title>
     <url>/2023/02/964962dd/</url>
     <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
@@ -1060,115 +998,6 @@
 <p>同时执行器会根据表的引擎定义调取对应引擎的接口，搜索引擎的接口诸如“取某个表的第一行”、“取下一行”等，</p>
 <h3 id="慢日志的-rows-examined"><a href="#慢日志的-rows-examined" class="headerlink" title="慢日志的 rows_examined"></a>慢日志的 rows_examined</h3><p>在 MySQL 慢日志中有个指标 rows_examined，含义就是执行器调用了搜索引擎取数据行的次数</p>
 <h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>MySQL 基础架构图出自极客林晓斌老师的《Mysql 实战 45 讲》，侵删。</p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL锁</title>
-    <url>/2023/02/d940f18d/</url>
-    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
-<span id="more"></span>
-
-<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
-<p>使用场景、跟只读的区别</p>
-</blockquote>
-<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
-<p>通过以下语句可以施加全局锁（FTWRL）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
-<p>问：全库备份为什么要施加全局锁？</p>
-<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
-<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
-<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
-<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
-<ol>
-<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
-<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
-</ol>
-<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
-<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
-<p>表锁的语法是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
-
-<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
-<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
-<p>表级锁不会死锁。因为两个前提：</p>
-<ol>
-<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
-<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
-</ol>
-<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
-<p>解决什么问题、使用方式、DDL 的正确方式</p>
-</blockquote>
-<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
-<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
-<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
-<p>MySQL 5.6 支持了 online DDL。</p>
-<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
-<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
-<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
-<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
-<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>如果遇到大表加字段呢</p>
-<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
-<p>安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
-
-<p>下面是常见执行示例：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
-
-<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
-<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
-<p>自增锁是执行完立刻就释放资源的锁！</p>
-<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
-<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
-<blockquote>
-<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
-</blockquote>
-<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
-<p>定义、目的、优化</p>
-</blockquote>
-<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
-<ol>
-<li>锁在需要的时候才施加</li>
-<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
-<li>事务提交的时候释放锁资源</li>
-</ol>
-<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
-<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
-<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
-<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
-<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
-<p>处理策略、</p>
-</blockquote>
-<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
-<p>死锁可以优化但几乎无法杜绝。</p>
-<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
-<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
-<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
-<p>死锁监测是常用的策略。</p>
-<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
-<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
-<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
-<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
-<p>优化方法：</p>
-<ol>
-<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
-<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
-<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
-</ol>
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -1296,5 +1125,486 @@
       <tags>
         <tag>Mysql</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>一次索引散列值的优化</title>
+    <url>/2023/02/43a71ae4/</url>
+    <content><![CDATA[<h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><p>某天忽然发现自己表里面有个 SQL 查询巨慢，遂查询优化，顺便记录一下。</p>
+<p>表名 table_a 代指，数据量 400w，结构简化如下：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">emarket<span class="variable">@192</span><span class="number">.168</span><span class="number">.20</span><span class="number">.42</span> : emarket_statistics <span class="number">14</span>:<span class="number">02</span>:<span class="number">35</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span> table_a\G;</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">       <span class="keyword">Table</span>: table_a</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">Table</span>: <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `table_a` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67096678</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>问题语句是：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> table_a <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br></pre></td></tr></table></figure>
+
+<p>牛的，给我查了 20 秒，explain 一看哦吼直接全表扫描。</p>
+<span id="more"></span>
+
+
+
+<h2 id="优化思路"><a href="#优化思路" class="headerlink" title="优化思路"></a>优化思路</h2><p>首先鉴于当前的索引设计，当初想着这个语句应该用到 uniq_key2 的索引的，按日期区分数据应该也还好，没想到呵呵了。</p>
+<p>首先根据自己习惯，直接给这个查询设计一个索引看看，因为数据量不大而且业务定位可以支持线上加就直接搞了</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `date_account`(`<span class="type">date</span>`, `media_account_id`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.54</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>还是不行，对优化几乎没有帮助，explain 表示还是用不上索引。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6418846</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys      <span class="operator">|</span> key  <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> <span class="keyword">rows</span>    <span class="operator">|</span> Extra       <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ALL</span>  <span class="operator">|</span> uniq2,date_account <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">4097163</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>一开始我想的是有没有可能是优化器索引选择除了问题，遂手动 force</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project force index(`date_account`)  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">21.80</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>不行，优化器没错，用了索引跟没用一个吊样。</p>
+<p>当时不信邪手动刷新一次索引采集</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">analyze <span class="keyword">table</span> table_a;</span><br></pre></td></tr></table></figure>
+
+<p>6，我就不该怀疑人家，多反思自己吧。</p>
+<p>思路回到上面，既然优化器的索引选择没问题，那就是索引本身了，接着想到索引区分度，看一下索引情况：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> index <span class="keyword">from</span> emarket_jrtt_data_project;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6426440</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">Table</span>                     <span class="operator">|</span> Non_unique <span class="operator">|</span> Key_name           <span class="operator">|</span> Seq_in_index <span class="operator">|</span> Column_name        <span class="operator">|</span> <span class="keyword">Collation</span> <span class="operator">|</span> <span class="keyword">Cardinality</span> <span class="operator">|</span> Sub_part <span class="operator">|</span> Packed <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Index_type <span class="operator">|</span> Comment <span class="operator">|</span> Index_comment <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> <span class="keyword">PRIMARY</span>            <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> id                 <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>      <span class="number">110888</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> stat_datetime      <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">2218</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> <span class="keyword">hour</span>               <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">26992</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">3</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">18907</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">1456</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> media_account_id   <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">30391</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="number">9</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>date_account 索引的第一个字段区分度基数只有 1456，会不会这就是优化器不选择索引的原因？</p>
+<p>换一下索引顺序：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `account_date`(`media_account_id`,`<span class="type">date</span>`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.36</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>果然是索引区分度的散列值问题，explain 立刻选择了新索引，而且查询秒出。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain  <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys                   <span class="operator">|</span> key          <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>   <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra                 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> uniq2,date_account,account_date <span class="operator">|</span> account_date <span class="operator">|</span> <span class="number">4</span>       <span class="operator">|</span> const <span class="operator">|</span> <span class="number">2050</span> <span class="operator">|</span> <span class="keyword">Using</span> index <span class="keyword">condition</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>结果表结构：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `emarket_jrtt_data_project` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  KEY `account_date` (`media_account_id`,`<span class="type">date</span>`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67098858</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>今晚奖励一把。</p>
+<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p><a href="https://dev.mysql.com/doc/refman/5.7/en/analyze-table.html#analyze-table-output">Analyze table 语句</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL锁</title>
+    <url>/2023/02/d940f18d/</url>
+    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
+<span id="more"></span>
+
+<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
+<p>使用场景、跟只读的区别</p>
+</blockquote>
+<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
+<p>通过以下语句可以施加全局锁（FTWRL）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
+<p>问：全库备份为什么要施加全局锁？</p>
+<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
+<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
+<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
+<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
+<ol>
+<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
+<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
+</ol>
+<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
+<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
+<p>表锁的语法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
+
+<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
+<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
+<p>表级锁不会死锁。因为两个前提：</p>
+<ol>
+<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
+<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
+</ol>
+<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
+<p>解决什么问题、使用方式、DDL 的正确方式</p>
+</blockquote>
+<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
+<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
+<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
+<p>MySQL 5.6 支持了 online DDL。</p>
+<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
+<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
+<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
+<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
+<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果遇到大表加字段呢</p>
+<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
+<p>安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
+
+<p>下面是常见执行示例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
+
+<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
+<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
+<p>自增锁是执行完立刻就释放资源的锁！</p>
+<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
+<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
+<blockquote>
+<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
+</blockquote>
+<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
+<p>定义、目的、优化</p>
+</blockquote>
+<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
+<ol>
+<li>锁在需要的时候才施加</li>
+<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
+<li>事务提交的时候释放锁资源</li>
+</ol>
+<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
+<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
+<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
+<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
+<p>处理策略、</p>
+</blockquote>
+<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
+<p>死锁可以优化但几乎无法杜绝。</p>
+<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
+<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
+<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
+<p>死锁监测是常用的策略。</p>
+<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
+<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
+<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
+<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
+<p>优化方法：</p>
+<ol>
+<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
+<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
+<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/04/0/</url>
+    <content><![CDATA[<p>总结一下各种情况下主从故障的恢复</p>
+<h1 id="binlog-未正常关闭"><a href="#binlog-未正常关闭" class="headerlink" title="binlog 未正常关闭"></a>binlog 未正常关闭</h1><p>某一次公司机房断电后，因为 MySQL 服务未正常关闭，导致主从 binlog 不一致，事故持续半小时。</p>
+<p>解决思路是，因为这里都是实时数据类的数据，所以准备让从库跳过所有异常追上主库，然后在主库删除半小时内新增的所有数据，让实时任务重新 insert 数据，最终完成主从数据一致。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /work/config/mysql/my.cnf </span><br></pre></td></tr></table></figure>
+
+<p>增加下面一行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">slave-skip-errors=all</span><br></pre></td></tr></table></figure>
+
+
+
+<p>重启从库数据库服务。</p>
+<p>等待数据库追上主库的 position。</p>
+<p>主库执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">delete from table_x where created_at &gt;= &#x27;xxxx-xx-xx xx:xx:xx&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>检查主从执行和数据情况，确保从库执行了delete 语句。</p>
+<p>修改 my.cnf 关闭跳过异常，重启从库服务。</p>
+<p>最后检查定时任务，确保实时任务将当日数据重新 insert，数据就补上了。</p>
+<p>这个操作的弊端就是会导致主库方面出现一段时间的数据缺失，同时操作存在出错导致 delete 范围不符合预期的可能。总的来说是针对实际情况的选择，不宜作为常规方案。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/04/0/</url>
+    <content><![CDATA[<p>最近处理一个项目数据迁移的过程中，执行 source xxx.sql 时结果发现执行过程中出现了很多 error 错误如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1018 - Can&#x27;t read dir of &#x27;./business/&#x27; (errno: 24 &quot;Too many open files&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>检查 MySQL error.log 发现</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">230419 14:58:05 [Warning] Could not increase number of max_open_files to more than 1024 (request: 5059)</span><br></pre></td></tr></table></figure>
+
+<p>很容易理解报错信息，MySQL 服务需要打开更多文件描述符，但是被上限约束了，上限值为 1024</p>
+<p>验证问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt; show global variables like &#x27;open_files_limit&#x27;;</span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| open_files_limit | 1024  |</span><br><span class="line">+------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>MySQL 中约束文件描述符的配置有三个：open_files_limit、max_connections 和 table_open_cache，具体的计算逻辑可以看官方文档。</p>
+<p>但是尝试修改过后发现并不能解决当下问题。直到看到文档中以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">On Linux systems using systemd, the value cannot be set greater than LimitNOFile (this is DefaultLimitNOFILE, if LimitNOFile is not set); otherwise, on Linux, the value of open_files_limit cannot exceed ulimit -n.</span><br></pre></td></tr></table></figure>
+
+<p>大致意思是，如果在使用 systemd 时，可以打开的文件描述符数量不能超过 LimitNOFile，如果没有设置则参考 DefaultLimitNOFILE。同时 open_files_limit 不能设置为大于 ulimit -n 的数量。</p>
+<p>因为我们的 ulimit -n 是 65535，直接忽略后面，主要是前面的参数解读了。</p>
+<p>LimitNOFile 和 DefaultLimitNOFILE 都是 systemd 的配置参数，使用命令查看：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat /etc/systemd/system.conf</span><br><span class="line">systemctl cat mysql</span><br><span class="line"># /etc/systemd/system/mysql.service</span><br></pre></td></tr></table></figure>
+
+<p>看到当下服务器两个参数都没有设置，而 DefaultLimitNOFILE 的默认值为 1024，故最终 open_files_limit 生效最大值 1024。</p>
+<p>解决问题：</p>
+<p>直接修改 systemd 的配置文件即可，也就是 &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;mysql.service 文件中添加 LimitNOFile&#x3D;xxx，然后重启 MySQL</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/systemd/system/mysql.service</span><br><span class="line"># 添加 LimitNOFile=8192</span><br><span class="line"></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">sudo systemctl restart mysql</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>composer 常见问题</title>
+    <url>/2023/10/893f68ee/</url>
+    <content><![CDATA[<h1 id="Failed-to-audit-installed-packages"><a href="#Failed-to-audit-installed-packages" class="headerlink" title="Failed to audit installed packages."></a>Failed to audit installed packages.</h1><p>自 composer 2.4 以后，composer require 命令增加了自动的重大安全问题检查，因为检查需要连接 <a href="https://packagist.org/api/security-advisories/">https://packagist.org/api/security-advisories/</a> 进行，可能会因为网络原因失败。可以通过添加 —no-audit 来禁用，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">composer require google/apiclient:^2.10 --no-audit</span><br></pre></td></tr></table></figure>
+
+<p>参见：<a href="https://php.watch/articles/composer-audit">https://php.watch/articles/composer-audit</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>composer 安装</title>
+    <url>/2023/10/7ce45063/</url>
+    <content><![CDATA[<p>按照文档中的命令，常规执行的如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php -r &quot;copy(&#x27;https://getcomposer.org/installer&#x27;, &#x27;composer-setup.php&#x27;);&quot;</span><br><span class="line">php -r &quot;if (hash_file(&#x27;sha384&#x27;, &#x27;composer-setup.php&#x27;) === &#x27;e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02&#x27;) &#123; echo &#x27;Installer verified&#x27;; &#125; else &#123; echo &#x27;Installer corrupt&#x27;; unlink(&#x27;composer-setup.php&#x27;); &#125; echo PHP_EOL;&quot;</span><br><span class="line">php composer-setup.php</span><br><span class="line">php -r &quot;unlink(&#x27;composer-setup.php&#x27;);&quot;</span><br></pre></td></tr></table></figure>
+
+<p>将 composer 放到全局作用域</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mv composer.phar /usr/local/bin/composer</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>最常见的问题有两处，都是缺乏证书导致的</p>
+<ol>
+<li>下载安装文件时无法下载<ol>
+<li>改成使用 http 协议下载即可 php -r “copy(‘<a href="https://getcomposer.org/installer">https://getcomposer.org/installer</a>‘, ‘composer-setup.php’);”</li>
+<li>或者，使用 wget 下载 composer-setup.php<br>wget –no-check-certificate <a href="https://install.phpcomposer.com/installer">https://install.phpcomposer.com/installer</a> -O .&#x2F;composer-setup.php</li>
+<li>或者 curl -sS <a href="https://getcomposer.org/installer">https://getcomposer.org/installer</a> | php</li>
+</ol>
+</li>
+<li>安装（下载 composer.phar）时过不了验证，提示 The “<a href="https://getcomposer.org/versions">https://getcomposer.org/versions</a>“ file could not be downloaded: SSL operation failed with code 1.<ol>
+<li>使用 php composer-setup.php –disable-tls 代替 php composer-setup.php 执行</li>
+</ol>
+</li>
+</ol>
+<p>另，在网上看到其他的处理办法，但是自己实操没有成功的，作为补充参考。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 下载证书配置到 php</span><br><span class="line">wget https://curl.haxx.se/ca/cacert.pem --no-check-certificate -O ./cacert.pem</span><br><span class="line">mv ./cacert.pem /work/ssl/cacert.pem</span><br><span class="line">vim /work/config/php/php.ini</span><br><span class="line"># openssl.cafile=/work/ssl/cacert.pem</span><br></pre></td></tr></table></figure>
+
+<p>然后再执行 php composer-setup.php，但是我实操无果，原因未明。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://getcomposer.org/download/">文档</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Anaconda 使用</title>
+    <url>/2023/02/f053b2c8/</url>
+    <content><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Anaconda 是一个免费开源的 Python  和 R 发行版本，主要用于解决机器学习和数据科学应用中的环境管理和部署难题。在对接量化数据做分析的时候用到，用起来还蛮方便的，记录一下。</p>
+<p>miniconda 是 Anaconda 的最小化干净安装版本，仅包含基础的 conda、Python、基础的依赖包和 zlib 等常用包。喜欢服务器干净整洁的同学可以选择 miniconda。</p>
+<span id="more"></span>
+
+<p>Anaconda 中的 conda 则是一个开源跨平台的包管理工具和系统管理工具。关于 conda 包管理和系统管理得分开理解。</p>
+<p>conda 作为包管理工具时一如 pip 之于 Python，用来管理环境包的安装。在 Anaconda 中的 pip 的作用可以视作 conda 的子集。</p>
+<p>作为系统管理工具时，conda 类似 docker 拿来即用的思想，支持快速构建独立虚拟环境，实现进程级别的隔离。不过需要注意 conda 和 docker 的区别：虚拟环境和容器的区别。conda 和 venv、virtualenv 一样通过环境变量（如 $PATH）替换实现环境隔离，虚拟环境安装的工具（如 Python3.8）宿主机也能找到其解释器。所以虚拟环境可以在不激活环境的情况下，通过手动指定完整路径执行不同版本的解释器。而 docker 的容器环境隔离依托 linux 系统的 namespace 技术实现，容器安装的特定版本语言解释器在宿主机是没有的。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先到 Anaconda 官网找到自己想下载的版本，wget 下载并执行之</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh</span><br><span class="line">bash Anaconda3-5.3.1-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
+
+<p>enter 确认，然后是用户协议，输入 yes</p>
+<p>然后是指定安装路径</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda3 will now be installed into this location:</span><br><span class="line">/root/anaconda3</span><br><span class="line">  - Press ENTER to confirm the location</span><br><span class="line">  - Press CTRL-C to abort the installation</span><br><span class="line">  - Or specify a different location below</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后可以选择是否在环境参数中添加 Anaconda 参数，yes</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">installation finished.</span><br><span class="line">Do you wish the installer to initialize Anaconda3</span><br><span class="line">in your /root/.bashrc ? [yes|no]</span><br><span class="line"></span><br><span class="line">[no] &gt;&gt;&gt; yes</span><br></pre></td></tr></table></figure>
+
+<p>是否安装 VSCode，no</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Anaconda is partnered with Microsoft! Microsoft VSCode is a streamlined</span><br><span class="line">code editor with support for development operations like debugging, task</span><br><span class="line">running and version control.</span><br><span class="line"></span><br><span class="line">To install Visual Studio Code, you will need:</span><br><span class="line">  - Administrator Privileges</span><br><span class="line">  - Internet connectivity</span><br><span class="line"></span><br><span class="line">Visual Studio Code License: https://code.visualstudio.com/license</span><br><span class="line">Do you wish to proceed with the installation of Microsoft VSCode? [yes|no]</span><br><span class="line">&gt;&gt;&gt; no</span><br></pre></td></tr></table></figure>
+
+<p>完成，验证一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 刷新环境变量</span><br><span class="line">source .bash_profile</span><br><span class="line"></span><br><span class="line"># 校验</span><br><span class="line">conda</span><br><span class="line"></span><br><span class="line"># 看到诸如以下的 help 指南就是成功了</span><br><span class="line">usage: conda [-h] [-V] command ...</span><br><span class="line">conda is a tool for managing and deploying applications, environments and packages.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>使用命令看一下 <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html">conda文档</a> 就好😘</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="No-module-named-conda"><a href="#No-module-named-conda" class="headerlink" title="No module named conda"></a>No module named conda</h3><p>最后记录一下踩的坑</p>
+<p>修改环境的 Python 版本时， 有一次执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install python=3.8</span><br></pre></td></tr></table></figure>
+
+<p>得到了奇怪的报错：ModuleNotFoundError: No module named ‘conda’ 可有点秀，conda 报错没有名为 conda 的模块吗哈哈</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Preparing transaction: done</span><br><span class="line">Verifying transaction: done</span><br><span class="line">Executing transaction: done</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">	File &quot;/root/anaconda3/bin/conda&quot;, line 7, in &lt;module&gt;</span><br><span class="line">		from conda.cli import main</span><br><span class="line">		</span><br><span class="line">ModuleNotFoundError: No module named &#x27;conda&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>其实这类问题很普遍，几乎都是环境变量配置问题，常见于修改 base 环境的 Python 版本导致解释器找不到当前 conda 包。所以不要随便修改 base 环境 Python 版本，可以多开个虚拟环境嘛</p>
+<p>解决的话只要找回之前安装 Anaconda 的脚本执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh -u</span><br></pre></td></tr></table></figure>
+
+<p>即可</p>
+<p>附，想要更新 base 环境的 Python 版本的话可以参考 <a href="https://www.cnblogs.com/ruhai/p/12684838.html">升级Anaconda默认的python版本</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ta-lib</title>
+    <url>/2024/03/813525b4/</url>
+    <content><![CDATA[<p>最近搞量化准备自己算 macd，结果在ta-lib 的安装上就卡住了</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p><a href="https://pypi.org/project/TA-Lib/">https://pypi.org/project/TA-Lib/</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setup.py:77: UserWarning: Cannot find ta-lib library, installation may fail.</span><br></pre></td></tr></table></figure>
+
+<p>才发现好像我的安装路径是 &#x2F;usr&#x2F;local&#x2F;include&#x2F;python3.6m&#x2F;ta-lib 这个，不理解，按理说不应该是 </p>
+<p><a href="https://pypi.org/project/TA-Lib/">https://pypi.org/project/TA-Lib/</a></p>
+<p>看到有描述到我这个问题，但是这里描述的情况令我更加迷惑，什么叫给权限啊，然后开始探寻所谓的给权限的处理办法，找到 github</p>
+<p><a href="https://github.com/TA-Lib/ta-lib-python/issues/139">https://github.com/TA-Lib/ta-lib-python/issues/139</a></p>
+<p>但是发现讨论都是围绕 windows 啊，我更加迷了，似乎一切跟我都不搭边</p>
+<p><a href="https://github.com/TA-Lib/ta-lib-python/issues/127">https://github.com/TA-Lib/ta-lib-python/issues/127</a></p>
+<p>在神游之际，我看到一句话</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Generally, it should be pretty easy to pip3 install ta-lib. And it is on macOS and Linux. Unfortunately, Windows makes it a little complex.</span><br></pre></td></tr></table></figure>
+
+<p>额，我还真是 linux 遇到了跟 windows 同样的问题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">but if you want 64-bit python, then you need to build the underlying TA-Lib yourself.</span><br></pre></td></tr></table></figure>
+
+<p>有没有可能，我虽然是 linux 也需要自己构建啊</p>
+<p>那么问题来了，这个构建是指我源码包安装还是指构建底层的 C 环境呢，从上面的语境看应该是前置安装才对</p>
+<p>先试一下源码包安装吧</p>
+<p><img src="/../../images/image-20240308153707394.png" alt="image-20240308153707394"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/usr/local/lib64/python3.6/site-packages/ta-lib</span><br><span class="line">make </span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Libraries have been installed in:</span><br><span class="line">   /usr/local/lib64/python3.6/site-packages/ta-lib/lib</span><br></pre></td></tr></table></figure>
+
+<p>但是 pip3 list 并没有 ta-lib，检查的时候看到说如果我用了 prefix 就需要做额外的设置，试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ export TA_LIBRARY_PATH=$PREFIX/lib</span><br><span class="line">$ export TA_INCLUDE_PATH=$PREFIX/include</span><br><span class="line">$ python setup.py install # or pip install ta-lib</span><br></pre></td></tr></table></figure>
+
+<p>没用，看了下我的 $PREFIX 根本就是空的，那只能试一下不要 prefix 了</p>
+<p>卧槽！？好了</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://pypi.org/project/TA-Lib/">https://pypi.org/project/TA-Lib/</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python __init__ 和 __new__</title>
+    <url>/2023/02/b1009463/</url>
+    <content><![CDATA[<p>__init__ 是初始化方法，没有返回值</p>
+<p>__new__ 才是真正的构造方法，返回当前类实例化对象</p>
+<span id="more"></span>
+
+<h1 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testOrder</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is init&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;this is new&#x27;</span>)</span><br><span class="line">        <span class="comment"># return object() 返回 object 类实例对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">beCalled</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;called by u&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = testOrder()</span><br><span class="line">    test.beCalled()</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ python python3 study/init_new.py</span><br><span class="line">this is new</span><br><span class="line">this is init</span><br><span class="line">called by u</span><br><span class="line">➜ python</span><br></pre></td></tr></table></figure>
+
+<p>输出表明了 __init__，__new__ 和 常规函数的调用顺序是 new &gt; init &gt; others</p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>__init__ 中的第一个参数 self 代表对象自身；__new__ 的 cls 则代表当前类本身，此方法必须返回一个类实例对象（可以是当前类或其它类）。</p>
+<p>需要注意的是：解释器是依据 __new__ 返回的对象调用 __init__ 的，所以如果 __new__ 中返回了其它类的实例对象，将调用其它类的 __init__ 而不是当前类的 __init__ 。</p>
+<p>例如将上述代码的 return super().__new__(cls) 修改为 return object() 后，仅会得到 this is new 的输出</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/reference/datamodel.html?highlight=__new__#object.__new__">Python3 文档对 __new__ 的解释</a></p>
+<p><a href="https://peps.python.org/pep-3114/">PEP 3114 new 重命名为 __new__</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>由 map 深入理解 yield 和生成器</title>
+    <url>/2023/02/38446edf/</url>
+    <content><![CDATA[<p>首先看下 map 方法的使用代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    map_iter = <span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * x, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br><span class="line">    <span class="built_in">print</span>([i <span class="keyword">for</span> i <span class="keyword">in</span> map_iter])</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1, 4, 9]</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到输出两次 map_iter 中的值只有第一次正常获取了，后面拿到的都是空。这里是因为 map 内部的 yield 使用。</p>
+<h1 id="map-中的-yield"><a href="#map-中的-yield" class="headerlink" title="map 中的 yield"></a>map 中的 yield</h1><blockquote>
+<p>map(func, list[ , list]) 列表中的 list 依次调用函数 func</p>
+</blockquote>
+<p>查阅文档 <a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a> 可以看到</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().</span></span><br><span class="line"><span class="comment"># 当函数输入形如元组时，参见 itertools.starmap().</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The difference between map() and starmap() parallels the distinction between function(a,b) and function(*c)</span></span><br><span class="line"><span class="comment"># map() 和 starmap() 的区别是参数形式</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># starmap 源码示例</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">starmap</span>(<span class="params">function, iterable</span>):</span><br><span class="line">    <span class="comment"># starmap(pow, [(2,5), (3,2), (10,3)]) --&gt; 32 9 1000</span></span><br><span class="line">    <span class="keyword">for</span> args <span class="keyword">in</span> iterable:</span><br><span class="line">        <span class="keyword">yield</span> function(*args)</span><br></pre></td></tr></table></figure>
+
+<p>由此我们明确了 map 方法实现基于 yield，那么为什么 yield 会导致 map 方法返回值只能遍历一次呢</p>
+<h2 id="了解-yield"><a href="#了解-yield" class="headerlink" title="了解 yield"></a>了解 yield</h2><p>包含 yield 关键字的函数称为生成器，生成器是 Python 新引入的概念。</p>
+<p>生成器长得很像普通函数，看上去几乎只是 return 被 yield 代替的感觉。但生成器是一种迭代器，行为跟普通函数有很大区别。</p>
+<p>生成器函数被调用时，函数体的代码不会被执行，而是返回一个迭代器。每请求一次迭代器（g.next() 或 g.__next__()）就执行一次生成器中的代码，直到遇到 yield 和 return。当遇到 yield 时生成一个值输出，然后冻结函数等待下次请求后从冻结的代码处（yield 下一行）继续执行。当遇到 return 时意味着停止该生成器。</p>
+<p>yield 代码使用示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">g = (i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line">g.__next__()</span><br><span class="line"><span class="comment"># output: 4</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">sum</span>(i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># output: 13</span></span><br></pre></td></tr></table></figure>
+
+<p>由此我们理解了 yield 关键在作用是定义生成器，也知道了生成器的执行原理，那么生成器是什么呢？如此我们需要了解可迭代对象、迭代器和生成器。</p>
+<h1 id="可迭代对象"><a href="#可迭代对象" class="headerlink" title="可迭代对象"></a>可迭代对象</h1><blockquote>
+<p>如果一个对象拥有 __iter__ 方法，则称为可迭代对象</p>
+</blockquote>
+<p>对象是否包含 __iter__ 可以通过 dir(object) 检查，我们日常利用循环遍历的对象都是可迭代对象，常见的有列表、元组、字典。可以参见另一篇关于 python.for 循环的博客。</p>
+<p>以下是简单的实现可迭代对象代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterable</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义可迭代对象类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> MyIterator(self.data)  <span class="comment"># 返回该可迭代对象的迭代器类的实例</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><blockquote>
+<p>如果一个可迭代对象拥有 __next__ 函数，则为迭代器</p>
+</blockquote>
+<p>注：__next__ 方法在 Python 2.x 是 new，见 <a href="https://peps.python.org/pep-3114/">PEP 3114</a></p>
+<p>另外需要注意的是 __iter__ 方法要求返回的是具体的迭代器实例。所以在可迭代对象中返回的是对应的迭代器实例，在迭代器中则只需要返回自身。</p>
+<p>以下是简单的迭代器代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyIterator</span>(<span class="title class_ inherited__">object</span>):  <span class="comment"># 定义迭代器类，其是MyList可迭代对象的迭代器类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num</span>):</span><br><span class="line">        self.up = num  <span class="comment"># 上边界</span></span><br><span class="line">        self.now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self  <span class="comment"># 返回该对象的迭代器类的实例；因为自己就是迭代器，所以返回 self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):  <span class="comment"># 迭代器类必须实现的方法</span></span><br><span class="line">        <span class="keyword">while</span> self.now &lt; self.up:</span><br><span class="line">            self.now += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> self.now - <span class="number">1</span>  <span class="comment"># 返回当前迭代值</span></span><br><span class="line">        <span class="keyword">raise</span> StopIteration  <span class="comment"># 超出上边界，抛出异常</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><blockquote>
+<p>生成器则是一种特殊的迭代器，使用 yield 关键字的函数被称为生成器</p>
+</blockquote>
+<p>理解生成器需要注意：</p>
+<ol>
+<li>生成器支持了更多操作方法（python &gt;&#x3D; 2.5， <a href="https://peps.python.org/pep-0342/">PEP 342</a>），比如允许在迭代过程中修改当前迭代值（生成器与迭代器的主要区别）</li>
+<li>虽然也可以通过类模拟生成器的逻辑，但生成器的定义是使用 yield 关键字</li>
+</ol>
+<p>以下是一段生成器示例代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">myGenerator</span>(<span class="params">num</span>):  <span class="comment"># 定义生成器</span></span><br><span class="line">    now = <span class="number">0</span>  <span class="comment"># 当前迭代值，初始为0</span></span><br><span class="line">    <span class="keyword">while</span> now &lt; num:</span><br><span class="line">        val = (<span class="keyword">yield</span> now)  <span class="comment"># 返回当前迭代值，并接受可能的send发送值；yield在下面会解释</span></span><br><span class="line">        now = now + <span class="number">1</span> <span class="keyword">if</span> val <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> val  <span class="comment"># val为None，迭代值自增1，否则重新设定当前迭代值为val</span></span><br><span class="line">    <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">my_g = myGenerator(<span class="number">5</span>)  <span class="comment"># 得到一个生成器对象</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__()) <span class="comment"># 返回当前迭代值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(my_g)) <span class="comment"># 等价 my_g.__next__()</span></span><br><span class="line"></span><br><span class="line">my_g.send(<span class="number">3</span>)  <span class="comment"># 重新设定当前的迭代值，Python &gt;= 2.5</span></span><br><span class="line"><span class="built_in">print</span>(my_g.__next__())</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">dir</span>(my_g))  <span class="comment"># 返回该对象所拥有的方法名，可以看到__iter__与__next__在其中</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  python python3 study/generator.py</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">4</span><br><span class="line">[&#x27;__class__&#x27;, &#x27;__del__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__iter__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__name__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__next__&#x27;, &#x27;__qualname__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;close&#x27;, &#x27;gi_code&#x27;, &#x27;gi_frame&#x27;, &#x27;gi_running&#x27;, &#x27;gi_yieldfrom&#x27;, &#x27;send&#x27;, &#x27;throw&#x27;]</span><br><span class="line">➜  python </span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是 send 需要在生成器挂起后（也就是先触发一次 yield）才有意义，否则会报错</p>
+<p>TypeError: can’t send non-None value to a just-started generator</p>
+<p>除此以外生成器在 Python &gt;&#x3D; 2.5 还支持 throw 和 close 方法，作用分别是在生成器内的 yield 表达式中抛出一个异常，和停止生成器，具体可以看 <a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342</a></p>
+<p>关于生成器在 python 底层的运行逻辑，知乎有大佬做了解释：<a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a>，后面关于【再次遇到 yield value2】 的逻辑没看明白，等我完全搞明白了自己写一个整理。。。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://docs.python.org/3/library/functions.html#map">Python3 文档关于 map 的解释</a></p>
+<p><a href="https://peps.python.org/pep-0342/#new-generator-method-close">PEP 342 生成器增强</a></p>
+<p>《Python 基础教程（第二版·修订版）》</p>
+<p><a href="https://zhuanlan.zhihu.com/p/94126166">yield! 深入理解 Python 最甜美的特性！</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/04/0/</url>
+    <content><![CDATA[<h1 id="process-is-already-running-or-crashed"><a href="#process-is-already-running-or-crashed" class="headerlink" title="process is already running or crashed"></a>process is already running or crashed</h1><p>启动 redis 服务时，可能遇到完整提示如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/work/servers/redis/status/redis6379.pid exists, process is already running or crashed</span><br></pre></td></tr></table></figure>
+
+<p>这个问题常见于服务器异常奔溃，主要是 redis 服务未正常关闭导致的</p>
+<p>解决办法也很简单，&#x2F;work&#x2F;servers&#x2F;redis&#x2F;status&#x2F;redis6379.pid 文件内容就是奔溃前 redis 的进程号，将它删除重启即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rm /work/servers/redis/status/redis6379.pid</span><br></pre></td></tr></table></figure>
+
+<p>当然这是在数据不重要的情况下，如果需要执行数据恢复就另说了。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/03/0/</url>
+    <content><![CDATA[<p>公司在内网部署了专门的 gitlab 服务用于代码管理，然后发现在开启 VPN 的时候总是无法连接内网 gitlab 服务，找了很久才找到原因，以下是bl办法。</p>
+<p>打开 VPN 的配置文件，将下述 dns.enable 改为 false 然后保存，在 VPN 上重载配置文件即可。</p>
+<p><img src="/../../images/image-20230328142515920.png" alt="image-20230328142515920"></p>
+<p>原因大概就是内网 gitlab 服务本身配置了 dns 解释，然而 VPN 自身也启用 VPN 的话就存在互相覆盖的问题。</p>
+]]></content>
   </entry>
 </search>
