@@ -108,10 +108,9 @@
 
 
 <p>我以前是有通过 hexo-abbrlink 生成永久路径的，但是上述 new 命令并没有生成，这是个问题</p>
-<p>发布</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo s </span><br><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo g</span><br></pre></td></tr></table></figure>
+<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo s</span><br><span class="line">hexo cl &amp;&amp; hexo g &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
 
-<p> Cl 是啥我已经忘了，以下也找不到</p>
+<p> Cl 是 clean，g 是 generate，s 是 server 启动本地调试服务器，d 是 deploy 发布到远程</p>
 ]]></content>
   </entry>
   <entry>
@@ -182,84 +181,6 @@
         <tag>elasticsearch</tag>
         <tag>filebeat</tag>
         <tag>kibana</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>es 基础概念</title>
-    <url>/2023/02/3fe4a59a/</url>
-    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>es 主旨是随时可用和按需扩容</p>
-<p>es 垂直扩容是有限的，因为单机性能有极限，故 es 真正的扩容能力来自水平扩容</p>
-<p>es 天生就是分布式的</p>
-<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><p>一个运行中的 es 示例称为一个节点，集群是由一个或多个 cluster.name 配置一致的节点组成。当节点加入或从集群剔除后，集群会重新平均分配所有节点的数据。</p>
-<p>当一个节点被选举为主节点后，该主节点将负责管理集群层面的所有变更，如增删索引、增删节点等。但是主节点不会涉及文档级别的变更和搜索操作。</p>
-<p>用户可以将请求发送到集群中的任何节点，包括主节点。每个节点都知道任意文档的存储位置，并且能将请求转发到文档存储所在的节点，同时任意节点都能负责从各个包含所需数据的节点中查询、收集数据，并将结果集返回给客户端。</p>
-<p>为了实现故障转移，集群节点数量需要大于等于主分片数量，当启动新的节点加入集群时，节点会根据 cluster.name 自动发现集群并加入。但是在不同的机器上启动节点时，为了加入同一集群，需要配置一个可连接到的单播主机列表 discovery.zen.ping.unicast.hosts</p>
-<p>单播模式是一种网络通讯中点对点的数据传输模式，es 通过配置记住列表，使用单播模式完成节点通讯。</p>
-<blockquote>
-<p>discovery.zen.ping.unicast.hosts 不需要配置集群上的所有节点。因为如果一个节点连接到了集群中的一个节点，这个连接信息会被发送到集群中的所有其它节点，如果一个节点保持了太多并发网络连接将导致额外的系统负载。所以通过配置 discovery.zen.ping.unicats.concurrent_connects 约束了单播模式的最大网络连接数，默认值 10。</p>
-</blockquote>
-<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><p>分片是一个功能完整的搜索引擎，它拥有使用节点上所有资源的能力。</p>
-<p>因为每个分片都可以使用节点上的所有资源，所以理论上一个分片独占一个节点是最好的。故水平扩容（增加集群节点）也是常见的提高负载能力的操作。</p>
-<p>因为主分片的数目在索引创建的时候已经确定下来了，而实际上主分片数量定义了索引能够存储的最大数据量（实际上还要考量数据、硬件等）。但是因为读操作可以同时被主分片和副本分片处理，所以拥有越多的副本分片集群的吞吐量越高。</p>
-<p>综上，集群的副本分片越多，分片越能独占节点资源，集群的吞吐量越高。</p>
-<p>归根到底就是节点数量越多越好（废话，哈哈）</p>
-<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引实际上是指向一个或多个物理分片的逻辑命名空间。</p>
-<p>分片是 es 底层的工作单元，用于保存索引数据的一部分。每一个分片都是一个 Lucene 实例，它本身也是一个完整的搜索引擎。</p>
-<p>文档被存储到分片中，应用程序直接与索引交互完成操作，索引再操作分片。</p>
-<p>索引中任一文档都归属于一个确定的主分片，所以主分片的数量决定索引能存储的文档数量。</p>
-<p>副本分片只是主分片内容的拷贝，副本分片作为硬件故障时保护数据不丢失的冗余备份，同时提供查询服务。</p>
-<p>索引在建立时就已经确定主分片数量，副本分片数量则可以随时修改。</p>
-<p>在同一个节点上同时保存原始数据和副本是无意义的，因为一旦该节点故障就会同时失去原始数据和副本，所谓保护数据不丢失就不存在了。</p>
-<h2 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h2><p>创建一个名为 index 主分片和副本分片个数都是 1 的索引</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PUT /&#123;index&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;number_of_shards&quot;:1,</span><br><span class="line">        &quot;number_of_replicas&quot;:1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="集群健康"><a href="#集群健康" class="headerlink" title="集群健康"></a>集群健康</h1><p>集群健康主要通过接口 &#x2F;_cluster&#x2F;health 返回的 status 字段判断，枚举值：green，yellow，red。</p>
-<p>green：集群健康</p>
-<p>yellow：所有主分片都正常，但至少一个副本分片出现了问题</p>
-<p>red：有主分片出现了问题</p>
-<blockquote>
-<p>注意：描述集群健康时衡量的主体是分片（主分片和副分片），而不是节点。</p>
-</blockquote>
-<p>KVM 测试环境示例：</p>
-<p><a href="http://192.168.20.213:9200/_cluster/health?pretty">http://192.168.20.213:9200/_cluster/health?pretty</a></p>
-<p>结果：</p>
-<img src="../../images/image-20221205151152327.png" alt="image-20221205151152327" style="zoom:50%;" />
-
-
-
-
-
-<h1 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h1><p>集群扩容的方式有水平扩容和垂直扩容。</p>
-<p>水平扩容就是通过启动更多的节点来分散负载，达到提高性能目的的手段，当然如果节点都在一个机器上是无意义的。</p>
-<p>垂直扩容就是将 4H8G 升级为 8H16G。</p>
-<p>好像没啥好记录的，就是一个加机器，一个升配置。</p>
-<h1 id="应对故障"><a href="#应对故障" class="headerlink" title="应对故障"></a>应对故障</h1><p>假设一个集群拥有三个节点，主分片数量为 3，副本分片数量为 2（也就是每个主分片拥有 2 个副本分片），当其中某一个节点异常推出集群，会发生什么呢？</p>
-<p>因为节点数等于主分片数，所以主分片应该均匀分布在三个节点汇总，当其中一个节点异常退出，说明我们损失了一个主分片和两个副本分片。</p>
-<p>如果退出的节点刚刚好是集群的主节点，集群首先会选举一个新的主节点。</p>
-<p>然后主节点会检查集群情况，发现丢失了一个主分片，索引不能正常工作，集群的状态变更为 red。</p>
-<p>此时集群的数据因为冗余的缘故，并没有丢失数据。主节点将其它节点中的副本分片提升为主分片，重新构建集群分片关系，这个过程是瞬间的，如同按下一个开关。然后集群的状态变更为 yellow。</p>
-<blockquote>
-<p>此时的状态 yellow 是因为我们的集群主分片依然完备，但是当前集群只有两个节点，只能满足每个主分片拥有一个副本分片，与配置 number_of_replicas&#x3D;2 不符，也就是说集群中存在副本分片未达预期。</p>
-<p>一个节点同时保存相同数据的主分片和副本分片是无意义的。同时保存一个主分片的两个相同副本分片也是无意义的。</p>
-</blockquote>
-<p>如果此时第二个节点也异常推出了，集群状态依然是 yellow，因为第三个节点中的副本分片都将升级为主分片，集群数据依然无损。</p>
-<p>最后是等待开发人员介入了，如果退出的节点重新回归集群，且该节点依然拥有之前的分片，集群会尝试重用它们，同时仅从主分片复制发生了修改的数据文件过去。然后集群会尝试再次优化所有节点上的分片分布。</p>
-<h1 id="疑点"><a href="#疑点" class="headerlink" title="疑点"></a>疑点</h1><ol>
-<li>这句话没理解</li>
-</ol>
-<img src="../../images/image-20221205150325735.png" alt="image-20221205150325735" style="zoom:50%;" />
-
-<p>暂时理解的意思是：只有一个主节点的时候因为没有数据节点，所以压根不存储数据，也就不存在文档级别操作所以不会存在所谓瓶颈</p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>elasticsearch</tag>
       </tags>
   </entry>
   <entry>
@@ -433,6 +354,84 @@
       </tags>
   </entry>
   <entry>
+    <title>es 基础概念</title>
+    <url>/2023/02/3fe4a59a/</url>
+    <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>es 主旨是随时可用和按需扩容</p>
+<p>es 垂直扩容是有限的，因为单机性能有极限，故 es 真正的扩容能力来自水平扩容</p>
+<p>es 天生就是分布式的</p>
+<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><p>一个运行中的 es 示例称为一个节点，集群是由一个或多个 cluster.name 配置一致的节点组成。当节点加入或从集群剔除后，集群会重新平均分配所有节点的数据。</p>
+<p>当一个节点被选举为主节点后，该主节点将负责管理集群层面的所有变更，如增删索引、增删节点等。但是主节点不会涉及文档级别的变更和搜索操作。</p>
+<p>用户可以将请求发送到集群中的任何节点，包括主节点。每个节点都知道任意文档的存储位置，并且能将请求转发到文档存储所在的节点，同时任意节点都能负责从各个包含所需数据的节点中查询、收集数据，并将结果集返回给客户端。</p>
+<p>为了实现故障转移，集群节点数量需要大于等于主分片数量，当启动新的节点加入集群时，节点会根据 cluster.name 自动发现集群并加入。但是在不同的机器上启动节点时，为了加入同一集群，需要配置一个可连接到的单播主机列表 discovery.zen.ping.unicast.hosts</p>
+<p>单播模式是一种网络通讯中点对点的数据传输模式，es 通过配置记住列表，使用单播模式完成节点通讯。</p>
+<blockquote>
+<p>discovery.zen.ping.unicast.hosts 不需要配置集群上的所有节点。因为如果一个节点连接到了集群中的一个节点，这个连接信息会被发送到集群中的所有其它节点，如果一个节点保持了太多并发网络连接将导致额外的系统负载。所以通过配置 discovery.zen.ping.unicats.concurrent_connects 约束了单播模式的最大网络连接数，默认值 10。</p>
+</blockquote>
+<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><p>分片是一个功能完整的搜索引擎，它拥有使用节点上所有资源的能力。</p>
+<p>因为每个分片都可以使用节点上的所有资源，所以理论上一个分片独占一个节点是最好的。故水平扩容（增加集群节点）也是常见的提高负载能力的操作。</p>
+<p>因为主分片的数目在索引创建的时候已经确定下来了，而实际上主分片数量定义了索引能够存储的最大数据量（实际上还要考量数据、硬件等）。但是因为读操作可以同时被主分片和副本分片处理，所以拥有越多的副本分片集群的吞吐量越高。</p>
+<p>综上，集群的副本分片越多，分片越能独占节点资源，集群的吞吐量越高。</p>
+<p>归根到底就是节点数量越多越好（废话，哈哈）</p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引实际上是指向一个或多个物理分片的逻辑命名空间。</p>
+<p>分片是 es 底层的工作单元，用于保存索引数据的一部分。每一个分片都是一个 Lucene 实例，它本身也是一个完整的搜索引擎。</p>
+<p>文档被存储到分片中，应用程序直接与索引交互完成操作，索引再操作分片。</p>
+<p>索引中任一文档都归属于一个确定的主分片，所以主分片的数量决定索引能存储的文档数量。</p>
+<p>副本分片只是主分片内容的拷贝，副本分片作为硬件故障时保护数据不丢失的冗余备份，同时提供查询服务。</p>
+<p>索引在建立时就已经确定主分片数量，副本分片数量则可以随时修改。</p>
+<p>在同一个节点上同时保存原始数据和副本是无意义的，因为一旦该节点故障就会同时失去原始数据和副本，所谓保护数据不丢失就不存在了。</p>
+<h2 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h2><p>创建一个名为 index 主分片和副本分片个数都是 1 的索引</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PUT /&#123;index&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;number_of_shards&quot;:1,</span><br><span class="line">        &quot;number_of_replicas&quot;:1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="集群健康"><a href="#集群健康" class="headerlink" title="集群健康"></a>集群健康</h1><p>集群健康主要通过接口 &#x2F;_cluster&#x2F;health 返回的 status 字段判断，枚举值：green，yellow，red。</p>
+<p>green：集群健康</p>
+<p>yellow：所有主分片都正常，但至少一个副本分片出现了问题</p>
+<p>red：有主分片出现了问题</p>
+<blockquote>
+<p>注意：描述集群健康时衡量的主体是分片（主分片和副分片），而不是节点。</p>
+</blockquote>
+<p>KVM 测试环境示例：</p>
+<p><a href="http://192.168.20.213:9200/_cluster/health?pretty">http://192.168.20.213:9200/_cluster/health?pretty</a></p>
+<p>结果：</p>
+<img src="../../images/image-20221205151152327.png" alt="image-20221205151152327" style="zoom:50%;" />
+
+
+
+
+
+<h1 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h1><p>集群扩容的方式有水平扩容和垂直扩容。</p>
+<p>水平扩容就是通过启动更多的节点来分散负载，达到提高性能目的的手段，当然如果节点都在一个机器上是无意义的。</p>
+<p>垂直扩容就是将 4H8G 升级为 8H16G。</p>
+<p>好像没啥好记录的，就是一个加机器，一个升配置。</p>
+<h1 id="应对故障"><a href="#应对故障" class="headerlink" title="应对故障"></a>应对故障</h1><p>假设一个集群拥有三个节点，主分片数量为 3，副本分片数量为 2（也就是每个主分片拥有 2 个副本分片），当其中某一个节点异常推出集群，会发生什么呢？</p>
+<p>因为节点数等于主分片数，所以主分片应该均匀分布在三个节点汇总，当其中一个节点异常退出，说明我们损失了一个主分片和两个副本分片。</p>
+<p>如果退出的节点刚刚好是集群的主节点，集群首先会选举一个新的主节点。</p>
+<p>然后主节点会检查集群情况，发现丢失了一个主分片，索引不能正常工作，集群的状态变更为 red。</p>
+<p>此时集群的数据因为冗余的缘故，并没有丢失数据。主节点将其它节点中的副本分片提升为主分片，重新构建集群分片关系，这个过程是瞬间的，如同按下一个开关。然后集群的状态变更为 yellow。</p>
+<blockquote>
+<p>此时的状态 yellow 是因为我们的集群主分片依然完备，但是当前集群只有两个节点，只能满足每个主分片拥有一个副本分片，与配置 number_of_replicas&#x3D;2 不符，也就是说集群中存在副本分片未达预期。</p>
+<p>一个节点同时保存相同数据的主分片和副本分片是无意义的。同时保存一个主分片的两个相同副本分片也是无意义的。</p>
+</blockquote>
+<p>如果此时第二个节点也异常推出了，集群状态依然是 yellow，因为第三个节点中的副本分片都将升级为主分片，集群数据依然无损。</p>
+<p>最后是等待开发人员介入了，如果退出的节点重新回归集群，且该节点依然拥有之前的分片，集群会尝试重用它们，同时仅从主分片复制发生了修改的数据文件过去。然后集群会尝试再次优化所有节点上的分片分布。</p>
+<h1 id="疑点"><a href="#疑点" class="headerlink" title="疑点"></a>疑点</h1><ol>
+<li>这句话没理解</li>
+</ol>
+<img src="../../images/image-20221205150325735.png" alt="image-20221205150325735" style="zoom:50%;" />
+
+<p>暂时理解的意思是：只有一个主节点的时候因为没有数据节点，所以压根不存储数据，也就不存在文档级别操作所以不会存在所谓瓶颈</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>elasticsearch</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>go 的 var 和 :=</title>
     <url>/2023/02/9a311670/</url>
     <content><![CDATA[<p>初学的时候看到 go 的变量声明还分两种 var 和 :&#x3D;，使用上各种混着用差点给我劝退，辛亏自己是个查（抄）资料的孩子。</p>
@@ -594,31 +593,6 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2023/09/0/</url>
-    <content><![CDATA[<h1 id="更新-openssl"><a href="#更新-openssl" class="headerlink" title="更新 openssl"></a>更新 openssl</h1><p>发现自己 KVM 上面的 openssl 版本还是 1.0.2，</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.0.2k-fips  26 Jan 2017</span><br></pre></td></tr></table></figure>
-
-
-
-<p>在使用 composer 时发现该版本还存在 ssl 证书的 bug，</p>
-<p><a href="https://github.com/composer/composer/issues/10759">https://github.com/composer/composer/issues/10759</a></p>
-<p>更新一下版本：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://www.openssl.org/source/openssl-1.1.1i.tar.gz --no-check-certificate</span><br><span class="line">tar -xzvf openssl-1.1.1i.tar.gz</span><br><span class="line">cd openssl-1.1.1i</span><br><span class="line">./config</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-
-
-
-<p>安装后报错 openssl: error while loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory，继续执行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/libssl.so.1.1</span><br><span class="line">sudo ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1</span><br></pre></td></tr></table></figure>
-
-
-
-<p>然后重新打开回话，openssl version 就是新的版本了</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.1.1i  8 Dec 2020</span><br></pre></td></tr></table></figure>
-
-]]></content>
-  </entry>
-  <entry>
     <title>crontab 任务配置基础</title>
     <url>/2023/02/fadd76df/</url>
     <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>* * * * * command</p>
@@ -649,6 +623,31 @@
   </entry>
   <entry>
     <title></title>
+    <url>/2023/09/0/</url>
+    <content><![CDATA[<h1 id="更新-openssl"><a href="#更新-openssl" class="headerlink" title="更新 openssl"></a>更新 openssl</h1><p>发现自己 KVM 上面的 openssl 版本还是 1.0.2，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.0.2k-fips  26 Jan 2017</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在使用 composer 时发现该版本还存在 ssl 证书的 bug，</p>
+<p><a href="https://github.com/composer/composer/issues/10759">https://github.com/composer/composer/issues/10759</a></p>
+<p>更新一下版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://www.openssl.org/source/openssl-1.1.1i.tar.gz --no-check-certificate</span><br><span class="line">tar -xzvf openssl-1.1.1i.tar.gz</span><br><span class="line">cd openssl-1.1.1i</span><br><span class="line">./config</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
+
+
+
+<p>安装后报错 openssl: error while loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory，继续执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/libssl.so.1.1</span><br><span class="line">sudo ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后重新打开回话，openssl version 就是新的版本了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">openssl version</span><br><span class="line"># OpenSSL 1.1.1i  8 Dec 2020</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
     <url>/2023/03/0/</url>
     <content><![CDATA[<h1 id="arch"><a href="#arch" class="headerlink" title="arch"></a>arch</h1><p>用来看服务器底层架构的命令</p>
 <p>输出形如 x86_64 说明是 64 位系统，如果是 i686 或 i386 说明是 32 位系统。</p>
@@ -675,6 +674,95 @@
 <li>每个小时的间隔是单独计算的。所以 17:56 执行获得输出后，下一次执行是 18:00 而不是 18:03</li>
 <li>*&#x2F;7 意思是【每小时从 0 分起，每隔 7 分钟执行一次】，所以第一次执行是 0 分，其它诸如 <em>&#x2F;20、</em>&#x2F;45 同理，如果仅希望每小时第 45 分执行一次任务，则应该配置为 45 * * * *</li>
 </ol>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pstree/strace/traceroute 和 lsof</title>
+    <url>/2023/02/92e8b7bd/</url>
+    <content><![CDATA[<p>记录几个常用的 linux 命令</p>
+<ul>
+<li>pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替</li>
+<li>strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb</li>
+<li>traceroute: 跟踪当前到目的主机数据报传输链路的命令</li>
+<li>lsof: 基于一切皆文件的系统文件描述符查看命令</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="pstree"><a href="#pstree" class="headerlink" title="pstree"></a>pstree</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mac</span><br><span class="line">brew install pstree</span><br><span class="line"></span><br><span class="line">#Fedora/Red Hat/CentOS</span><br><span class="line">yum -y install psmisc</span><br><span class="line"></span><br><span class="line">#Ubuntu/Debian</span><br><span class="line">apt-get install psmisc</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">             [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line"></span><br><span class="line">pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">-a, --arguments     show command line arguments</span><br><span class="line">                    显示进程的完整指令及参数</span><br><span class="line">-A, --ascii               use ASCII line drawing characters</span><br><span class="line">-c, --compact         don&#x27;t compact identical subtrees</span><br><span class="line">-h, --highlight-all   highlight current process and its ancestors</span><br><span class="line">                       突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因</span><br><span class="line">-H PID, --highlight-pid=PID highlight this process and its ancestors</span><br><span class="line">-g, --show-pgids    show process group ids; implies -c</span><br><span class="line">-G, --vt100           use VT100 line drawing characters</span><br><span class="line">-l, --long              don&#x27;t truncate long lines</span><br><span class="line">                         超长指令不再用 ... 代替</span><br><span class="line">-n, --numeric-sort  sort output by PID</span><br><span class="line">                           按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效</span><br><span class="line">-N type,--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)</span><br><span class="line">-p, --show-pids       show PIDs; implies -c</span><br><span class="line">                          显示 PID</span><br><span class="line">-s, --show-parents    show parents of the selected process</span><br><span class="line">                          显示父级进程</span><br><span class="line">-S, --ns-changes      show namespace transitions</span><br><span class="line">-u, --uid-changes     show uid transitions</span><br><span class="line">-U, --unicode         use UTF-8 (Unicode) line drawing characters</span><br><span class="line">-V, --version         display version information</span><br><span class="line">-Z,--security-context   show SELinux security contexts</span><br><span class="line"></span><br><span class="line">PID    start at this PID; default is 1 (init)</span><br><span class="line">USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看全部进程的树形</span><br><span class="line">pstree -anp</span><br><span class="line"></span><br><span class="line"># 根据进程号查看所在树的信息</span><br><span class="line">pstree -anps pid</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install strace</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="文档-1"><a href="#文档-1" class="headerlink" title="文档"></a>文档</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...</span><br><span class="line">             [-a column] [-o file] [-s strsize] [-P path]...</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line">   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line"></span><br><span class="line">Output format:</span><br><span class="line">  -a column      alignment COLUMN for printing syscall results (default 40)</span><br><span class="line">                    将系统调用结果根据字段对齐,默认 为40.</span><br><span class="line">  -i             print instruction pointer at time of syscall</span><br><span class="line">  -k             obtain stack trace between each syscall</span><br><span class="line">  -o file        send trace output to FILE instead of stderr                            </span><br><span class="line">  -q             suppress messages about attaching, detaching, etc. </span><br><span class="line">  -r             print relative timestamp</span><br><span class="line">               印出相对时间关于,,每一个系统调用.</span><br><span class="line">  -s strsize     limit length of print strings to STRSIZE chars (default 32)</span><br><span class="line">               指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)</span><br><span class="line">  -t             print absolute timestamp</span><br><span class="line">               在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间</span><br><span class="line">  -tt            print absolute timestamp with usecs</span><br><span class="line">               在输出中的每一行前加上时间信息,微秒级.</span><br><span class="line">     -T             print time spent in each syscall</span><br><span class="line">                   每次调用最后显示消耗时间</span><br><span class="line">  -x             print non-ascii strings in hex</span><br><span class="line">               以十六进制打印非 ascii 字符串</span><br><span class="line">  -xx            print all strings in hex</span><br><span class="line">               所有字符串以十六进制形式输出.</span><br><span class="line">  -X format      set the format for printing of named constants and flags</span><br><span class="line">  -y             print paths associated with file descriptor arguments</span><br><span class="line">  -yy            print protocol specific information associated with socket file descriptors</span><br><span class="line"></span><br><span class="line">Statistics:</span><br><span class="line">  -c            count time, calls, and errors for each syscall and report summary </span><br><span class="line">               统计每一系统调用的所执行的时间,次数和出错的次数等.</span><br><span class="line">  -C             like -c but also print regular output</span><br><span class="line">  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs</span><br><span class="line">  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)</span><br><span class="line">               针对性排序</span><br><span class="line">  -w             summarise syscall latency (default is system time)</span><br><span class="line"></span><br><span class="line">Filtering:</span><br><span class="line">  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...</span><br><span class="line">    options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm</span><br><span class="line">  -P path        trace accesses to path                                                     </span><br><span class="line"></span><br><span class="line">Tracing:</span><br><span class="line">  -b execve      detach on execve syscall</span><br><span class="line">  -D             run tracer process as a detached grandchild, not as parent</span><br><span class="line">  -f             follow forks</span><br><span class="line">               跟踪由fork调用所产生的子进程.</span><br><span class="line">  -ff            follow forks with output into separate files</span><br><span class="line">               如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.</span><br><span class="line">  -I interruptible</span><br><span class="line"></span><br><span class="line">    1:          no signals are blocked</span><br><span class="line">    2:          fatal signals are blocked while decoding syscall (default)</span><br><span class="line">    3:          fatal signals are always blocked (default if &#x27;-o FILE PROG&#x27;)</span><br><span class="line">    4:          fatal signals and SIGTSTP (^Z) are always blocked</span><br><span class="line">                (useful to make &#x27;strace -o FILE PROG&#x27; not stop on ^Z)</span><br><span class="line"></span><br><span class="line">Startup:</span><br><span class="line"></span><br><span class="line">  -E var         remove var from the environment for command</span><br><span class="line">  -E var=val     put var=val in the environment for command</span><br><span class="line">  -p pid         trace process with process id PID, may be repeated</span><br><span class="line">               跟踪指定的进程pid.</span><br><span class="line">  -u username    run command as username handling setuid and/or setgid</span><br><span class="line">               以username的UID和GID执行被跟踪的命令</span><br><span class="line"></span><br><span class="line">Miscellaneous:</span><br><span class="line"></span><br><span class="line">  -d             enable debug output to stderr</span><br><span class="line">               输出strace关于标准错误的调试信息.,这个输出现在还不会看</span><br><span class="line">  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  </span><br><span class="line">  -h             print help message</span><br><span class="line">  -V             print version                  </span><br></pre></td></tr></table></figure>
+
+
+
+<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier&#x3D;][!]value1[,value2]…</p>
+<p>qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace&#x3D;open,表示只跟踪open调用.而-etrace!&#x3D;open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\</p>
+<p>-e trace&#x3D;set 只跟踪指定的系统 调用.例如:-e trace&#x3D;open,close,rean,write表示只跟踪这四个系统调用.默认的为set&#x3D;all.</p>
+<p>-e trace&#x3D;file 只跟踪有关文件操作的系统调用.</p>
+<p>-e trace&#x3D;process 只跟踪有关进程控制的系统调用.</p>
+<p>-e trace&#x3D;network 跟踪与网络有关的所有系统调用.</p>
+<p>-e strace&#x3D;signal 跟踪所有与系统信号有关的 系统调用</p>
+<p>-e trace&#x3D;ipc 跟踪所有与进程通讯有关的系统调用</p>
+<p>-e abbrev&#x3D;set 设定strace输出的系统调用的结果集.-v 等与 abbrev&#x3D;none.默认为abbrev&#x3D;all.</p>
+<p>-e raw&#x3D;set 将指定的系统调用的参数以十六进制显示.</p>
+<p>-e signal&#x3D;set 指定跟踪的系统信号.默认为all.如 signal&#x3D;!SIGIO(或者signal&#x3D;!io),表示不跟踪SIGIO信号.</p>
+<p>-e read&#x3D;set 输出从指定文件中读出 的数据.例如: -e read&#x3D;3,5</p>
+<p>-e write&#x3D;set 输出写入到指定文件中的数据.</p>
+<h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记</span><br><span class="line"></span><br><span class="line">2021年 12月 08日 星期三 18:23:50 CST</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 61.33    0.000655         164         4           open</span><br><span class="line"> 10.49    0.000112          11        10           mmap</span><br><span class="line">  6.09    0.000065          16         4           mprotect</span><br><span class="line">  4.96    0.000053          13         4           brk</span><br><span class="line">  3.93    0.000042          14         3           munmap</span><br><span class="line">  3.09    0.000033          11         3           read</span><br><span class="line">  3.00    0.000032           5         6           close</span><br><span class="line">  3.00    0.000032           5         6           fstat</span><br><span class="line">  1.69    0.000018          18         1         1 access</span><br><span class="line">  1.22    0.000013          13         1           execve</span><br><span class="line">  0.66    0.000007           7         1           arch_prctl</span><br><span class="line">  0.56    0.000006           6         1           write</span><br><span class="line">  0.00    0.000000           0         1           lseek</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.001068                    45         1 total</span><br><span class="line"></span><br><span class="line"># strace -cp 18700 统计进程各个系统调用的时间消耗</span><br><span class="line">strace: Process 18700 attached</span><br><span class="line">^Cstrace: Process 18700 detached</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 34.48    0.002522          10       256           poll</span><br><span class="line"> 34.24    0.002505          12       206           sendto</span><br><span class="line"> 27.66    0.002023           8       257           recvfrom</span><br><span class="line">  3.47    0.000254          64         4           write</span><br><span class="line">  0.15    0.000011          11         1           restart_syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.007315                   724           total</span><br><span class="line"></span><br><span class="line"># strace -Tp 16266 统计每个系统调用的耗时</span><br><span class="line"># 每行的最后使用&lt;&gt;展示调用的耗时,单位</span><br><span class="line">......</span><br><span class="line">read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;</span><br><span class="line">lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;</span><br><span class="line">read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;</span><br><span class="line">read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;</span><br><span class="line">write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;</span><br><span class="line">write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;</span><br><span class="line">write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;</span><br><span class="line">write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;</span><br><span class="line">write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;</span><br><span class="line">pselect6(1, [0], NULL, NULL, &#123;3, 0&#125;, &#123;[WINCH], 8&#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"># strace -e trace=network ping 127.0.0.1</span><br><span class="line"># -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用</span><br><span class="line">socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)</span><br><span class="line">socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3</span><br><span class="line">connect(3, &#123;sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, 16) = 0</span><br><span class="line">getsockname(3, &#123;sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, [16]) = 0</span><br><span class="line">ping: icmp open socket: 不允许的操作</span><br><span class="line">+++ exited with 2 +++</span><br><span class="line"></span><br><span class="line"># strace -tt -s 10 -o test.txt 5912</span><br><span class="line"># 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中</span><br><span class="line"># -o test.txt 等价于 2&gt;text.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install traceroute</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-2"><a href="#文档-2" class="headerlink" title="文档"></a>文档</h2><p>traceroute 命令用于追踪数据包在网络传输过程中的路径</p>
+<p>traceroute 输出每行表示一个网关,每行包含三个时间</p>
+<p>有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了</p>
+<p>traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -4                          Use IPv4</span><br><span class="line">  -6                          Use IPv6</span><br><span class="line">  -d  --debug                 Enable socket level debugging</span><br><span class="line">  -F  --dont-fragment         Do not fragment packets</span><br><span class="line">  -f first_ttl  --first=first_ttl</span><br><span class="line">                             Start from the first_ttl hop (instead from 1)</span><br><span class="line">  -g gate,...  --gateway=gate,...</span><br><span class="line">                             Route packets through the specified gateway</span><br><span class="line">                             (maximum 8 for IPv4 and 127 for IPv6)</span><br><span class="line">  -I  --icmp                  Use ICMP ECHO for tracerouting</span><br><span class="line">  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)</span><br><span class="line">  -i device  --interface=device</span><br><span class="line">                             Specify a network interface to operate with</span><br><span class="line">  -m max_ttl  --max-hops=max_ttl</span><br><span class="line">                             Set the max number of hops (max TTL to be</span><br><span class="line">                             reached). Default is 30</span><br><span class="line">  -N squeries  --sim-queries=squeries</span><br><span class="line">                             Set the number of probes to be tried</span><br><span class="line">                             simultaneously (default is 16)</span><br><span class="line">  -n                          Do not resolve IP addresses to their domain names</span><br><span class="line">                               直接使用IP地址而非主机名称</span><br><span class="line">  -p port  --port=port        Set the destination port to use. It is either</span><br><span class="line">                             initial udp port value for &quot;default&quot; method</span><br><span class="line">                             (incremented by each probe, default is 33434), or</span><br><span class="line">                             initial seq for &quot;icmp&quot; (incremented as well,</span><br><span class="line">                             default from 1), or some constant destination</span><br><span class="line">                             port for other methods (with default of 80 for</span><br><span class="line">                             &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)</span><br><span class="line">  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6</span><br><span class="line">                             traffic class) value for outgoing packets</span><br><span class="line">  -l flow_label  --flowlabel=flow_label</span><br><span class="line">                             Use specified flow_label for IPv6 packets</span><br><span class="line"></span><br><span class="line">  -w waittime  --wait=waittime</span><br><span class="line">                             Set the number of seconds to wait for response to</span><br><span class="line">                             a probe (default is 5.0). Non-integer (float</span><br><span class="line">                             point) values allowed too</span><br><span class="line"></span><br><span class="line">  -q nqueries  --queries=nqueries</span><br><span class="line">                             Set the number of probes per each hop. Default is3</span><br><span class="line"></span><br><span class="line">  -r                          Bypass the normal routing and send directly to a</span><br><span class="line">                             host on an attached network</span><br><span class="line">                             忽略普通的Routing Table，直接将数据包送到远端主机上</span><br><span class="line"></span><br><span class="line">  -s src_addr  --source=src_addr</span><br><span class="line">                             Use source src_addr for outgoing packets</span><br><span class="line"></span><br><span class="line">  -z sendwait  --sendwait=sendwait</span><br><span class="line">                             Minimal time interval between probes (default 0).</span><br><span class="line">                             If the value is more than 10, then it specifies a</span><br><span class="line">                             number in milliseconds, else it is a number of</span><br><span class="line">                             seconds (float point values allowed too)</span><br><span class="line"></span><br><span class="line">  -e  --extensions            Show ICMP extensions (if present), including MPLS</span><br><span class="line"></span><br><span class="line">  -A  --as-path-lookups       Perform AS path lookups in routing registries and</span><br><span class="line">                             print results directly after the corresponding</span><br><span class="line">                             addresses</span><br><span class="line"></span><br><span class="line">  -M name  --module=name      Use specified module (either builtin or external)</span><br><span class="line">                             for traceroute operations. Most methods have</span><br><span class="line">                             their shortcuts (`-I&#x27; means `-M icmp&#x27; etc.)</span><br><span class="line"></span><br><span class="line">  -O OPTS,...  --options=OPTS,...</span><br><span class="line">                             Use module-specific option OPTS for the</span><br><span class="line">                             traceroute module. Several OPTS allowed,</span><br><span class="line">                             separated by comma. If OPTS is &quot;help&quot;, print info</span><br><span class="line">                             about available options</span><br><span class="line"></span><br><span class="line">  --sport=num                 Use source port num for outgoing packets. Implies</span><br><span class="line">                             `-N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --fwmark=num                Set firewall mark for outgoing packets</span><br><span class="line">  </span><br><span class="line">  -U  --udp                   Use UDP to particular port for tracerouting</span><br><span class="line">                             (instead of increasing the port per each probe),</span><br><span class="line">                             default port is 53</span><br><span class="line"></span><br><span class="line">  -UL                         Use UDPLITE for tracerouting (default dest port</span><br><span class="line">                             is 53)</span><br><span class="line"></span><br><span class="line">  -D  --dccp                  Use DCCP Request for tracerouting (default port</span><br><span class="line">                             is 33434)</span><br><span class="line"></span><br><span class="line">  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting</span><br><span class="line"></span><br><span class="line">  --mtu                       Discover MTU along the path being traced. Implies</span><br><span class="line">                             `-F -N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --back                      Guess the number of hops in the backward path and</span><br><span class="line">                             print if it differs</span><br><span class="line"></span><br><span class="line">  -V  --version               Print version info and exit</span><br><span class="line"></span><br><span class="line">  --help                      Read this help and exit</span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">\+     host          The host to traceroute to</span><br><span class="line">     packetlen     The full packet length (default is the length of an IP</span><br><span class="line">                   header plus 40). Can be ignored or increased to a minimal</span><br><span class="line">                   allowed value</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-2"><a href="#常用命令-2" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示</span><br><span class="line">traceroute -n www.baidu.com</span><br><span class="line"></span><br><span class="line"># 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误</span><br><span class="line">traceroute -r www.baidu.com</span><br><span class="line"></span><br><span class="line"># 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的</span><br><span class="line">traceroute -4 www.baidu.com</span><br><span class="line">traceroute -6 www.baidu.com</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h1><h2 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="文档-3"><a href="#文档-3" class="headerlink" title="文档"></a>文档</h2><p>lsof 命令用于查看系统进程打开的文件</p>
+<p>在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsof 4.87</span><br><span class="line"></span><br><span class="line"> latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/</span><br><span class="line"> latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ</span><br><span class="line"> latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man</span><br><span class="line"> usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]</span><br><span class="line"> [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]</span><br><span class="line">[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]</span><br><span class="line"></span><br><span class="line">Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.</span><br><span class="line">  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks</span><br><span class="line">  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files</span><br><span class="line">  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*</span><br><span class="line">  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers</span><br><span class="line">  -n no host names         -N select NFS files        -o list file offset</span><br><span class="line">  -O no overhead *RISKY*   -P no port names           -R list paRent PID</span><br><span class="line">  -s list file size        -t terse listing           -T disable TCP/TPI info</span><br><span class="line">  -U select Unix socket    -v list version info       -V verbose search</span><br><span class="line">  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]</span><br><span class="line">  </span><br><span class="line">  -- end option scan</span><br><span class="line">  +f|-f  +filesystem or -file names     +|-f[gG] flaGs</span><br><span class="line">  -F [f] select fields; -F? for help</span><br><span class="line">  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)</span><br><span class="line">                                       +m [m] use|create mount supplement</span><br><span class="line">  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)</span><br><span class="line">  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)</span><br><span class="line">  -T qs TCP/TPI Q,St (s) info</span><br><span class="line">  -g [s] exclude(^)|select and print process group IDs</span><br><span class="line">  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.</span><br><span class="line">      An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and</span><br><span class="line">     &lt;fmt&gt; is an strftime(3) format for the marker line.</span><br><span class="line">  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).</span><br><span class="line">  -u s   exclude(^)|select login|UID set s</span><br><span class="line">  -x [fl] cross over +d|+D File systems or symbolic Links</span><br><span class="line">  names  select named files or files on named file systems</span><br><span class="line">Anyone can list all files; /dev warnings disabled; kernel ID check disabled.</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看某进程打开的文件</span><br><span class="line">lsof -p pid</span><br><span class="line"></span><br><span class="line"># 查看正在使用某端口进程</span><br><span class="line">lsof -i:80</span><br><span class="line"></span><br><span class="line"># 列出打开文件的进程</span><br><span class="line">lsof $filename</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -799,95 +887,6 @@
       </tags>
   </entry>
   <entry>
-    <title>pstree/strace/traceroute 和 lsof</title>
-    <url>/2023/02/92e8b7bd/</url>
-    <content><![CDATA[<p>记录几个常用的 linux 命令</p>
-<ul>
-<li>pstree: 类似 ps 命令的进程查看工具，可以将进程以树形结构可视化输出。部分内核或挂载信息会被以 ? 代替</li>
-<li>strace: 集诊断、调试、统计命令&#x2F;进程信息于一体的工具,注意它不是专业的调试工具，如 gdb</li>
-<li>traceroute: 跟踪当前到目的主机数据报传输链路的命令</li>
-<li>lsof: 基于一切皆文件的系统文件描述符查看命令</li>
-</ul>
-<span id="more"></span>
-
-<h1 id="pstree"><a href="#pstree" class="headerlink" title="pstree"></a>pstree</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mac</span><br><span class="line">brew install pstree</span><br><span class="line"></span><br><span class="line">#Fedora/Red Hat/CentOS</span><br><span class="line">yum -y install psmisc</span><br><span class="line"></span><br><span class="line">#Ubuntu/Debian</span><br><span class="line">apt-get install psmisc</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">             [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line"></span><br><span class="line">pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">-a, --arguments     show command line arguments</span><br><span class="line">                    显示进程的完整指令及参数</span><br><span class="line">-A, --ascii               use ASCII line drawing characters</span><br><span class="line">-c, --compact         don&#x27;t compact identical subtrees</span><br><span class="line">-h, --highlight-all   highlight current process and its ancestors</span><br><span class="line">                       突出显示当前进程及其祖先,实测发现好像 -h 没生效,不知道是不是自己 iterm 设置的配色原因</span><br><span class="line">-H PID, --highlight-pid=PID highlight this process and its ancestors</span><br><span class="line">-g, --show-pgids    show process group ids; implies -c</span><br><span class="line">-G, --vt100           use VT100 line drawing characters</span><br><span class="line">-l, --long              don&#x27;t truncate long lines</span><br><span class="line">                         超长指令不再用 ... 代替</span><br><span class="line">-n, --numeric-sort  sort output by PID</span><br><span class="line">                           按 PID 排序显示,默认是按名称,似乎在centeros 中 nh 同时使用 h 不会生效</span><br><span class="line">-N type,--ns-sort=type        sort by namespace type (ipc, mnt, net, pid, user, uts)</span><br><span class="line">-p, --show-pids       show PIDs; implies -c</span><br><span class="line">                          显示 PID</span><br><span class="line">-s, --show-parents    show parents of the selected process</span><br><span class="line">                          显示父级进程</span><br><span class="line">-S, --ns-changes      show namespace transitions</span><br><span class="line">-u, --uid-changes     show uid transitions</span><br><span class="line">-U, --unicode         use UTF-8 (Unicode) line drawing characters</span><br><span class="line">-V, --version         display version information</span><br><span class="line">-Z,--security-context   show SELinux security contexts</span><br><span class="line"></span><br><span class="line">PID    start at this PID; default is 1 (init)</span><br><span class="line">USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看全部进程的树形</span><br><span class="line">pstree -anp</span><br><span class="line"></span><br><span class="line"># 根据进程号查看所在树的信息</span><br><span class="line">pstree -anps pid</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install strace</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="文档-1"><a href="#文档-1" class="headerlink" title="文档"></a>文档</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...</span><br><span class="line">             [-a column] [-o file] [-s strsize] [-P path]...</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line">   or: strace -c[dfw] [-I n] [-e expr]... [-O overhead] [-S sortby]</span><br><span class="line">             -p pid... / [-D] [-E var=val]... [-u username] PROG [ARGS]</span><br><span class="line"></span><br><span class="line">Output format:</span><br><span class="line">  -a column      alignment COLUMN for printing syscall results (default 40)</span><br><span class="line">                    将系统调用结果根据字段对齐,默认 为40.</span><br><span class="line">  -i             print instruction pointer at time of syscall</span><br><span class="line">  -k             obtain stack trace between each syscall</span><br><span class="line">  -o file        send trace output to FILE instead of stderr                            </span><br><span class="line">  -q             suppress messages about attaching, detaching, etc. </span><br><span class="line">  -r             print relative timestamp</span><br><span class="line">               印出相对时间关于,,每一个系统调用.</span><br><span class="line">  -s strsize     limit length of print strings to STRSIZE chars (default 32)</span><br><span class="line">               指定输出的字符串的最大长度.默认为32.文件名一直全部输出.(超出长度用...代替)</span><br><span class="line">  -t             print absolute timestamp</span><br><span class="line">               在输出中的每一行前加上时间信息.不可跟 -c 混用, -t 和 -tt 是在行首记录当前时间</span><br><span class="line">  -tt            print absolute timestamp with usecs</span><br><span class="line">               在输出中的每一行前加上时间信息,微秒级.</span><br><span class="line">     -T             print time spent in each syscall</span><br><span class="line">                   每次调用最后显示消耗时间</span><br><span class="line">  -x             print non-ascii strings in hex</span><br><span class="line">               以十六进制打印非 ascii 字符串</span><br><span class="line">  -xx            print all strings in hex</span><br><span class="line">               所有字符串以十六进制形式输出.</span><br><span class="line">  -X format      set the format for printing of named constants and flags</span><br><span class="line">  -y             print paths associated with file descriptor arguments</span><br><span class="line">  -yy            print protocol specific information associated with socket file descriptors</span><br><span class="line"></span><br><span class="line">Statistics:</span><br><span class="line">  -c            count time, calls, and errors for each syscall and report summary </span><br><span class="line">               统计每一系统调用的所执行的时间,次数和出错的次数等.</span><br><span class="line">  -C             like -c but also print regular output</span><br><span class="line">  -O overhead    set overhead for tracing syscalls to OVERHEAD usecs</span><br><span class="line">  -S sortby      sort syscall counts by: time, calls, name, nothing (default time)</span><br><span class="line">               针对性排序</span><br><span class="line">  -w             summarise syscall latency (default is system time)</span><br><span class="line"></span><br><span class="line">Filtering:</span><br><span class="line">  -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...</span><br><span class="line">    options:    trace, abbrev, verbose, raw, signal, read, write, fault, inject, kvm</span><br><span class="line">  -P path        trace accesses to path                                                     </span><br><span class="line"></span><br><span class="line">Tracing:</span><br><span class="line">  -b execve      detach on execve syscall</span><br><span class="line">  -D             run tracer process as a detached grandchild, not as parent</span><br><span class="line">  -f             follow forks</span><br><span class="line">               跟踪由fork调用所产生的子进程.</span><br><span class="line">  -ff            follow forks with output into separate files</span><br><span class="line">               如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号.</span><br><span class="line">  -I interruptible</span><br><span class="line"></span><br><span class="line">    1:          no signals are blocked</span><br><span class="line">    2:          fatal signals are blocked while decoding syscall (default)</span><br><span class="line">    3:          fatal signals are always blocked (default if &#x27;-o FILE PROG&#x27;)</span><br><span class="line">    4:          fatal signals and SIGTSTP (^Z) are always blocked</span><br><span class="line">                (useful to make &#x27;strace -o FILE PROG&#x27; not stop on ^Z)</span><br><span class="line"></span><br><span class="line">Startup:</span><br><span class="line"></span><br><span class="line">  -E var         remove var from the environment for command</span><br><span class="line">  -E var=val     put var=val in the environment for command</span><br><span class="line">  -p pid         trace process with process id PID, may be repeated</span><br><span class="line">               跟踪指定的进程pid.</span><br><span class="line">  -u username    run command as username handling setuid and/or setgid</span><br><span class="line">               以username的UID和GID执行被跟踪的命令</span><br><span class="line"></span><br><span class="line">Miscellaneous:</span><br><span class="line"></span><br><span class="line">  -d             enable debug output to stderr</span><br><span class="line">               输出strace关于标准错误的调试信息.,这个输出现在还不会看</span><br><span class="line">  -v             verbose mode: print unabbreviated argv, stat, termios, etc. args  </span><br><span class="line">  -h             print help message</span><br><span class="line">  -V             print version                  </span><br></pre></td></tr></table></figure>
-
-
-
-<p>-e expr 指定一个表达式,用来控制如何跟踪.格式：[qualifier&#x3D;][!]value1[,value2]…</p>
-<p>qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如:-eopen等价于 -e trace&#x3D;open,表示只跟踪open调用.而-etrace!&#x3D;open 表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. 注意有些shell使用!来执行历史记录里的命令,所以要使用\</p>
-<p>-e trace&#x3D;set 只跟踪指定的系统 调用.例如:-e trace&#x3D;open,close,rean,write表示只跟踪这四个系统调用.默认的为set&#x3D;all.</p>
-<p>-e trace&#x3D;file 只跟踪有关文件操作的系统调用.</p>
-<p>-e trace&#x3D;process 只跟踪有关进程控制的系统调用.</p>
-<p>-e trace&#x3D;network 跟踪与网络有关的所有系统调用.</p>
-<p>-e strace&#x3D;signal 跟踪所有与系统信号有关的 系统调用</p>
-<p>-e trace&#x3D;ipc 跟踪所有与进程通讯有关的系统调用</p>
-<p>-e abbrev&#x3D;set 设定strace输出的系统调用的结果集.-v 等与 abbrev&#x3D;none.默认为abbrev&#x3D;all.</p>
-<p>-e raw&#x3D;set 将指定的系统调用的参数以十六进制显示.</p>
-<p>-e signal&#x3D;set 指定跟踪的系统信号.默认为all.如 signal&#x3D;!SIGIO(或者signal&#x3D;!io),表示不跟踪SIGIO信号.</p>
-<p>-e read&#x3D;set 输出从指定文件中读出 的数据.例如: -e read&#x3D;3,5</p>
-<p>-e write&#x3D;set 输出写入到指定文件中的数据.</p>
-<h2 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># strace -c date 统计命令各个系统调用的耗时,包含空格的命令不需要引号标记</span><br><span class="line"></span><br><span class="line">2021年 12月 08日 星期三 18:23:50 CST</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 61.33    0.000655         164         4           open</span><br><span class="line"> 10.49    0.000112          11        10           mmap</span><br><span class="line">  6.09    0.000065          16         4           mprotect</span><br><span class="line">  4.96    0.000053          13         4           brk</span><br><span class="line">  3.93    0.000042          14         3           munmap</span><br><span class="line">  3.09    0.000033          11         3           read</span><br><span class="line">  3.00    0.000032           5         6           close</span><br><span class="line">  3.00    0.000032           5         6           fstat</span><br><span class="line">  1.69    0.000018          18         1         1 access</span><br><span class="line">  1.22    0.000013          13         1           execve</span><br><span class="line">  0.66    0.000007           7         1           arch_prctl</span><br><span class="line">  0.56    0.000006           6         1           write</span><br><span class="line">  0.00    0.000000           0         1           lseek</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.001068                    45         1 total</span><br><span class="line"></span><br><span class="line"># strace -cp 18700 统计进程各个系统调用的时间消耗</span><br><span class="line">strace: Process 18700 attached</span><br><span class="line">^Cstrace: Process 18700 detached</span><br><span class="line">% time     seconds  usecs/call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line"> 34.48    0.002522          10       256           poll</span><br><span class="line"> 34.24    0.002505          12       206           sendto</span><br><span class="line"> 27.66    0.002023           8       257           recvfrom</span><br><span class="line">  3.47    0.000254          64         4           write</span><br><span class="line">  0.15    0.000011          11         1           restart_syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.007315                   724           total</span><br><span class="line"></span><br><span class="line"># strace -Tp 16266 统计每个系统调用的耗时</span><br><span class="line"># 每行的最后使用&lt;&gt;展示调用的耗时,单位</span><br><span class="line">......</span><br><span class="line">read(6, &quot;5.99 6.79 6.95 6/416 15562\n&quot;, 8191) = 27 &lt;0.000013&gt;</span><br><span class="line">lseek(7, 0, SEEK_SET)                   = 0 &lt;0.000016&gt;</span><br><span class="line">read(7, &quot;cpu  29537917 11 28987112 160043&quot;..., 2048) = 1655 &lt;0.000031&gt;</span><br><span class="line">read(7, &quot;&quot;, 1024)                       = 0 &lt;0.000009&gt;</span><br><span class="line">write(1, &quot;\33[H\33(B\33[mtop - 17:37:32 up 1 day&quot;..., 2048) = 2048 &lt;0.000064&gt;</span><br><span class="line">write(1, &quot;;49mwa,\33(B\33[m\33[39;49m\33[1m  0.0 \33&quot;..., 2048) = 2048 &lt;0.000048&gt;</span><br><span class="line">write(1, &quot;  0.4   0:40.83 /work/servers/ph&quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000041&gt;</span><br><span class="line">write(1, &quot;                                &quot;..., 2048) = 2048 &lt;0.000039&gt;</span><br><span class="line">write(1, &quot;                             \33(B&quot;..., 2048) = 2048 &lt;0.000087&gt;</span><br><span class="line">write(1, &quot;20 root      20   0       0     &quot;..., 2048) = 2048 &lt;0.000047&gt;</span><br><span class="line">write(1, &quot; 0:02.32 [migration/1]          &quot;..., 1428) = 1428 &lt;0.000037&gt;</span><br><span class="line">pselect6(1, [0], NULL, NULL, &#123;3, 0&#125;, &#123;[WINCH], 8&#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"># strace -e trace=network ping 127.0.0.1</span><br><span class="line"># -e 选项的几个都还挺常用的,如 network 可以观察网络相关的调用</span><br><span class="line">socket(AF_INET, SOCK_RAW, IPPROTO_ICMP) = -1 EPERM (Operation not permitted)</span><br><span class="line">socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3</span><br><span class="line">connect(3, &#123;sa_family=AF_INET, sin_port=htons(1025), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, 16) = 0</span><br><span class="line">getsockname(3, &#123;sa_family=AF_INET, sin_port=htons(34221), sin_addr=inet_addr(&quot;127.0.0.1&quot;)&#125;, [16]) = 0</span><br><span class="line">ping: icmp open socket: 不允许的操作</span><br><span class="line">+++ exited with 2 +++</span><br><span class="line"></span><br><span class="line"># strace -tt -s 10 -o test.txt 5912</span><br><span class="line"># 跟踪进程号 5912,以微秒为单位统计系统调用时间,每个字符串只输出前 10 个字符,最后将信息输出到文件 test.txt 中</span><br><span class="line"># -o test.txt 等价于 2&gt;text.txt</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install traceroute</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="文档-2"><a href="#文档-2" class="headerlink" title="文档"></a>文档</h2><p>traceroute 命令用于追踪数据包在网络传输过程中的路径</p>
-<p>traceroute 输出每行表示一个网关,每行包含三个时间</p>
-<p>有时候会看到 traceroute 输出的网关信息是 * 代替,这是因为该网关防火墙屏蔽了 ICMP 的信息,也表示该网关禁 ping 了</p>
-<p>traceroute 实现的方法是使用一个小ttl(生存时间)启动探测数据包，然后侦听来自网关的ICMP超时回复，它以ttl为1开始探测，并将其增加1，直到获得ICMP port unreachable或TCP reset，这意味着我们到达了host，或达到了最大值(默认为30跳)，traceroute 默认每次向目标发送三个包，并将每个探测包到达跳点的时间打印成一行。在请求时地址后面可以有附加信息，如果探测结果来自不同的网关，则会打印每个响应系统的地址，如果在5.0秒内(默认值)没有响应，则会为该探测器打印一个 * 。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  traceroute [ -46dFITnreAUDV ] [ -f first_ttl ] [ -g gate,... ] [ -i device ] [ -m max_ttl ] [ -N squeries ] [ -p port ] [ -t tos ] [ -l flow_label ] [ -w waittime ] [ -q nqueries ] [ -s src_addr ] [ -z sendwait ] [ --fwmark=num ] host [ packetlen ]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -4                          Use IPv4</span><br><span class="line">  -6                          Use IPv6</span><br><span class="line">  -d  --debug                 Enable socket level debugging</span><br><span class="line">  -F  --dont-fragment         Do not fragment packets</span><br><span class="line">  -f first_ttl  --first=first_ttl</span><br><span class="line">                             Start from the first_ttl hop (instead from 1)</span><br><span class="line">  -g gate,...  --gateway=gate,...</span><br><span class="line">                             Route packets through the specified gateway</span><br><span class="line">                             (maximum 8 for IPv4 and 127 for IPv6)</span><br><span class="line">  -I  --icmp                  Use ICMP ECHO for tracerouting</span><br><span class="line">  -T  --tcp                   Use TCP SYN for tracerouting (default port is 80)</span><br><span class="line">  -i device  --interface=device</span><br><span class="line">                             Specify a network interface to operate with</span><br><span class="line">  -m max_ttl  --max-hops=max_ttl</span><br><span class="line">                             Set the max number of hops (max TTL to be</span><br><span class="line">                             reached). Default is 30</span><br><span class="line">  -N squeries  --sim-queries=squeries</span><br><span class="line">                             Set the number of probes to be tried</span><br><span class="line">                             simultaneously (default is 16)</span><br><span class="line">  -n                          Do not resolve IP addresses to their domain names</span><br><span class="line">                               直接使用IP地址而非主机名称</span><br><span class="line">  -p port  --port=port        Set the destination port to use. It is either</span><br><span class="line">                             initial udp port value for &quot;default&quot; method</span><br><span class="line">                             (incremented by each probe, default is 33434), or</span><br><span class="line">                             initial seq for &quot;icmp&quot; (incremented as well,</span><br><span class="line">                             default from 1), or some constant destination</span><br><span class="line">                             port for other methods (with default of 80 for</span><br><span class="line">                             &quot;tcp&quot;, 53 for &quot;udp&quot;, etc.)</span><br><span class="line">  -t tos  --tos=tos           Set the TOS (IPv4 type of service) or TC (IPv6</span><br><span class="line">                             traffic class) value for outgoing packets</span><br><span class="line">  -l flow_label  --flowlabel=flow_label</span><br><span class="line">                             Use specified flow_label for IPv6 packets</span><br><span class="line"></span><br><span class="line">  -w waittime  --wait=waittime</span><br><span class="line">                             Set the number of seconds to wait for response to</span><br><span class="line">                             a probe (default is 5.0). Non-integer (float</span><br><span class="line">                             point) values allowed too</span><br><span class="line"></span><br><span class="line">  -q nqueries  --queries=nqueries</span><br><span class="line">                             Set the number of probes per each hop. Default is3</span><br><span class="line"></span><br><span class="line">  -r                          Bypass the normal routing and send directly to a</span><br><span class="line">                             host on an attached network</span><br><span class="line">                             忽略普通的Routing Table，直接将数据包送到远端主机上</span><br><span class="line"></span><br><span class="line">  -s src_addr  --source=src_addr</span><br><span class="line">                             Use source src_addr for outgoing packets</span><br><span class="line"></span><br><span class="line">  -z sendwait  --sendwait=sendwait</span><br><span class="line">                             Minimal time interval between probes (default 0).</span><br><span class="line">                             If the value is more than 10, then it specifies a</span><br><span class="line">                             number in milliseconds, else it is a number of</span><br><span class="line">                             seconds (float point values allowed too)</span><br><span class="line"></span><br><span class="line">  -e  --extensions            Show ICMP extensions (if present), including MPLS</span><br><span class="line"></span><br><span class="line">  -A  --as-path-lookups       Perform AS path lookups in routing registries and</span><br><span class="line">                             print results directly after the corresponding</span><br><span class="line">                             addresses</span><br><span class="line"></span><br><span class="line">  -M name  --module=name      Use specified module (either builtin or external)</span><br><span class="line">                             for traceroute operations. Most methods have</span><br><span class="line">                             their shortcuts (`-I&#x27; means `-M icmp&#x27; etc.)</span><br><span class="line"></span><br><span class="line">  -O OPTS,...  --options=OPTS,...</span><br><span class="line">                             Use module-specific option OPTS for the</span><br><span class="line">                             traceroute module. Several OPTS allowed,</span><br><span class="line">                             separated by comma. If OPTS is &quot;help&quot;, print info</span><br><span class="line">                             about available options</span><br><span class="line"></span><br><span class="line">  --sport=num                 Use source port num for outgoing packets. Implies</span><br><span class="line">                             `-N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --fwmark=num                Set firewall mark for outgoing packets</span><br><span class="line">  </span><br><span class="line">  -U  --udp                   Use UDP to particular port for tracerouting</span><br><span class="line">                             (instead of increasing the port per each probe),</span><br><span class="line">                             default port is 53</span><br><span class="line"></span><br><span class="line">  -UL                         Use UDPLITE for tracerouting (default dest port</span><br><span class="line">                             is 53)</span><br><span class="line"></span><br><span class="line">  -D  --dccp                  Use DCCP Request for tracerouting (default port</span><br><span class="line">                             is 33434)</span><br><span class="line"></span><br><span class="line">  -P prot  --protocol=prot    Use raw packet of protocol prot for tracerouting</span><br><span class="line"></span><br><span class="line">  --mtu                       Discover MTU along the path being traced. Implies</span><br><span class="line">                             `-F -N 1&#x27;</span><br><span class="line"></span><br><span class="line">  --back                      Guess the number of hops in the backward path and</span><br><span class="line">                             print if it differs</span><br><span class="line"></span><br><span class="line">  -V  --version               Print version info and exit</span><br><span class="line"></span><br><span class="line">  --help                      Read this help and exit</span><br><span class="line"></span><br><span class="line">Arguments:</span><br><span class="line"></span><br><span class="line">\+     host          The host to traceroute to</span><br><span class="line">     packetlen     The full packet length (default is the length of an IP</span><br><span class="line">                   header plus 40). Can be ignored or increased to a minimal</span><br><span class="line">                   allowed value</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令-2"><a href="#常用命令-2" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 追踪数据包到百度的传输路径,途中的机器一律使用 IP 显示</span><br><span class="line">traceroute -n www.baidu.com</span><br><span class="line"></span><br><span class="line"># 跳过中转直接向目标发送数据包,注意如果是内网会得到[connect: 网络不可达]的错误</span><br><span class="line">traceroute -r www.baidu.com</span><br><span class="line"></span><br><span class="line"># 限定使用 IPV4/6 协议跟踪路由,默认是自动选择,此时如果目标主机返回了 IPV4 和 6 的地址优先使用 IPV4 的</span><br><span class="line">traceroute -4 www.baidu.com</span><br><span class="line">traceroute -6 www.baidu.com</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h1><h2 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install lsof</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="文档-3"><a href="#文档-3" class="headerlink" title="文档"></a>文档</h2><p>lsof 命令用于查看系统进程打开的文件</p>
-<p>在 linux 环境下一切皆文件,系统为应用程序分配文件描述符作为应用程序和操作系统间交互的桥梁.而应用程序打开的文件的描述符列表则通过 lsof 命令提供了大量关于应用程序的信息,可用于系统监测和排错</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsof 4.87</span><br><span class="line"></span><br><span class="line"> latest revision: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/</span><br><span class="line"> latest FAQ: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ</span><br><span class="line"> latest man page: ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_man</span><br><span class="line"> usage: [-?abhKlnNoOPRtUvVX] [+|-c c] [+|-d s] [+D D] [+|-f[gG]] [+|-e s]</span><br><span class="line"> [-F [f]] [-g [s]] [-i [i]] [+|-L [l]] [+m [m]] [+|-M] [-o [o]] [-p s]</span><br><span class="line">[+|-r [t]] [-s [p:s]] [-S [t]] [-T [t]] [-u s] [+|-w] [-x [fl]] [--] [names]</span><br><span class="line"></span><br><span class="line">Defaults in parentheses; comma-separated set (s) items; dash-separated ranges.</span><br><span class="line">  -?|-h list help          -a AND selections (OR)     -b avoid kernel blocks</span><br><span class="line">  -c c  cmd c ^c /c/[bix]  +c w  COMMAND width (9)    +d s  dir s files</span><br><span class="line">  -d s  select by FD set   +D D  dir D tree *SLOW?*   +|-e s  exempt s *RISKY*</span><br><span class="line">  -i select IPv[46] files  -K list tasKs (threads)    -l list UID numbers</span><br><span class="line">  -n no host names         -N select NFS files        -o list file offset</span><br><span class="line">  -O no overhead *RISKY*   -P no port names           -R list paRent PID</span><br><span class="line">  -s list file size        -t terse listing           -T disable TCP/TPI info</span><br><span class="line">  -U select Unix socket    -v list version info       -V verbose search</span><br><span class="line">  +|-w  Warnings (+)       -X skip TCP&amp;UDP* files     -Z Z  context [Z]</span><br><span class="line">  </span><br><span class="line">  -- end option scan</span><br><span class="line">  +f|-f  +filesystem or -file names     +|-f[gG] flaGs</span><br><span class="line">  -F [f] select fields; -F? for help</span><br><span class="line">  +|-L [l] list (+) suppress (-) link counts &lt; l (0 = all; default = 0)</span><br><span class="line">                                       +m [m] use|create mount supplement</span><br><span class="line">  +|-M   portMap registration (-)       -o o   o 0t offset digits (8)</span><br><span class="line">  -p s   exclude(^)|select PIDs         -S [t] t second stat timeout (15)</span><br><span class="line">  -T qs TCP/TPI Q,St (s) info</span><br><span class="line">  -g [s] exclude(^)|select and print process group IDs</span><br><span class="line">  -i i   select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">  +|-r [t[m&lt;fmt&gt;]] repeat every t seconds (15);  + until no files, - forever.</span><br><span class="line">      An optional suffix to t is m&lt;fmt&gt;; m must separate t from &lt;fmt&gt; and</span><br><span class="line">     &lt;fmt&gt; is an strftime(3) format for the marker line.</span><br><span class="line">  -s p:s  exclude(^)|select protocol (p = TCP|UDP) states by name(s).</span><br><span class="line">  -u s   exclude(^)|select login|UID set s</span><br><span class="line">  -x [fl] cross over +d|+D File systems or symbolic Links</span><br><span class="line">  names  select named files or files on named file systems</span><br><span class="line">Anyone can list all files; /dev warnings disabled; kernel ID check disabled.</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="常用命令-3"><a href="#常用命令-3" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看某进程打开的文件</span><br><span class="line">lsof -p pid</span><br><span class="line"></span><br><span class="line"># 查看正在使用某端口进程</span><br><span class="line">lsof -i:80</span><br><span class="line"></span><br><span class="line"># 列出打开文件的进程</span><br><span class="line">lsof $filename</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>网上有看到关于[因为 lsof 需要访问系统核心文件所以需要 root 用户执行]的说法,自己试了下普通用户也可以,可能跟具体需要访问的文件权限有关,具体需要深入了解才能确定了。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.computerhope.com/unix/utracero.htm#desc">computerhope 的 traceroute 介绍</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL日志系统</title>
     <url>/2023/02/964962dd/</url>
     <content><![CDATA[<h1 id="重做日志-redo-log"><a href="#重做日志-redo-log" class="headerlink" title="重做日志 redo log"></a>重做日志 redo log</h1><blockquote>
@@ -998,6 +997,170 @@
 <p>同时执行器会根据表的引擎定义调取对应引擎的接口，搜索引擎的接口诸如“取某个表的第一行”、“取下一行”等，</p>
 <h3 id="慢日志的-rows-examined"><a href="#慢日志的-rows-examined" class="headerlink" title="慢日志的 rows_examined"></a>慢日志的 rows_examined</h3><p>在 MySQL 慢日志中有个指标 rows_examined，含义就是执行器调用了搜索引擎取数据行的次数</p>
 <h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>MySQL 基础架构图出自极客林晓斌老师的《Mysql 实战 45 讲》，侵删。</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL锁</title>
+    <url>/2023/02/d940f18d/</url>
+    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
+<span id="more"></span>
+
+<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
+<p>使用场景、跟只读的区别</p>
+</blockquote>
+<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
+<p>通过以下语句可以施加全局锁（FTWRL）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
+<p>问：全库备份为什么要施加全局锁？</p>
+<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
+<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
+<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
+<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
+<ol>
+<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
+<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
+</ol>
+<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
+<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
+<p>表锁的语法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
+
+<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
+<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
+<p>表级锁不会死锁。因为两个前提：</p>
+<ol>
+<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
+<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
+</ol>
+<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
+<p>解决什么问题、使用方式、DDL 的正确方式</p>
+</blockquote>
+<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
+<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
+<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
+<p>MySQL 5.6 支持了 online DDL。</p>
+<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
+<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
+<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
+<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
+<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果遇到大表加字段呢</p>
+<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
+<p>安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
+
+<p>下面是常见执行示例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
+
+<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
+<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
+<p>自增锁是执行完立刻就释放资源的锁！</p>
+<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
+<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
+<blockquote>
+<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
+</blockquote>
+<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
+<p>定义、目的、优化</p>
+</blockquote>
+<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
+<ol>
+<li>锁在需要的时候才施加</li>
+<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
+<li>事务提交的时候释放锁资源</li>
+</ol>
+<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
+<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
+<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
+<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
+<p>处理策略、</p>
+</blockquote>
+<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
+<p>死锁可以优化但几乎无法杜绝。</p>
+<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
+<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
+<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
+<p>死锁监测是常用的策略。</p>
+<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
+<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
+<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
+<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
+<p>优化方法：</p>
+<ol>
+<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
+<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
+<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次索引散列值的优化</title>
+    <url>/2023/02/43a71ae4/</url>
+    <content><![CDATA[<h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><p>某天忽然发现自己表里面有个 SQL 查询巨慢，遂查询优化，顺便记录一下。</p>
+<p>表名 table_a 代指，数据量 400w，结构简化如下：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">emarket<span class="variable">@192</span><span class="number">.168</span><span class="number">.20</span><span class="number">.42</span> : emarket_statistics <span class="number">14</span>:<span class="number">02</span>:<span class="number">35</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span> table_a\G;</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">       <span class="keyword">Table</span>: table_a</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">Table</span>: <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `table_a` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67096678</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>问题语句是：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> table_a <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br></pre></td></tr></table></figure>
+
+<p>牛的，给我查了 20 秒，explain 一看哦吼直接全表扫描。</p>
+<span id="more"></span>
+
+
+
+<h2 id="优化思路"><a href="#优化思路" class="headerlink" title="优化思路"></a>优化思路</h2><p>首先鉴于当前的索引设计，当初想着这个语句应该用到 uniq_key2 的索引的，按日期区分数据应该也还好，没想到呵呵了。</p>
+<p>首先根据自己习惯，直接给这个查询设计一个索引看看，因为数据量不大而且业务定位可以支持线上加就直接搞了</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `date_account`(`<span class="type">date</span>`, `media_account_id`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.54</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>还是不行，对优化几乎没有帮助，explain 表示还是用不上索引。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6418846</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys      <span class="operator">|</span> key  <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> <span class="keyword">rows</span>    <span class="operator">|</span> Extra       <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ALL</span>  <span class="operator">|</span> uniq2,date_account <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">4097163</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>一开始我想的是有没有可能是优化器索引选择除了问题，遂手动 force</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project force index(`date_account`)  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">21.80</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>不行，优化器没错，用了索引跟没用一个吊样。</p>
+<p>当时不信邪手动刷新一次索引采集</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">analyze <span class="keyword">table</span> table_a;</span><br></pre></td></tr></table></figure>
+
+<p>6，我就不该怀疑人家，多反思自己吧。</p>
+<p>思路回到上面，既然优化器的索引选择没问题，那就是索引本身了，接着想到索引区分度，看一下索引情况：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> index <span class="keyword">from</span> emarket_jrtt_data_project;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6426440</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">Table</span>                     <span class="operator">|</span> Non_unique <span class="operator">|</span> Key_name           <span class="operator">|</span> Seq_in_index <span class="operator">|</span> Column_name        <span class="operator">|</span> <span class="keyword">Collation</span> <span class="operator">|</span> <span class="keyword">Cardinality</span> <span class="operator">|</span> Sub_part <span class="operator">|</span> Packed <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Index_type <span class="operator">|</span> Comment <span class="operator">|</span> Index_comment <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> <span class="keyword">PRIMARY</span>            <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> id                 <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>      <span class="number">110888</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> stat_datetime      <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">2218</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> <span class="keyword">hour</span>               <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">26992</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">3</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">18907</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">1456</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> media_account_id   <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">30391</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="number">9</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>date_account 索引的第一个字段区分度基数只有 1456，会不会这就是优化器不选择索引的原因？</p>
+<p>换一下索引顺序：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `account_date`(`media_account_id`,`<span class="type">date</span>`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.36</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>果然是索引区分度的散列值问题，explain 立刻选择了新索引，而且查询秒出。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain  <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys                   <span class="operator">|</span> key          <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>   <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra                 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> uniq2,date_account,account_date <span class="operator">|</span> account_date <span class="operator">|</span> <span class="number">4</span>       <span class="operator">|</span> const <span class="operator">|</span> <span class="number">2050</span> <span class="operator">|</span> <span class="keyword">Using</span> index <span class="keyword">condition</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>结果表结构：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `emarket_jrtt_data_project` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  KEY `account_date` (`media_account_id`,`<span class="type">date</span>`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67098858</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>今晚奖励一把。</p>
+<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p><a href="https://dev.mysql.com/doc/refman/5.7/en/analyze-table.html#analyze-table-output">Analyze table 语句</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
@@ -1127,170 +1290,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次索引散列值的优化</title>
-    <url>/2023/02/43a71ae4/</url>
-    <content><![CDATA[<h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><p>某天忽然发现自己表里面有个 SQL 查询巨慢，遂查询优化，顺便记录一下。</p>
-<p>表名 table_a 代指，数据量 400w，结构简化如下：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">emarket<span class="variable">@192</span><span class="number">.168</span><span class="number">.20</span><span class="number">.42</span> : emarket_statistics <span class="number">14</span>:<span class="number">02</span>:<span class="number">35</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span> table_a\G;</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">       <span class="keyword">Table</span>: table_a</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">Table</span>: <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `table_a` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67096678</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
-
-<p>问题语句是：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> table_a <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br></pre></td></tr></table></figure>
-
-<p>牛的，给我查了 20 秒，explain 一看哦吼直接全表扫描。</p>
-<span id="more"></span>
-
-
-
-<h2 id="优化思路"><a href="#优化思路" class="headerlink" title="优化思路"></a>优化思路</h2><p>首先鉴于当前的索引设计，当初想着这个语句应该用到 uniq_key2 的索引的，按日期区分数据应该也还好，没想到呵呵了。</p>
-<p>首先根据自己习惯，直接给这个查询设计一个索引看看，因为数据量不大而且业务定位可以支持线上加就直接搞了</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `date_account`(`<span class="type">date</span>`, `media_account_id`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.54</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
-
-<p>还是不行，对优化几乎没有帮助，explain 表示还是用不上索引。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6418846</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys      <span class="operator">|</span> key  <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> <span class="keyword">rows</span>    <span class="operator">|</span> Extra       <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ALL</span>  <span class="operator">|</span> uniq2,date_account <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>    <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">4097163</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+--------------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>一开始我想的是有没有可能是优化器索引选择除了问题，遂手动 force</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project force index(`date_account`)  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">21.80</span> sec)</span><br></pre></td></tr></table></figure>
-
-<p>不行，优化器没错，用了索引跟没用一个吊样。</p>
-<p>当时不信邪手动刷新一次索引采集</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">analyze <span class="keyword">table</span> table_a;</span><br></pre></td></tr></table></figure>
-
-<p>6，我就不该怀疑人家，多反思自己吧。</p>
-<p>思路回到上面，既然优化器的索引选择没问题，那就是索引本身了，接着想到索引区分度，看一下索引情况：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> index <span class="keyword">from</span> emarket_jrtt_data_project;</span><br><span class="line">ERROR <span class="number">2006</span> (HY000): MySQL server has gone away</span><br><span class="line"><span class="keyword">No</span> connection. Trying <span class="keyword">to</span> reconnect...</span><br><span class="line">Connection id:    <span class="number">6426440</span></span><br><span class="line"><span class="keyword">Current</span> database: emarket_statistics</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">Table</span>                     <span class="operator">|</span> Non_unique <span class="operator">|</span> Key_name           <span class="operator">|</span> Seq_in_index <span class="operator">|</span> Column_name        <span class="operator">|</span> <span class="keyword">Collation</span> <span class="operator">|</span> <span class="keyword">Cardinality</span> <span class="operator">|</span> Sub_part <span class="operator">|</span> Packed <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Index_type <span class="operator">|</span> Comment <span class="operator">|</span> Index_comment <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> <span class="keyword">PRIMARY</span>            <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> id                 <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>      <span class="number">110888</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq_key           <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> stat_datetime      <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">2218</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> <span class="keyword">hour</span>               <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">26992</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">0</span> <span class="operator">|</span> uniq2              <span class="operator">|</span>            <span class="number">3</span> <span class="operator">|</span> media_project_id   <span class="operator">|</span> A         <span class="operator">|</span>     <span class="number">4102864</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> dl_adv_position_id <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">18907</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span> <span class="type">date</span>               <span class="operator">|</span> A         <span class="operator">|</span>        <span class="number">1456</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span>          <span class="number">1</span> <span class="operator">|</span> date_account       <span class="operator">|</span>            <span class="number">2</span> <span class="operator">|</span> media_account_id   <span class="operator">|</span> A         <span class="operator">|</span>       <span class="number">30391</span> <span class="operator">|</span>     <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>   <span class="operator">|</span>      <span class="operator">|</span> BTREE      <span class="operator">|</span>         <span class="operator">|</span>               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------------+------------+--------------------+--------------+--------------------+-----------+-------------+----------+--------+------+------------+---------+---------------+</span></span><br><span class="line"><span class="number">9</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
-
-<p>date_account 索引的第一个字段区分度基数只有 1456，会不会这就是优化器不选择索引的原因？</p>
-<p>换一下索引顺序：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emarket_jrtt_data_project <span class="keyword">add</span> index `account_date`(`media_account_id`,`<span class="type">date</span>`);</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">30.36</span> sec)</span><br><span class="line">Records: <span class="number">0</span>  Duplicates: <span class="number">0</span>  Warnings: <span class="number">0</span></span><br></pre></td></tr></table></figure>
-
-<p>果然是索引区分度的散列值问题，explain 立刻选择了新索引，而且查询秒出。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">explain  <span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span> id   <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span>                     <span class="operator">|</span> type <span class="operator">|</span> possible_keys                   <span class="operator">|</span> key          <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span>   <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra                 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> SIMPLE      <span class="operator">|</span> emarket_jrtt_data_project <span class="operator">|</span> <span class="keyword">ref</span>  <span class="operator">|</span> uniq2,date_account,account_date <span class="operator">|</span> account_date <span class="operator">|</span> <span class="number">4</span>       <span class="operator">|</span> const <span class="operator">|</span> <span class="number">2050</span> <span class="operator">|</span> <span class="keyword">Using</span> index <span class="keyword">condition</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+-------------+---------------------------+------+---------------------------------+--------------+---------+-------+------+-----------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>),<span class="built_in">sum</span>(stat_cost) <span class="keyword">from</span> emarket_jrtt_data_project  <span class="keyword">where</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20240308</span> <span class="keyword">and</span> media_account_id <span class="operator">=</span> <span class="number">8511</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span> <span class="built_in">sum</span>(stat_cost) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="operator">|</span>      <span class="number">559</span> <span class="operator">|</span>       <span class="number">16907.66</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+----------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
-
-<p>结果表结构：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `emarket_jrtt_data_project` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="type">date</span>` <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `<span class="keyword">hour</span>` <span class="type">varchar</span>(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `media_account_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>,</span><br><span class="line">  `media_project_id` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;媒体对应项目ID&#x27;</span>,</span><br><span class="line">  `dl_adv_position_id` <span class="type">int</span>(<span class="number">10</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> COMMENT <span class="string">&#x27;大蓝广告位 ID&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `stat_cost` <span class="type">decimal</span>(<span class="number">10</span>,<span class="number">2</span>) unsigned <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0.00</span> COMMENT <span class="string">&#x27;消耗，表示广告在投放期内的预估花费金额&#x27;</span>,</span><br><span class="line">...</span><br><span class="line">  `created_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">  `updated_at` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">current_timestamp</span>() <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">current_timestamp</span>() COMMENT <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq_key` (`media_project_id`,`stat_datetime`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `uniq2` (`<span class="type">date</span>`,`<span class="keyword">hour</span>`,`media_project_id`),</span><br><span class="line">  KEY `dl_adv_position_id` (`dl_adv_position_id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  KEY `account_date` (`media_account_id`,`<span class="type">date</span>`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">67098858</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
-
-<p>今晚奖励一把。</p>
-<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p><a href="https://dev.mysql.com/doc/refman/5.7/en/analyze-table.html#analyze-table-output">Analyze table 语句</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL锁</title>
-    <url>/2023/02/d940f18d/</url>
-    <content><![CDATA[<p>数据库在应对并发访问时需要一套规则合理控制资源访问，而锁就是用来实现控制规则的数据结构。</p>
-<span id="more"></span>
-
-<h1 id="全局锁"><a href="#全局锁" class="headerlink" title="全局锁"></a>全局锁</h1><blockquote>
-<p>使用场景、跟只读的区别</p>
-</blockquote>
-<p>顾名思义，全局锁是对整个数据库实例加锁，作用是让整个库处于只读状态。</p>
-<p>通过以下语句可以施加全局锁（FTWRL）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flush tables with read lock</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="全局锁的使用场景"><a href="#全局锁的使用场景" class="headerlink" title="全局锁的使用场景"></a>全局锁的使用场景</h2><p>全局锁的经典使用场景就是【全库逻辑备份】，也就是把整库查询出来存成文本。</p>
-<p>问：全库备份为什么要施加全局锁？</p>
-<p>答：发起数据库备份时，不同表备份顺序的先后会有时间差，在这个时间差之内对表的操作有可能造成数据不一致。也就是说数据备份得到的库是逻辑不一致的。</p>
-<p>官方自带的逻辑备份工具是 mysqldump。当 mysqldump 使用参数 -–single-transaction 的时候，导数据之前就会启动一个事务确保拿到一致性视图。而由于 MVCC 的支持，这个过程中数据是可以正常更新的。</p>
-<p>当然，前提是表对应的存储引擎要支持事务，MyISAM 就不支持，也是它的局限之一。</p>
-<h2 id="全局锁和设置只读的区别"><a href="#全局锁和设置只读的区别" class="headerlink" title="全局锁和设置只读的区别"></a>全局锁和设置只读的区别</h2><p>乍一看数据库备份也可以通过设置数据库只读（set global readonly &#x3D; true;）来代替，其实他们是有区别的：</p>
-<ol>
-<li>readonly &#x3D; true 被广泛使用在业务系统中的其它逻辑，比如用来判断主从，使用它可能导致其它问题</li>
-<li>异常处理机制不同，施加全局锁后如果发生异常（如客户端断开），全局锁会被自动释放；而 readonly 只能主动解除</li>
-</ol>
-<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>MySQL 里面表级别的锁有两种：表锁和元数据锁（meta data lock，MDL)。</p>
-<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><p>表锁是 MySQL server 层实现的锁。</p>
-<p>表锁的语法是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock tables t_a read/write;</span><br><span class="line">lock tables t_a read/write, t_b read/write;</span><br><span class="line"></span><br><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
-
-<p>与 FTWRL 类似，可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。</p>
-<p>当某个事务需要查询某个表的大部分或全部数据时，如果使用更细的行锁会导致查询效率更慢，或者判断容易引发长时间锁等待&#x2F;死锁等，可以考虑使用表锁。</p>
-<p>表级锁不会死锁。因为两个前提：</p>
-<ol>
-<li>需要的表锁只能一次性申请，不允许分多次执行 lock table t_a read(write) 和 lock table t_b read(write)</li>
-<li>施加表锁成功除了会限制别的线程的读写外，也限定了本线程接下来只能操作申请了锁的表</li>
-</ol>
-<h2 id="元数据锁"><a href="#元数据锁" class="headerlink" title="元数据锁"></a>元数据锁</h2><blockquote>
-<p>解决什么问题、使用方式、DDL 的正确方式</p>
-</blockquote>
-<p>MySQL 中数据定义语言（Data Definition Language - 缩写 DDL） 不属于事务范畴，如果 DDL 和事务同时修改某个表时可能破坏事务特性等，为了解决这类问题，MySQL 5.5.3 引入了元数据锁（Meta Data Lock），缩写 MDL。</p>
-<p>MDL 的作用是解决同一张表上事务和 DDL 并行执行可能破坏一致性的问题。例如一个查询正在遍历一个表中的数据，而执行期间另一个线程删除了该表某一列，就会导致查询线程拿到的结果跟表结构对不上</p>
-<p>MDL 不需要显式使用，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变更操作的时候，加 MDL 写锁。</p>
-<p>MySQL 5.6 支持了 online DDL。</p>
-<p>MDL 会直到事务提交才释放，所以 DBA 要尽量在闲时在做表结构变更，而开发则应尽量保证事务效率，避免大事务。否则容易引发大规模锁等待。</p>
-<p>问：备份一般都会在从库上执行，在用 –single-transaction 方法做逻辑备份的过程中，如果主库上的一个小表执行了一个 DDL 操作，比如给一个表上加了一列。这时候，从备库上会看到什么现象呢？</p>
-<p>答：备份的时候主库对 a 表做DDL，假设 DDL 未执行完，a  表上有 MDL 写锁，除了当前线程以外获取不到表结构修改后的结果。此时从库和备库均看不到 DDL 操作结果。即使主库 DDL 执行完毕，备份还在进行，因为备份时从库会启动全局锁，从库处于只读状态，从库依然看不到 DDL 的操作结果。</p>
-<h3 id="安全的-DDL-方式"><a href="#安全的-DDL-方式" class="headerlink" title="安全的 DDL 方式"></a>安全的 DDL 方式</h3><p>如果要执行 DDL 的表是热点表，虽然数据量不大，但是增删改查很频繁，而我们不得不执行 DDL 操作，怎么做比较合适呢？</p>
-<p>鉴于高频使用，此时手动 kill 已不管用。比较理想的机制是，在 alter table 语句里面设定等待时间，如果当前线程在等待时间内能够拿到 MDL 写锁则问题解决，拿不到也不会阻塞正常业务。之后开发人员或者 DBA 再通过重试命令重复这个过程。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER TABLE tbl_name NOWAIT add column ...</span><br><span class="line"></span><br><span class="line">ALTER TABLE tbl_name WAIT N add column ...</span><br></pre></td></tr></table></figure>
-
-
-
-<p>如果遇到大表加字段呢</p>
-<p>pt-online-schema-change 是 percona 开发的 MySQL 管理工具之一。它的流程跟手动差不多，先新建一张与源表相同结构的表，执行 DDL 操作，再将数据拷贝到新表直到追上最新数据，然后 rename 表替换源表，最后删除源表。好处是执行过程中几乎不影响数据库性能，非常有意思。</p>
-<p>安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://downloads.percona.com/downloads/percona-toolkit/3.3.1/binary/redhat/8/x86_64/percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line">sudo yum -y install perl-DBI perl-DBD-MySQL perl-Digest-MD5 perl-IO-Socket-SSL perl-TermReadKey</span><br><span class="line">sudo rpm -ivh percona-toolkit-3.3.1-1.el8.x86_64.rpm</span><br><span class="line"># 验证是否安装成功</span><br><span class="line">pt-online-schema-change --help</span><br></pre></td></tr></table></figure>
-
-<p>下面是常见执行示例：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pt-online-schema-change --user &#x27;xxx&#x27; --password &#x27;abcxxx&#x27; -P3313 -S /tmp/mysql3313.sock -D database_name --alter &quot;add column column_a int(11) unsigned DEFAULT 0 COMMENT &#x27;666&#x27; AFTER id;&quot; A=utf8,D=database_name,h=localhost,t=&#x27;table_name&#x27; --print --statistics --execute</span><br></pre></td></tr></table></figure>
-
-<p>详见<a href="https://docs.percona.com/percona-toolkit/pt-online-schema-change.html">官方文档</a></p>
-<h1 id="自增锁"><a href="#自增锁" class="headerlink" title="自增锁"></a>自增锁</h1><p>自增锁是 InnoDB 是在 auto_increment 时保证该值正确性的锁。</p>
-<p>自增锁是执行完立刻就释放资源的锁！</p>
-<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>MySQL 的行锁由存储引擎自主实现，不是所有引擎都支持行锁，例如 MyISAM。</p>
-<p>行锁因为涉及 MVCC 数据快照等保存操作，开销比表锁大，但粒度小</p>
-<blockquote>
-<p>注意：Innodb 行锁锁的是索引， 如果更新、删除条件没走索引， 会降级成表锁</p>
-</blockquote>
-<h2 id="两阶段锁"><a href="#两阶段锁" class="headerlink" title="两阶段锁"></a>两阶段锁</h2><blockquote>
-<p>定义、目的、优化</p>
-</blockquote>
-<p>在 InnoDB 事务中，行锁都是两阶段锁：</p>
-<ol>
-<li>锁在需要的时候才施加</li>
-<li>锁的申请和释放分步进行，中间不允许交叉申请和释放锁。</li>
-<li>事务提交的时候释放锁资源</li>
-</ol>
-<p>因为行锁具有【锁是在需要的时候才施加的】的特性，所以如果事务需要锁多个数据行，将最可能造成锁冲突、最可能影响并发度的锁尽量往后放。可以减少锁占用时长，降低死锁几率。</p>
-<h1 id="读锁和写锁"><a href="#读锁和写锁" class="headerlink" title="读锁和写锁"></a>读锁和写锁</h1><p>读锁和写锁是从另一个视角看待锁定义的，读写锁施加在行级数据时又叫行锁，施加到表级数据时又叫表锁。</p>
-<p>读锁又叫共享锁，大家都能读，大家都不能写。自身写会立刻报错，别的线程写则会锁等待。</p>
-<p>写锁又叫排它锁，只有我能读写，其他人都不能读写。别的线程读写会锁等待。</p>
-<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><blockquote>
-<p>处理策略、</p>
-</blockquote>
-<p>当并发系统中多个线程出现循环锁等待，称为死锁。</p>
-<p>死锁可以优化但几乎无法杜绝。</p>
-<h2 id="死锁处理策略"><a href="#死锁处理策略" class="headerlink" title="死锁处理策略"></a>死锁处理策略</h2><p>当出现死锁以后，有两种主流策略：</p>
-<p>一种策略是超时退出。死锁时一直等待，直到超时。这个超时时间可以通过参数 innodb_lock_wait_timeout 设置。弊端是如果 innodb_lock_wait_timeout 设置很大在实际业务场景中是不可接受的，如果设置很小则容易误伤只是正常锁等待的语句。</p>
-<p>另一种策略是死锁检测。发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数 innodb_deadlock_detect 设置为 on，表示开启这个模块。</p>
-<p>死锁监测是常用的策略。</p>
-<p>但是死锁监测需要耗费大量的 CPU 资源。整体死锁检测的耗费代价是 O(n^2) 级别。 假设并发更新同一行的 1000 个线程，整体耗费的死锁检测操作为 1000*1000&#x3D;100 万。 估算如下：</p>
-<p>并发更新行 R1 的某线程 Tx，其所作的死锁检测工作为，Tx 先查看自身持有的行锁，同时遍历其他 999 个线程持有的行锁，共 1+999&#x3D;1000 次。x 为 1000。</p>
-<p>为什么需要遍历所有其它线程（999 个），而不是仅看当前持有 R1 行锁的线程就行了呢？—— 因为行锁排队，此时此刻没有构成死锁闭环不代表以后不会。假设某线程 Tm 排队等待 R1 行锁，并排在 Tx 前。如果 Tx 当前持有行锁 R2，可能存在过一会 Tm 先于 Tx 获持 R1，事态变成【Tm 持有 R1，等待 R2 &amp;&amp; Tx 持有 R2，等待 R1，也就是 Tm 和 Tx 构成死锁闭环】。 因此并发更新同一行的有 N 个线程都需要被检测，资源损耗 O(N^2) 。</p>
-<p>死锁检测不可避免，为防止死锁检测代价过高引起性能问题，应该想办法减少更新同一行记录的并发度，即降低 N 值。</p>
-<p>优化方法：</p>
-<ol>
-<li>如果能确保业务不会出现死锁，可以临时把死锁监测关掉。</li>
-<li>控制并发度。基本思路是，对于相同行的更新在进入引擎之前排队，这样 innodb 内部就不会有大量的死锁监测工作了。</li>
-<li>从业务层面优化，例如做到将一行拆成多行的方式存储，以此减少行锁竞争。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
     <title></title>
     <url>/2023/04/0/</url>
     <content><![CDATA[<p>总结一下各种情况下主从故障的恢复</p>
@@ -1346,21 +1345,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>composer 常见问题</title>
-    <url>/2023/10/893f68ee/</url>
-    <content><![CDATA[<h1 id="Failed-to-audit-installed-packages"><a href="#Failed-to-audit-installed-packages" class="headerlink" title="Failed to audit installed packages."></a>Failed to audit installed packages.</h1><p>自 composer 2.4 以后，composer require 命令增加了自动的重大安全问题检查，因为检查需要连接 <a href="https://packagist.org/api/security-advisories/">https://packagist.org/api/security-advisories/</a> 进行，可能会因为网络原因失败。可以通过添加 —no-audit 来禁用，如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">composer require google/apiclient:^2.10 --no-audit</span><br></pre></td></tr></table></figure>
-
-<p>参见：<a href="https://php.watch/articles/composer-audit">https://php.watch/articles/composer-audit</a></p>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>composer 安装</title>
     <url>/2023/10/7ce45063/</url>
     <content><![CDATA[<p>按照文档中的命令，常规执行的如下：</p>
@@ -1389,6 +1373,21 @@
 
 <p>然后再执行 php composer-setup.php，但是我实操无果，原因未明。</p>
 <h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://getcomposer.org/download/">文档</a></p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>composer 常见问题</title>
+    <url>/2023/10/893f68ee/</url>
+    <content><![CDATA[<h1 id="Failed-to-audit-installed-packages"><a href="#Failed-to-audit-installed-packages" class="headerlink" title="Failed to audit installed packages."></a>Failed to audit installed packages.</h1><p>自 composer 2.4 以后，composer require 命令增加了自动的重大安全问题检查，因为检查需要连接 <a href="https://packagist.org/api/security-advisories/">https://packagist.org/api/security-advisories/</a> 进行，可能会因为网络原因失败。可以通过添加 —no-audit 来禁用，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">composer require google/apiclient:^2.10 --no-audit</span><br></pre></td></tr></table></figure>
+
+<p>参见：<a href="https://php.watch/articles/composer-audit">https://php.watch/articles/composer-audit</a></p>
 ]]></content>
       <categories>
         <category>技术分享</category>
