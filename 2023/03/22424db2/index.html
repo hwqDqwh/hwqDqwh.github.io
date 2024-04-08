@@ -19,27 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hwqdqwh.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","width":300,"display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="最近处理一个项目数据迁移的过程中，执行 source xxx.sql 时结果发现执行过程中出现了很多 error 错误如下： 11018 - Can&amp;#x27;t read dir of &amp;#x27;.&#x2F;business&#x2F;&amp;#x27; (errno: 24 &quot;Too many open files&quot;)  检查 MySQL error.log 发现 1230419 14:58:0">
+    <meta name="description" content="公司在内网部署了专门的 gitlab 服务用于代码管理，然后发现在开启 VPN 的时候总是无法连接内网 gitlab 服务，找了很久才找到原因，以下是笨办法。 打开 VPN 的配置文件，将下述 dns.enable 改为 false 然后保存，在 VPN 上重载配置文件即可。  原因大概就是内网 gitlab 服务本身配置了 dns 解释，然而 VPN 自身也启用 VPN 的话就存在互相覆盖的问题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hwqDqwh">
-<meta property="og:url" content="https://hwqdqwh.github.io/2023/04/0/index.html">
+<meta property="og:title" content="解决 VPN 与内网服务冲突">
+<meta property="og:url" content="https://hwqdqwh.github.io/2023/03/22424db2/index.html">
 <meta property="og:site_name" content="hwqDqwh">
-<meta property="og:description" content="最近处理一个项目数据迁移的过程中，执行 source xxx.sql 时结果发现执行过程中出现了很多 error 错误如下： 11018 - Can&amp;#x27;t read dir of &amp;#x27;.&#x2F;business&#x2F;&amp;#x27; (errno: 24 &quot;Too many open files&quot;)  检查 MySQL error.log 发现 1230419 14:58:0">
+<meta property="og:description" content="公司在内网部署了专门的 gitlab 服务用于代码管理，然后发现在开启 VPN 的时候总是无法连接内网 gitlab 服务，找了很久才找到原因，以下是笨办法。 打开 VPN 的配置文件，将下述 dns.enable 改为 false 然后保存，在 VPN 上重载配置文件即可。  原因大概就是内网 gitlab 服务本身配置了 dns 解释，然而 VPN 自身也启用 VPN 的话就存在互相覆盖的问题">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-04-19T10:03:54.446Z">
-<meta property="article:modified_time" content="2024-04-07T09:31:53.771Z">
+<meta property="og:image" content="https://hwqdqwh.github.io/images/image-20230328142515920.png">
+<meta property="article:published_time" content="2023-03-28T06:22:18.729Z">
+<meta property="article:modified_time" content="2024-04-08T09:33:44.720Z">
 <meta property="article:author" content="hwqDqwh">
+<meta property="article:tag" content="VPN">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hwqdqwh.github.io/images/image-20230328142515920.png">
 
 
-<link rel="canonical" href="https://hwqdqwh.github.io/2023/04/0/">
+<link rel="canonical" href="https://hwqdqwh.github.io/2023/03/22424db2/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/04/0/","path":"2023/04/0/","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://hwqdqwh.github.io/2023/03/22424db2/","path":"2023/03/22424db2/","title":"解决 VPN 与内网服务冲突"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title> | hwqDqwh</title>
+<title>解决 VPN 与内网服务冲突 | hwqDqwh</title>
   
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-255528593-1","only_pageview":true}</script>
   <script src="/js/third-party/analytics/google-analytics.js"></script>
@@ -165,12 +168,12 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -202,7 +205,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/04/0/">
+    <link itemprop="mainEntityOfPage" href="https://hwqdqwh.github.io/2023/03/22424db2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/bu2ma-tiger.jpg">
@@ -215,12 +218,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | hwqDqwh">
+      <meta itemprop="name" content="解决 VPN 与内网服务冲突 | hwqDqwh">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          解决 VPN 与内网服务冲突
         </h1>
 
         <div class="post-meta-container">
@@ -231,14 +234,14 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2023-04-19 18:03:54" itemprop="dateCreated datePublished" datetime="2023-04-19T18:03:54+08:00">2023-04-19</time>
+      <time title="Created: 2023-03-28 14:22:18" itemprop="dateCreated datePublished" datetime="2023-03-28T14:22:18+08:00">2023-03-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-04-07 17:31:53" itemprop="dateModified" datetime="2024-04-07T17:31:53+08:00">2024-04-07</time>
+      <time title="Modified: 2024-04-08 17:33:44" itemprop="dateModified" datetime="2024-04-08T17:33:44+08:00">2024-04-08</time>
     </span>
 
   
@@ -251,32 +254,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>最近处理一个项目数据迁移的过程中，执行 source xxx.sql 时结果发现执行过程中出现了很多 error 错误如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1018 - Can&#x27;t read dir of &#x27;./business/&#x27; (errno: 24 &quot;Too many open files&quot;)</span><br></pre></td></tr></table></figure>
-
-<p>检查 MySQL error.log 发现</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">230419 14:58:05 [Warning] Could not increase number of max_open_files to more than 1024 (request: 5059)</span><br></pre></td></tr></table></figure>
-
-<p>很容易理解报错信息，MySQL 服务需要打开更多文件描述符，但是被上限约束了，上限值为 1024</p>
-<p>验证问题：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; show global variables like &#x27;open_files_limit&#x27;;</span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| open_files_limit | 1024  |</span><br><span class="line">+------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>MySQL 中约束文件描述符的配置有三个：open_files_limit、max_connections 和 table_open_cache，具体的计算逻辑可以看官方文档。</p>
-<p>但是尝试修改过后发现并不能解决当下问题。直到看到文档中以下内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">On Linux systems using systemd, the value cannot be set greater than LimitNOFile (this is DefaultLimitNOFILE, if LimitNOFile is not set); otherwise, on Linux, the value of open_files_limit cannot exceed ulimit -n.</span><br></pre></td></tr></table></figure>
-
-<p>大致意思是，如果在使用 systemd 时，可以打开的文件描述符数量不能超过 LimitNOFile，如果没有设置则参考 DefaultLimitNOFILE。同时 open_files_limit 不能设置为大于 ulimit -n 的数量。</p>
-<p>因为我们的 ulimit -n 是 65535，直接忽略后面，主要是前面的参数解读了。</p>
-<p>LimitNOFile 和 DefaultLimitNOFILE 都是 systemd 的配置参数，使用命令查看：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/systemd/system.conf</span><br><span class="line">systemctl cat mysql</span><br><span class="line"># /etc/systemd/system/mysql.service</span><br></pre></td></tr></table></figure>
-
-<p>看到当下服务器两个参数都没有设置，而 DefaultLimitNOFILE 的默认值为 1024，故最终 open_files_limit 生效最大值 1024。</p>
-<p>解决问题：</p>
-<p>直接修改 systemd 的配置文件即可，也就是 &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;mysql.service 文件中添加 LimitNOFile&#x3D;xxx，然后重启 MySQL</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/systemd/system/mysql.service</span><br><span class="line"># 添加 LimitNOFile=8192</span><br><span class="line"></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line"></span><br><span class="line">sudo systemctl restart mysql</span><br></pre></td></tr></table></figure>
-
+        <p>公司在内网部署了专门的 gitlab 服务用于代码管理，然后发现在开启 VPN 的时候总是无法连接内网 gitlab 服务，找了很久才找到原因，以下是笨办法。</p>
+<p>打开 VPN 的配置文件，将下述 dns.enable 改为 false 然后保存，在 VPN 上重载配置文件即可。</p>
+<p><img src="/../../images/image-20230328142515920.png" alt="image-20230328142515920"></p>
+<p>原因大概就是内网 gitlab 服务本身配置了 dns 解释，然而 VPN 自身也启用 VPN 的话就存在互相覆盖的问题。</p>
 
     </div>
 
@@ -285,18 +266,21 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/VPN/" rel="tag"># VPN</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/03/0/" rel="prev" title="">
-                  <i class="fa fa-chevron-left"></i> 
+                <a href="/2023/02/38c89d47/" rel="prev" title="gitbook 执行出错处理">
+                  <i class="fa fa-chevron-left"></i> gitbook 执行出错处理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/04/0/" rel="next" title="">
-                   <i class="fa fa-chevron-right"></i>
+                <a href="/2023/03/c0dbab34/" rel="next" title="不常用的有用命令">
+                  不常用的有用命令 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -362,7 +346,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"41f0aa5984f8e47ba369fbbf28081f6d"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hwqDqwh","repo":"hwqDqwh.github.io","client_id":"9996b70b9ed649ee8ad5","client_secret":"751879ca0dcd082abec0fdfd22999fb9f695d0ed","admin_user":"hwqDqwh","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f9a18a56f017ce765e731fc145e62022"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 
